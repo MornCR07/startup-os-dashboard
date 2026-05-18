@@ -233,7 +233,71 @@ textarea{resize:vertical;min-height:60px}
   .week-grid{grid-template-columns:1fr}
   .form-row{grid-template-columns:1fr}
   .vote-q-row{flex-wrap:wrap}
+  .panel-grid{grid-template-columns:1fr!important}
+  .mentor-tabs{flex-wrap:wrap}
 }
+
+/* ── VOICE TO ACTION ─────────────────── */
+.mic-fab{position:fixed;bottom:28px;right:28px;width:56px;height:56px;border-radius:50%;background:#1a56c4;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;box-shadow:0 4px 16px rgba(26,86,196,0.45);z-index:150;transition:all 0.2s}
+.mic-fab:hover{background:#1548a8;transform:scale(1.08)}
+.mic-fab.recording{background:#d85a30;animation:micPulse 1.2s ease-in-out infinite}
+@keyframes micPulse{0%,100%{box-shadow:0 4px 16px rgba(216,90,48,0.5)}50%{box-shadow:0 4px 28px rgba(216,90,48,0.85),0 0 0 10px rgba(216,90,48,0.12)}}
+.voice-modal{background:#fff;border-radius:16px;padding:24px;width:480px;max-width:93vw;max-height:88vh;overflow-y:auto}
+.voice-wave{display:flex;align-items:flex-end;gap:4px;height:36px;margin:16px 0}
+.voice-bar{width:5px;border-radius:3px;background:#1a56c4;transition:height 0.1s}
+.voice-bar.idle{height:6px;background:#ddd}
+@keyframes waveAnim{0%,100%{height:8px}50%{height:32px}}
+.voice-transcript-box{min-height:80px;max-height:200px;overflow-y:auto;background:#f5f5f3;border-radius:10px;padding:12px;font-size:13px;color:#444;line-height:1.6;margin-bottom:14px;border:1px solid #e8e8e4}
+.voice-transcript-box .interim{color:#aaa;font-style:italic}
+.voice-action-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid #f0f0ec}
+.voice-action-row:last-child{border-bottom:none}
+.voice-action-cb{width:18px;height:18px;border-radius:4px;border:1.5px solid #ccc;cursor:pointer;flex-shrink:0;margin-top:2px;accent-color:#1a56c4}
+.voice-action-type{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;padding:2px 7px;border-radius:4px;flex-shrink:0;margin-top:2px}
+.voice-action-body{flex:1;font-size:13px;color:#333;line-height:1.5}
+.voice-action-edit{font-size:12px;color:#aaa;cursor:pointer;margin-top:3px;text-decoration:underline}
+.voice-action-edit:hover{color:#1a56c4}
+.voice-status{font-size:12px;font-weight:500;margin-bottom:6px}
+
+/* ── VIRTUELLE MENTOREN ──────────────── */
+.mentor-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.mentor-tab{display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:12px;border:2px solid #e8e8e4;background:#fff;cursor:pointer;font-size:13px;font-weight:500;color:#555;transition:all 0.15s;flex-shrink:0}
+.mentor-tab:hover{border-color:#b3c9f5;color:#1a56c4;background:#f0f5ff}
+.mentor-tab.active{border-color:var(--mc);background:var(--mb);color:var(--mc);font-weight:600}
+.mentor-tab .mentor-emoji{font-size:18px}
+.mentor-tab .mentor-sub{font-size:10px;color:#aaa;font-weight:400;margin-top:1px}
+.mentor-chat-header{display:flex;align-items:center;gap:12px;padding:14px 16px;background:#f9f9f7;border-radius:12px 12px 0 0;border:1px solid #e8e8e4;border-bottom:none}
+.mentor-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.mentor-name{font-size:14px;font-weight:600;color:#1a1a18}
+.mentor-role-badge{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:500}
+.mentor-desc{font-size:12px;color:#888;margin-top:2px}
+.mentor-chat-wrap{border:1px solid #e8e8e4;border-radius:0 0 12px 12px;background:#fff;padding:16px;display:flex;flex-direction:column;height:calc(100vh - 280px);min-height:340px}
+.mentor-messages{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;margin-bottom:12px;padding-right:4px}
+.mentor-msg{display:flex;gap:10px;align-items:flex-start;max-width:90%}
+.mentor-msg.user{align-self:flex-end;flex-direction:row-reverse}
+.mentor-bubble{padding:10px 14px;border-radius:12px;font-size:13px;line-height:1.65;white-space:pre-wrap}
+.mentor-msg.assistant .mentor-bubble{background:#f0f0ec;color:#1a1a18;border-radius:12px 12px 12px 3px}
+.mentor-msg.user .mentor-bubble{background:#1a56c4;color:#fff;border-radius:12px 12px 3px 12px}
+.mentor-msg .mentor-msg-avatar{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;margin-top:2px}
+.mentor-input-row{display:flex;gap:8px;align-items:flex-end}
+.mentor-input{flex:1;padding:10px 14px;font-size:13px;border:1.5px solid #e0e0e0;border-radius:12px;outline:none;font-family:inherit;resize:none;max-height:120px;min-height:44px;line-height:1.5;background:#fff}
+.mentor-input:focus{border-color:#7aabf5}
+.mentor-send{width:44px;height:44px;border-radius:12px;border:none;cursor:pointer;font-size:18px;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background 0.15s}
+.mentor-send:disabled{background:#ccc!important;cursor:not-allowed}
+.panel-wrap{display:flex;flex-direction:column;gap:14px}
+.panel-question-row{display:flex;gap:8px;align-items:flex-end;margin-bottom:4px}
+.panel-input{flex:1;padding:10px 14px;font-size:13px;border:1.5px solid #e0e0e0;border-radius:12px;outline:none;font-family:inherit;resize:none;max-height:100px;min-height:48px;line-height:1.5;background:#fff}
+.panel-input:focus{border-color:#7aabf5}
+.panel-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.panel-col{border:1px solid #e8e8e4;border-radius:12px;overflow:hidden}
+.panel-col-header{padding:10px 12px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px}
+.panel-col-body{padding:12px;font-size:12px;color:#444;line-height:1.6;min-height:180px;white-space:pre-wrap;max-height:420px;overflow-y:auto}
+.panel-typing{display:flex;gap:4px;align-items:center;padding:4px 0}
+.panel-dot{width:5px;height:5px;border-radius:50%;background:#aaa;animation:aiDot 1.2s infinite}
+.panel-dot:nth-child(2){animation-delay:0.2s}
+.panel-dot:nth-child(3){animation-delay:0.4s}
+.mentor-mode-toggle{display:flex;gap:8px;margin-bottom:16px}
+.mode-btn{padding:8px 18px;border-radius:10px;border:1.5px solid #e0e0e0;background:#fff;font-size:13px;font-weight:500;cursor:pointer;color:#555;transition:all 0.15s}
+.mode-btn.active{background:#1a56c4;border-color:#1a56c4;color:#fff}
 </style>
 </head>
 <body>
@@ -297,6 +361,7 @@ textarea{resize:vertical;min-height:60px}
   <div class="nav-item" data-page="network" onclick="nav(this,'network')"><span class="nav-icon">🤝</span>Network</div>
   <div class="nav-section">Ideenentwicklung</div>
   <div class="nav-item" data-page="ai" onclick="nav(this,'ai')"><span class="nav-icon">🤖</span>AI Assistent</div>
+  <div class="nav-item" data-page="mentors" onclick="nav(this,'mentors')"><span class="nav-icon">🎓</span>Virtuelle Mentoren</div>
   <div class="nav-item" data-page="deepdive" onclick="nav(this,'deepdive')"><span class="nav-icon">🔍</span>Top-5 Deep Dive</div>
   <div class="nav-item" data-page="notes" onclick="nav(this,'notes')"><span class="nav-icon">📝</span>Notizblock</div>
   <div class="nav-item" data-page="docs" onclick="nav(this,'docs')"><span class="nav-icon">📁</span>Dokumente</div>
@@ -603,7 +668,80 @@ textarea{resize:vertical;min-height:60px}
     </div>
   </div>
 
+  <!-- MENTOREN -->
+  <div class="page" id="p-mentors">
+    <div class="page-title">Virtuelle Mentoren</div>
+    <div class="page-sub">Hol dir Feedback von 5 verschiedenen Perspektiven – einzeln oder alle gleichzeitig im Panel-Modus</div>
+    <div class="mentor-mode-toggle">
+      <button class="mode-btn active" id="mode-btn-single" onclick="setMentorMode('single')">💬 Einzelgespräch</button>
+      <button class="mode-btn" id="mode-btn-panel" onclick="setMentorMode('panel')">🔀 Panel-Modus</button>
+    </div>
+    <!-- Einzel-Modus -->
+    <div id="mentor-single-view">
+      <div class="mentor-tabs" id="mentor-tabs"></div>
+      <div id="mentor-chat-area"></div>
+    </div>
+    <!-- Panel-Modus -->
+    <div id="mentor-panel-view" style="display:none">
+      <div class="panel-wrap">
+        <div class="card" style="margin-bottom:0">
+          <div class="card-title" style="margin-bottom:10px">🔀 Frage an alle 5 Mentoren gleichzeitig</div>
+          <div class="panel-question-row">
+            <textarea class="panel-input" id="panel-input" placeholder="Stell eine Frage – alle 5 Mentoren antworten parallel…" rows="2"
+              onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendPanelMessage()}"
+              oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px'"></textarea>
+            <button class="mentor-send" style="background:#1a56c4;width:52px;height:52px;border-radius:12px" onclick="sendPanelMessage()" id="panel-send-btn">↑</button>
+          </div>
+        </div>
+        <div class="panel-grid" id="panel-grid"></div>
+      </div>
+    </div>
+  </div>
+
 </div><!-- /main -->
+
+<!-- Floating Mic Button -->
+<button class="mic-fab" id="mic-fab" onclick="openVoiceModal()" title="Spracheingabe">🎙️</button>
+
+<!-- Voice Recording Modal -->
+<div class="modal-overlay" id="modal-voice" style="align-items:center;justify-content:center">
+  <div class="voice-modal">
+    <div class="modal-title" id="voice-modal-title">🎙️ Spracheingabe</div>
+    <div class="voice-status" id="voice-status" style="color:#aaa">Bereit zur Aufnahme</div>
+    <div class="voice-wave" id="voice-wave">
+      <div class="voice-bar idle" id="vb1"></div>
+      <div class="voice-bar idle" id="vb2"></div>
+      <div class="voice-bar idle" id="vb3"></div>
+      <div class="voice-bar idle" id="vb4"></div>
+      <div class="voice-bar idle" id="vb5"></div>
+      <div class="voice-bar idle" id="vb6"></div>
+      <div class="voice-bar idle" id="vb7"></div>
+    </div>
+    <div class="form-label">Transkript</div>
+    <div class="voice-transcript-box" id="voice-transcript-box">
+      <span style="color:#ccc;font-style:italic">Sprich nach dem Klick auf "Aufnahme starten"…</span>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeVoiceModal()">Abbrechen</button>
+      <button class="btn btn-danger" id="voice-stop-btn" onclick="stopVoiceRecording()" style="display:none">⏹ Aufnahme stoppen</button>
+      <button class="btn btn-primary" id="voice-start-btn" onclick="startVoiceRecording()">🎙️ Aufnahme starten</button>
+      <button class="btn btn-primary" id="voice-process-btn" onclick="processVoiceTranscript()" style="display:none">✨ Aktionen extrahieren</button>
+    </div>
+  </div>
+</div>
+
+<!-- Voice Preview Modal -->
+<div class="modal-overlay" id="modal-voice-preview" style="align-items:center;justify-content:center">
+  <div class="voice-modal" style="width:540px">
+    <div class="modal-title">✨ Erkannte Aktionen</div>
+    <div style="font-size:12px;color:#888;margin-bottom:12px">Wähle aus, welche Aktionen hinzugefügt werden sollen:</div>
+    <div id="voice-preview-list"></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal('modal-voice-preview')">Abbrechen</button>
+      <button class="btn btn-primary" onclick="executeVoiceActions()">✅ Ausgewählte hinzufügen</button>
+    </div>
+  </div>
+</div>
 
 <!-- ═══════════════ MODALS ═══════════════ -->
 
@@ -971,7 +1109,7 @@ function closeModal(id){document.getElementById(id).classList.remove('open')}
 document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open')}));
 
 function render(page){
-  var map={ai:renderAi,ideas:renderIdeas,vote:renderVote,events:renderEvents,matrix:renderMatrix,hyp:renderHyp,market:calcMarket,milestone:renderMs,week:renderWeek,kpi:renderKpi,resource:renderResource,fundraising:renderFund,pitch:renderPitch,comp:renderComp,network:renderNetwork,team:renderTeam,legal:renderLegal,log:renderLog,momentum:renderMomentum,deepdive:renderDeepDive,notes:renderNotes,docs:renderDocs};
+  var map={ai:renderAi,ideas:renderIdeas,vote:renderVote,events:renderEvents,matrix:renderMatrix,hyp:renderHyp,market:calcMarket,milestone:renderMs,week:renderWeek,kpi:renderKpi,resource:renderResource,fundraising:renderFund,pitch:renderPitch,comp:renderComp,network:renderNetwork,team:renderTeam,legal:renderLegal,log:renderLog,momentum:renderMomentum,deepdive:renderDeepDive,notes:renderNotes,docs:renderDocs,mentors:renderMentors};
   if(map[page])map[page]();
 }
 
@@ -1964,6 +2102,572 @@ function executeAction(idx){
     console.error('executeAction error:',e,jsonStr);
     addAiMessage('assistant','❌ Fehler beim Ausführen: '+e.message);
   }
+}
+
+/* ══════════════════════════════════════════
+   VOICE TO ACTION
+══════════════════════════════════════════ */
+var voiceRecognition=null, voiceFinalText='', voiceInterimText='', voiceRunning=false;
+var voiceParsedActions=[];
+
+function openVoiceModal(){
+  voiceFinalText='';voiceInterimText='';
+  document.getElementById('voice-transcript-box').innerHTML='<span style="color:#ccc;font-style:italic">Sprich nach dem Klick auf "Aufnahme starten"…</span>';
+  document.getElementById('voice-status').textContent='Bereit zur Aufnahme';
+  document.getElementById('voice-status').style.color='#aaa';
+  document.getElementById('voice-start-btn').style.display='';
+  document.getElementById('voice-stop-btn').style.display='none';
+  document.getElementById('voice-process-btn').style.display='none';
+  setWaveIdle();
+  openModal('modal-voice');
+}
+
+function closeVoiceModal(){
+  stopVoiceRecognition();
+  closeModal('modal-voice');
+}
+
+function setWaveIdle(){
+  for(var i=1;i<=7;i++){
+    var b=document.getElementById('vb'+i);
+    if(b){b.className='voice-bar idle';b.style.height='6px';b.style.animationDelay='';b.style.animation='';}
+  }
+}
+
+function setWaveActive(){
+  var delays=[0,0.15,0.3,0.45,0.3,0.15,0];
+  for(var i=1;i<=7;i++){
+    var b=document.getElementById('vb'+i);
+    if(b){b.className='voice-bar';b.style.background='#d85a30';b.style.animation='waveAnim 0.8s ease-in-out infinite';b.style.animationDelay=delays[i-1]+'s';}
+  }
+}
+
+function startVoiceRecording(){
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){
+    alert('Dein Browser unterstützt keine Spracheingabe. Bitte Chrome oder Edge verwenden.');
+    return;
+  }
+  voiceFinalText='';voiceInterimText='';voiceRunning=true;
+  voiceRecognition=new SR();
+  voiceRecognition.lang='de-DE';
+  voiceRecognition.continuous=true;
+  voiceRecognition.interimResults=true;
+  voiceRecognition.maxAlternatives=1;
+
+  voiceRecognition.onstart=function(){
+    document.getElementById('voice-status').textContent='🔴 Aufnahme läuft – sprich jetzt…';
+    document.getElementById('voice-status').style.color='#d85a30';
+    document.getElementById('voice-start-btn').style.display='none';
+    document.getElementById('voice-stop-btn').style.display='';
+    document.getElementById('voice-process-btn').style.display='none';
+    document.getElementById('mic-fab').classList.add('recording');
+    setWaveActive();
+  };
+
+  voiceRecognition.onresult=function(e){
+    voiceInterimText='';
+    for(var i=e.resultIndex;i<e.results.length;i++){
+      if(e.results[i].isFinal) voiceFinalText+=e.results[i][0].transcript+' ';
+      else voiceInterimText+=e.results[i][0].transcript;
+    }
+    var box=document.getElementById('voice-transcript-box');
+    box.innerHTML=escHtml(voiceFinalText)+'<span class="interim">'+escHtml(voiceInterimText)+'</span>';
+    box.scrollTop=box.scrollHeight;
+  };
+
+  voiceRecognition.onerror=function(e){
+    document.getElementById('voice-status').textContent='⚠️ Fehler: '+e.error;
+    document.getElementById('voice-status').style.color='#d85a30';
+    stopVoiceRecognition();
+  };
+
+  voiceRecognition.onend=function(){
+    if(voiceRunning){
+      // Auto-restart if still running (Chrome stops after silence)
+      try{voiceRecognition.start();}catch(e){}
+    }
+  };
+
+  voiceRecognition.start();
+}
+
+function stopVoiceRecognition(){
+  voiceRunning=false;
+  document.getElementById('mic-fab').classList.remove('recording');
+  if(voiceRecognition){try{voiceRecognition.stop();}catch(e){}}
+  setWaveIdle();
+}
+
+function stopVoiceRecording(){
+  stopVoiceRecognition();
+  var full=(voiceFinalText+voiceInterimText).trim();
+  if(!full){
+    document.getElementById('voice-status').textContent='Kein Text erkannt. Bitte erneut versuchen.';
+    document.getElementById('voice-status').style.color='#d85a30';
+    document.getElementById('voice-start-btn').style.display='';
+    document.getElementById('voice-stop-btn').style.display='none';
+    return;
+  }
+  voiceFinalText=full;
+  document.getElementById('voice-transcript-box').innerHTML=escHtml(full);
+  document.getElementById('voice-status').textContent='✅ Aufnahme beendet ('+full.split(' ').length+' Wörter)';
+  document.getElementById('voice-status').style.color='#1d9e75';
+  document.getElementById('voice-stop-btn').style.display='none';
+  document.getElementById('voice-process-btn').style.display='';
+  document.getElementById('voice-start-btn').style.display='';
+}
+
+async function processVoiceTranscript(){
+  var key=localStorage.getItem(AI_KEY_STORAGE);
+  if(!key){alert('Bitte zuerst einen Anthropic API Key im AI Assistent eingeben.');closeModal('modal-voice');return;}
+  var text=voiceFinalText.trim();
+  if(!text){alert('Kein Transkript vorhanden.');return;}
+
+  document.getElementById('voice-status').textContent='⏳ Extrahiere Aktionen mit KI…';
+  document.getElementById('voice-status').style.color='#1a56c4';
+  document.getElementById('voice-process-btn').disabled=true;
+
+  var prompt='Analysiere dieses Sprachtranskript und extrahiere ALLE erwähnten Aktionen als JSON-Array.\n\n'+
+    'TRANSKRIPT:\n"'+text+'"\n\n'+
+    'AKTUELLER KONTEXT:\n'+
+    '- Gründer: Raphael & Martim (HSG St. Gallen)\n'+
+    '- Bestehende Ideen: '+state.ideas.map(i=>i.name).join(', ')+(state.ideas.length?'':' keine')+'\n'+
+    '- Nächste Termine: '+((state.events||[]).slice(0,3).map(e=>e.title+' am '+e.date).join(', ')||'keine')+'\n\n'+
+    'Extrahiere alle Aktionen als JSON-Array. Jede Aktion hat "type" und "data":\n'+
+    '{"type":"task","data":{"who":"r","text":"..."}}\n'+
+    '  who: "r" für Raphael, "c" für Martim/Cabral\n'+
+    '{"type":"event","data":{"title":"...","date":"YYYY-MM-DD","type":"Meeting","note":"..."}}\n'+
+    '  type: Coaching|Meeting|Deadline|Pitch|Sonstiges\n'+
+    '{"type":"idea","data":{"name":"...","desc":"...","markt":7,"mach":6,"pass":8,"sector":"Tech/SaaS"}}\n'+
+    '{"type":"hypothesis","data":{"text":"...","status":"Nicht getestet","method":"..."}}\n'+
+    '{"type":"contact","data":{"name":"...","role":"...","help":"..."}}\n'+
+    '{"type":"investor","data":{"name":"...","type":"Angel","amount":0,"status":"Identified","notes":"..."}}\n'+
+    '{"type":"kpi","data":{"label":"...","value":0,"target":100,"unit":""}}\n'+
+    '{"type":"decision","data":{"q":"...","a":"..."}}\n'+
+    '{"type":"note","data":{"who":"shared","text":"..."}}\n'+
+    '  who: "r"|"c"|"shared"\n\n'+
+    'Wichtig:\n'+
+    '- Nur WIRKLICH erwähnte Aktionen extrahieren, nichts erfinden\n'+
+    '- Daten auf Deutsch\n'+
+    '- Wenn ein Datum erwähnt wird, ins Format YYYY-MM-DD umrechnen (heute: '+new Date().toISOString().slice(0,10)+')\n'+
+    '- Antworte NUR mit dem JSON-Array, kein anderer Text:\n'+
+    '[{"type":"...","data":{...}},...]';
+
+  try{
+    var resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1024,messages:[{role:'user',content:prompt}]})
+    });
+    var data=await resp.json();
+    if(data.error){throw new Error(data.error.message);}
+    var raw=data.content.map(b=>b.text||'').join('').trim();
+    // Extract JSON array from response
+    var match=raw.match(/\[[\s\S]*\]/);
+    if(!match)throw new Error('Keine JSON-Aktionen im Ergebnis');
+    voiceParsedActions=JSON.parse(match[0]);
+    closeModal('modal-voice');
+    showVoicePreview(voiceParsedActions, text);
+  }catch(e){
+    document.getElementById('voice-status').textContent='❌ Fehler: '+e.message;
+    document.getElementById('voice-status').style.color='#d85a30';
+  }finally{
+    document.getElementById('voice-process-btn').disabled=false;
+  }
+}
+
+var VOICE_TYPE_META={
+  task:     {label:'Aufgabe',   color:'#1a56c4', bg:'#e8f0fb'},
+  event:    {label:'Termin',    color:'#0f6e56', bg:'#e1f5ee'},
+  idea:     {label:'Idee',      color:'#854f0b', bg:'#faeeda'},
+  hypothesis:{label:'Hypothese',color:'#7a1a6e', bg:'#f5e8f5'},
+  contact:  {label:'Kontakt',   color:'#1a5c7a', bg:'#e0f0f8'},
+  investor: {label:'Investor',  color:'#5c1a7a', bg:'#ede8f5'},
+  kpi:      {label:'KPI',       color:'#1a7a3a', bg:'#e1f5ee'},
+  decision: {label:'Entscheidung',color:'#7a3a1a',bg:'#f5ede8'},
+  note:     {label:'Notiz',     color:'#555',    bg:'#f0f0ec'}
+};
+
+function voiceActionSummary(a){
+  var d=a.data;
+  switch(a.type){
+    case 'task':     return (d.who==='r'?'Raphael':'Martim')+': '+d.text;
+    case 'event':    return d.title+' – '+d.date+(d.note?' ('+d.note+')':'');
+    case 'idea':     return d.name+(d.desc?' – '+d.desc.substring(0,60):'');
+    case 'hypothesis':return d.text.substring(0,80);
+    case 'contact':  return d.name+(d.role?' ('+d.role+')':'')+(d.help?': '+d.help:'');
+    case 'investor': return d.name+(d.type?' ['+d.type+']':'')+(d.amount?' €'+d.amount+'K':'');
+    case 'kpi':      return d.label+': '+d.value+(d.unit||'')+' / Ziel '+d.target+(d.unit||'');
+    case 'decision': return d.q+(d.a?' → '+d.a.substring(0,50):'');
+    case 'note':     return d.text.substring(0,80);
+    default:         return JSON.stringify(d).substring(0,80);
+  }
+}
+
+function showVoicePreview(actions, transcript){
+  if(!actions||!actions.length){
+    alert('Keine Aktionen erkannt. Bitte erneut sprechen und klarer formulieren.');
+    return;
+  }
+  var list=document.getElementById('voice-preview-list');
+  if(!list){openModal('modal-voice-preview');list=document.getElementById('voice-preview-list');}
+  var html='<div style="background:#f5f5f3;border-radius:8px;padding:10px 12px;font-size:11px;color:#888;margin-bottom:12px;max-height:60px;overflow:hidden;cursor:pointer" onclick="this.style.maxHeight=this.style.maxHeight===\'none\'?\'60px\':\'none\'">📝 Transkript: '+escHtml(transcript.substring(0,200))+(transcript.length>200?'…':'')+'</div>';
+  actions.forEach(function(a,i){
+    var meta=VOICE_TYPE_META[a.type]||{label:a.type,color:'#555',bg:'#f0f0ec'};
+    html+='<div class="voice-action-row">'+
+      '<input type="checkbox" class="voice-action-cb" id="vac-'+i+'" checked>'+
+      '<span class="voice-action-type" style="color:'+meta.color+';background:'+meta.bg+'">'+meta.label+'</span>'+
+      '<div class="voice-action-body">'+escHtml(voiceActionSummary(a))+'</div>'+
+    '</div>';
+  });
+  list.innerHTML=html;
+  openModal('modal-voice-preview');
+}
+
+function executeVoiceActions(){
+  var added=0;
+  voiceParsedActions.forEach(function(a,i){
+    var cb=document.getElementById('vac-'+i);
+    if(!cb||!cb.checked)return;
+    var d=a.data;
+    try{
+      switch(a.type){
+        case 'task':
+          if(!state.tasks)state.tasks={r:[],c:[]};
+          var who=(d.who==='c')?'c':'r';
+          state.tasks[who].push({text:d.text||'',done:false});
+          break;
+        case 'event':
+          if(!state.events)state.events=[];
+          state.events.push({title:d.title||'',date:d.date||'',type:d.type||'Sonstiges',note:d.note||''});
+          updateNextEventWidget();
+          break;
+        case 'idea':
+          if(!state.ideas)state.ideas=[];
+          state.ideas.push({name:d.name||'',desc:d.desc||'',markt:d.markt||7,mach:d.mach||6,pass:d.pass||8,sector:d.sector||'Sonstiges'});
+          break;
+        case 'hypothesis':
+          if(!state.hyps)state.hyps=[];
+          state.hyps.push({text:d.text||'',status:d.status||'Nicht getestet',method:d.method||''});
+          break;
+        case 'contact':
+          if(!state.network)state.network=[];
+          state.network.push({name:d.name||'',role:d.role||'',help:d.help||''});
+          break;
+        case 'investor':
+          if(!state.investors)state.investors=[];
+          state.investors.push({name:d.name||'',type:d.type||'Angel',amount:d.amount||0,status:d.status||'Identified',notes:d.notes||''});
+          break;
+        case 'kpi':
+          if(!state.kpis)state.kpis=[];
+          state.kpis.push({label:d.label||'',value:d.value||0,target:d.target||100,unit:d.unit||''});
+          break;
+        case 'decision':
+          if(!state.decisions)state.decisions=[];
+          var dt2=new Date();
+          state.decisions.unshift({q:d.q||'',a:d.a||'',date:dt2.getDate()+'.'+(dt2.getMonth()+1)+'.'+dt2.getFullYear()});
+          break;
+        case 'note':
+          if(!state.notes)state.notes={r:'',m:'',shared:''};
+          var nwho=d.who==='r'?'r':d.who==='c'?'m':'shared';
+          var sep=state.notes[nwho]?'\n\n':'';
+          state.notes[nwho]+=sep+'['+new Date().toLocaleDateString('de-DE')+'] '+d.text;
+          break;
+      }
+      added++;
+    }catch(e){console.error('Voice action error:',e);}
+  });
+  if(added>0){
+    saveState().then(function(){
+      renderCurrent();
+      closeModal('modal-voice-preview');
+      // Brief success toast
+      var fab=document.getElementById('mic-fab');
+      fab.textContent='✅';
+      setTimeout(function(){fab.textContent='🎙️';},2000);
+    });
+  } else {
+    closeModal('modal-voice-preview');
+  }
+}
+
+/* ══════════════════════════════════════════
+   VIRTUELLE MENTOREN
+══════════════════════════════════════════ */
+var MENTORS=[
+  {
+    id:'marcus', name:'Marcus', emoji:'🛠️', title:'CTO', color:'#1a56c4', bg:'#e8f0fb',
+    desc:'Technischer Gründer, 15 Jahre Startup-Erfahrung, 3 erfolgreiche Exits',
+    system:'Du bist Marcus, erfahrener CTO mit 15 Jahren Startup-Erfahrung und 3 erfolgreichen Exits (letzter Exit: 40M€). Du denkst technisch, pragmatisch und hast null Toleranz für Buzzwords. Du hinterfragst immer: technische Machbarkeit, Build-vs-Buy, Tech-Stack, MVP-Scope, technische Schulden, Skalierbarkeit. Du sagst direkt "Das ist Over-Engineering" oder "Ihr braucht das noch nicht". Du bist konstruktiv aber schonungslos ehrlich. Du beendest Antworten oft mit einer konkreten technischen Frage zurück an die Gründer. Sprich auf Deutsch.'
+  },
+  {
+    id:'sophie', name:'Sophie', emoji:'📣', title:'CMO', color:'#c4188a', bg:'#fce8f5',
+    desc:'Growth-Expertin, B2C-Marketing, 0→1M Users in 18 Monaten',
+    system:'Du bist Sophie, CMO und Serial-Growth-Hackerin. Du hast 3 Unternehmen von 0 auf über 1 Million User gebracht. Du denkst in Akquisitionskanälen, CAC/LTV, Retention, Viral Loops, Brand Voice und Content-Strategie. Deine Lieblingsquestion: "Wie kommt der erste Kunde rein – konkret, morgen?" und "Was ist euer unfairer Vertriebsvorteil?". Du liebst A/B-Tests, Experimente und schnelle Iteration. Du warnst vor Perfektionismus und advocacy für sofortiges Testen mit echten Kunden. Sei enthusiastisch aber konkret. Sprich auf Deutsch.'
+  },
+  {
+    id:'heinrich', name:'Heinrich', emoji:'📊', title:'CFO', color:'#1a7a3a', bg:'#e1f5ee',
+    desc:'Ex-Investmentbanker, konservativ, liebt Unit Economics und Zahlen',
+    system:'Du bist Heinrich, ehemaliger Senior-Investmentbanker (15 Jahre Credit Suisse) und CFO von 4 Startups. Du bist systematisch, konservativ und misstraust optimistischen Prognosen. Du fragst immer: Burn Rate, Runway, Gross Margin, Break-Even, Cash Flow, Unit Economics (CAC/LTV/Payback Period). Du machst Finanzmodelle im Kopf und zeigst auf Rechenlogik-Fehler. Du warnst: "Nehmt immer den pessimistischsten Case als Basis." Du bist nicht zynisch, aber vorsichtig. Wenn Zahlen fehlen, sagst du genau welche ihr braucht. Sprich auf Deutsch.'
+  },
+  {
+    id:'klaus', name:'Klaus', emoji:'💼', title:'Business Angel', color:'#7a5c1a', bg:'#faeeda',
+    desc:'30 Investments, 8 Exits, skeptisch aber fair',
+    system:'Du bist Klaus, Business Angel mit 30 Investments und 8 erfolgreichen Exits hinter dir. Du bewertest alles aus Investor-Perspektive: Team-Qualität, Market Timing, Traction, Defensibility, Exit-Potenzial. Du bist skeptisch – du hast schon zu viele Pitches gehört. Du fragst die unangenehmen Fragen: "Warum ihr? Warum jetzt? Was passiert wenn Konkurrent X das kopiert?" Du bewertest ehrlich ob du investieren würdest und warum (nicht). Du denkst in 5-7 Jahres-Exit-Szenarien und Series-A-Readiness. Sei fair aber schonungslos. Sprich auf Deutsch.'
+  },
+  {
+    id:'anna', name:'Anna', emoji:'👤', title:'Zielkundin', color:'#7a1a1a', bg:'#fcebeb',
+    desc:'Kritische Nutzerin, sieht alles aus User-Perspektive, keine Geduld',
+    system:'Du bist Anna, eine typische Zielkundin der Startup-Ideen dieser Gründer. Du bist beschäftigt, kritisch und hast keine Zeit für schlechte Produkte. Du reagierst authentisch aus Nutzerperspektive: "Würde ich das wirklich kaufen?", "Warum nicht einfach Konkurrent X?", "Was kostet mich das wirklich – Zeit UND Geld?", "Erkläre mir das in einem Satz". Du bist nicht höflich aus Prinzip. Wenn dir etwas nicht einleuchtet, sagst du es direkt. Du gibst ehrliches Feedback wie ein echter Kunde im Usability-Test. Du fragst nach dem konkreten Nutzen für dich. Sprich auf Deutsch.'
+  }
+];
+
+var currentMentorId='marcus';
+var mentorMode='single';
+
+function getMentorHistory(id){
+  try{return JSON.parse(localStorage.getItem('mentor_chat_'+id)||'[]');}catch(e){return[];}
+}
+function saveMentorHistory(id,history){
+  // Keep last 40 messages to avoid localStorage bloat
+  var trimmed=history.slice(-40);
+  try{localStorage.setItem('mentor_chat_'+id,JSON.stringify(trimmed));}catch(e){}
+}
+function clearMentorHistory(id){
+  localStorage.removeItem('mentor_chat_'+id);
+}
+
+function buildMentorSystemPrompt(mentor){
+  // Reuse the full startup context from buildSystemPrompt but with mentor persona
+  var base=buildSystemPrompt();
+  // Replace the generic assistant intro with the mentor persona
+  return mentor.system+'\n\n'+
+    '══════════════════════════════════════════\n'+
+    'VOLLSTÄNDIGER STARTUP-KONTEXT DES TEAMS:\n'+
+    '══════════════════════════════════════════\n'+
+    base.split('═══════════════════════════════════════\n📌 VOLLSTÄNDIGER STARTUP-KONTEXT\n═══════════════════════════════════════')[1]||base;
+}
+
+function renderMentors(){
+  renderMentorTabs();
+  if(mentorMode==='single') renderMentorChat(currentMentorId);
+  else renderPanelGrid();
+}
+
+function renderMentorTabs(){
+  var tabs=document.getElementById('mentor-tabs');
+  if(!tabs)return;
+  tabs.innerHTML=MENTORS.map(function(m){
+    var active=m.id===currentMentorId&&mentorMode==='single';
+    return'<div class="mentor-tab'+(active?' active':'')+'" style="--mc:'+m.color+';--mb:'+m.bg+'" onclick="selectMentor(\''+m.id+'\')">'+
+      '<span class="mentor-emoji">'+m.emoji+'</span>'+
+      '<div><div>'+m.name+'</div><div class="mentor-sub">'+m.title+'</div></div>'+
+    '</div>';
+  }).join('');
+}
+
+function selectMentor(id){
+  currentMentorId=id;
+  if(mentorMode==='panel')setMentorMode('single');
+  renderMentorTabs();
+  renderMentorChat(id);
+}
+
+function setMentorMode(mode){
+  mentorMode=mode;
+  document.getElementById('mode-btn-single').className='mode-btn'+(mode==='single'?' active':'');
+  document.getElementById('mode-btn-panel').className='mode-btn'+(mode==='panel'?' active':'');
+  document.getElementById('mentor-single-view').style.display=mode==='single'?'':'none';
+  document.getElementById('mentor-panel-view').style.display=mode==='panel'?'':'none';
+  if(mode==='panel') renderPanelGrid();
+  else{renderMentorTabs();renderMentorChat(currentMentorId);}
+}
+
+function renderMentorChat(id){
+  var mentor=MENTORS.find(function(m){return m.id===id;});
+  if(!mentor)return;
+  var area=document.getElementById('mentor-chat-area');
+  if(!area)return;
+  var history=getMentorHistory(id);
+
+  area.innerHTML=
+    '<div class="mentor-chat-header">'+
+      '<div class="mentor-avatar" style="background:'+mentor.bg+'">'+mentor.emoji+'</div>'+
+      '<div style="flex:1">'+
+        '<div style="display:flex;align-items:center;gap:8px">'+
+          '<div class="mentor-name">'+mentor.name+'</div>'+
+          '<span class="mentor-role-badge" style="background:'+mentor.bg+';color:'+mentor.color+'">'+mentor.title+'</span>'+
+        '</div>'+
+        '<div class="mentor-desc">'+mentor.desc+'</div>'+
+      '</div>'+
+      '<button class="btn" onclick="clearMentorChat(\''+id+'\')" style="font-size:11px;color:#aaa" title="Chat löschen">🗑</button>'+
+    '</div>'+
+    '<div class="mentor-chat-wrap">'+
+      '<div class="mentor-messages" id="mentor-msgs-'+id+'"></div>'+
+      '<div class="mentor-input-row">'+
+        '<textarea class="mentor-input" id="mentor-input-'+id+'" placeholder="Stell '+mentor.name+' eine Frage…" rows="1" '+
+          'onkeydown="if(event.key===\'Enter\'&&!event.shiftKey){event.preventDefault();sendMentorMessage(\''+id+'\')}" '+
+          'oninput="this.style.height=\'auto\';this.style.height=Math.min(this.scrollHeight,120)+\'px\'"></textarea>'+
+        '<button class="mentor-send" id="mentor-send-'+id+'" style="background:'+mentor.color+'" onclick="sendMentorMessage(\''+id+'\')">↑</button>'+
+      '</div>'+
+    '</div>';
+
+  // Render history
+  var msgContainer=document.getElementById('mentor-msgs-'+id);
+  if(!msgContainer)return;
+  if(!history.length){
+    appendMentorMsg(id,'assistant','Hallo! Ich bin '+mentor.name+', euer '+mentor.title+'. Ich kenne euren gesamten Startup-Kontext.\n\nWas möchtet ihr besprechen? 💬',mentor);
+  } else {
+    history.forEach(function(msg){appendMentorMsg(id,msg.role,msg.content,mentor,true);});
+  }
+}
+
+function appendMentorMsg(id,role,text,mentor,noSave){
+  var mentor2=mentor||MENTORS.find(function(m){return m.id===id;});
+  if(!mentor2)return;
+  var container=document.getElementById('mentor-msgs-'+id);
+  if(!container)return;
+  var div=document.createElement('div');
+  div.className='mentor-msg '+role;
+  var avatarHtml=role==='assistant'?
+    '<div class="mentor-msg-avatar" style="background:'+mentor2.bg+';font-size:16px">'+mentor2.emoji+'</div>':
+    '<div class="mentor-msg-avatar" style="background:#1a56c4;color:#fff;font-size:11px;font-weight:700">'+(currentUser==='raphael'?'R':'M')+'</div>';
+  div.innerHTML=avatarHtml+'<div class="mentor-bubble">'+escHtml(text)+'</div>';
+  container.appendChild(div);
+  container.scrollTop=container.scrollHeight;
+  if(!noSave){
+    var hist=getMentorHistory(id);
+    hist.push({role,content:text});
+    saveMentorHistory(id,hist);
+  }
+}
+
+function showMentorTyping(id){
+  var container=document.getElementById('mentor-msgs-'+id);
+  if(!container)return;
+  var div=document.createElement('div');
+  div.className='mentor-msg assistant';div.id='mentor-typing-'+id;
+  var mentor=MENTORS.find(function(m){return m.id===id;});
+  div.innerHTML='<div class="mentor-msg-avatar" style="background:'+(mentor?mentor.bg:'#f0f0ec')+'">'+( mentor?mentor.emoji:'🎓')+'</div><div class="ai-typing"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div>';
+  container.appendChild(div);
+  container.scrollTop=container.scrollHeight;
+}
+function hideMentorTyping(id){var t=document.getElementById('mentor-typing-'+id);if(t)t.remove();}
+
+async function sendMentorMessage(id){
+  var mentor=MENTORS.find(function(m){return m.id===id;});
+  if(!mentor)return;
+  var input=document.getElementById('mentor-input-'+id);
+  if(!input)return;
+  var text=input.value.trim();
+  if(!text)return;
+  var key=localStorage.getItem(AI_KEY_STORAGE);
+  if(!key){alert('Bitte zuerst einen Anthropic API Key im AI Assistent eingeben.');return;}
+
+  input.value='';input.style.height='auto';
+  var sendBtn=document.getElementById('mentor-send-'+id);
+  if(sendBtn)sendBtn.disabled=true;
+
+  appendMentorMsg(id,'user',text,mentor);
+  showMentorTyping(id);
+
+  var history=getMentorHistory(id);
+  // Build message array (exclude the message we just appended since it was already saved)
+  var messages=history.slice(0,-1).filter(function(m){return m.role==='user'||m.role==='assistant';});
+  messages.push({role:'user',content:text});
+
+  try{
+    var resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:1024,
+        system:buildMentorSystemPrompt(mentor),
+        messages:messages
+      })
+    });
+    var data=await resp.json();
+    hideMentorTyping(id);
+    if(data.error){appendMentorMsg(id,'assistant','❌ Fehler: '+data.error.message,mentor);return;}
+    var reply=data.content.map(function(b){return b.text||'';}).join('');
+    appendMentorMsg(id,'assistant',reply,mentor);
+  }catch(e){
+    hideMentorTyping(id);
+    appendMentorMsg(id,'assistant','❌ Verbindungsfehler: '+e.message,mentor);
+  }finally{
+    if(sendBtn)sendBtn.disabled=false;
+  }
+}
+
+function clearMentorChat(id){
+  if(confirm('Chat mit '+MENTORS.find(function(m){return m.id===id;}).name+' löschen?')){
+    clearMentorHistory(id);
+    renderMentorChat(id);
+  }
+}
+
+/* ── PANEL-MODUS ─────────────────────── */
+function renderPanelGrid(){
+  var grid=document.getElementById('panel-grid');
+  if(!grid)return;
+  grid.innerHTML=MENTORS.map(function(m){
+    return'<div class="panel-col">'+
+      '<div class="panel-col-header" style="background:'+m.bg+';color:'+m.color+'">'+
+        m.emoji+' '+m.name+
+        '<span style="font-size:10px;font-weight:400;color:'+m.color+'88;margin-left:4px">'+m.title+'</span>'+
+      '</div>'+
+      '<div class="panel-col-body" id="panel-body-'+m.id+'">'+
+        '<span style="color:#ccc;font-style:italic;font-size:11px">Stelle eine Frage oben…</span>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+
+async function sendPanelMessage(){
+  var input=document.getElementById('panel-input');
+  if(!input)return;
+  var text=input.value.trim();
+  if(!text)return;
+  var key=localStorage.getItem(AI_KEY_STORAGE);
+  if(!key){alert('Bitte zuerst einen Anthropic API Key im AI Assistent eingeben.');return;}
+
+  input.value='';input.style.height='auto';
+  document.getElementById('panel-send-btn').disabled=true;
+
+  // Show typing in all columns
+  MENTORS.forEach(function(m){
+    var body=document.getElementById('panel-body-'+m.id);
+    if(body)body.innerHTML='<div class="panel-typing"><div class="panel-dot"></div><div class="panel-dot"></div><div class="panel-dot"></div></div>';
+  });
+
+  // Fire all 5 requests in parallel
+  var requests=MENTORS.map(function(mentor){
+    return fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:512,
+        system:buildMentorSystemPrompt(mentor),
+        messages:[{role:'user',content:text}]
+      })
+    }).then(function(r){return r.json();}).then(function(data){
+      return{mentor:mentor, text:data.error?('❌ '+data.error.message):data.content.map(function(b){return b.text||'';}).join('')};
+    }).catch(function(e){
+      return{mentor:mentor, text:'❌ Verbindungsfehler: '+e.message};
+    });
+  });
+
+  var results=await Promise.all(requests);
+  results.forEach(function(r){
+    var body=document.getElementById('panel-body-'+r.mentor.id);
+    if(body){
+      body.innerHTML='<div style="font-size:11px;color:'+r.mentor.color+';font-weight:600;margin-bottom:6px">'+r.mentor.emoji+' '+r.mentor.name+':</div>'+escHtml(r.text);
+    }
+  });
+  document.getElementById('panel-send-btn').disabled=false;
 }
 
 /* ── KI-ANALYSE MODAL ──────────────────── */
