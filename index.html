@@ -1489,7 +1489,7 @@ function renderEvents(){
         '<div class="event-date">'+d.getDate()+'. '+m[d.getMonth()]+' '+d.getFullYear()+(e.note?' · '+e.note:'')+'</div>'+
       '</div>'+
       '<span class="event-days" style="color:'+dayColor+';background:'+dayColor+'18">'+dayStr+'</span>'+
-      '<div class="row-actions"><button class="act-btn" onclick="delEvent('+i+')">✕</button></div>'+
+      '<div class="row-actions" style="opacity:1"><button class="act-btn" onclick="delEvent('+i+')" title="Termin löschen" style="color:#d85a30;font-size:15px">×</button></div>'+
     '</div>';
   }).join('');
 }
@@ -1501,7 +1501,7 @@ function addEvent(){
   document.getElementById('ev-title').value='';document.getElementById('ev-date').value='';document.getElementById('ev-note').value='';
   closeModal('modal-event');saveState();
 }
-function delEvent(i){if(confirm('Termin löschen?')){state.events.splice(i,1);saveState();}}
+function delEvent(i){if(confirm('Termin wirklich löschen?')){state.events.splice(i,1);saveState();}}
 
 /* ── MATRIX ────────────────────────────── */
 function renderMatrix(){
