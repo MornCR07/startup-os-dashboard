@@ -2,19 +2,31 @@ name: Deploy to Netlify
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - name: Code auschecken
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Auf Netlify deployen
-        run: npx netlify-cli deploy --prod --dir . --message "Deploy von GitHub: ${{ github.sha }}"
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Netlify CLI
+        run: npm install -g netlify-cli
+
+      - name: Deploy to Netlify
+        run: netlify deploy --prod --dir .
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
