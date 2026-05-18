@@ -1,0 +1,2184 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Startup OS – Co-Founder Dashboard</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f3;color:#1a1a18;height:100vh;display:flex;overflow:hidden}
+#welcome-screen{position:fixed;inset:0;background:#fff;z-index:200;display:flex;align-items:center;justify-content:center;flex-direction:column}
+#welcome-screen.hidden{display:none}
+.welcome-inner{text-align:center;padding:40px}
+.welcome-logo{font-size:13px;font-weight:600;color:#aaa;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:32px}
+.welcome-title{font-size:28px;font-weight:700;color:#1a1a18;margin-bottom:10px}
+.welcome-sub{font-size:14px;color:#888;margin-bottom:40px}
+.welcome-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.welcome-btn{padding:12px 28px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all 0.15s}
+.welcome-btn-r{background:#1a56c4;color:#fff}
+.welcome-btn-r:hover{background:#1548a8}
+.welcome-btn-m{background:#f0f0ec;color:#1a1a18}
+.welcome-btn-m:hover{background:#e4e4e0}
+.welcome-date{font-size:12px;color:#bbb;margin-top:28px}
+.hamburger{display:none;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;border:1px solid #e8e8e4;background:#fff;cursor:pointer;position:fixed;top:12px;left:12px;z-index:50;font-size:16px}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:48}
+.sidebar{width:220px;min-width:220px;background:#fff;border-right:1px solid #e8e8e4;display:flex;flex-direction:column;padding:16px 0;overflow-y:auto;z-index:49}
+.logo{padding:0 16px 12px;border-bottom:1px solid #e8e8e4;margin-bottom:8px}
+.logo-title{font-size:15px;font-weight:600;color:#1a1a18}
+.logo-sub{font-size:11px;color:#888;margin-top:2px}
+.logo-date{font-size:11px;color:#aaa;margin-top:4px}
+.sync-status{display:flex;align-items:center;gap:6px;font-size:10px;margin-top:6px}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:#ccc;flex-shrink:0}
+.sync-dot.live{background:#1d9e75;box-shadow:0 0 0 2px #c8f0e0}
+.sync-dot.error{background:#d85a30}
+/* Next event widget in sidebar */
+.next-event-widget{margin:8px 10px;background:#f5f5f3;border-radius:10px;padding:10px 12px;border:1px solid #e8e8e4;cursor:pointer}
+.next-event-widget:hover{background:#eeecea}
+.nev-label{font-size:9px;color:#aaa;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px}
+.nev-title{font-size:12px;font-weight:600;color:#1a1a18;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nev-date{font-size:11px;color:#1a56c4;margin-top:2px}
+.nev-empty{font-size:11px;color:#bbb;font-style:italic}
+.nav-section{font-size:10px;color:#aaa;padding:10px 16px 4px;text-transform:uppercase;letter-spacing:0.06em}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 16px;cursor:pointer;font-size:13px;color:#555;transition:background 0.1s}
+.nav-item:hover{background:#f5f5f3;color:#1a1a18}
+.nav-item.active{background:#e8f0fb;color:#1a56c4;font-weight:500}
+.nav-icon{font-size:14px;width:18px;text-align:center}
+.main{flex:1;overflow-y:auto;padding:28px}
+.page{display:none}.page.active{display:block}
+.page-title{font-size:20px;font-weight:600;color:#1a1a18;margin-bottom:4px}
+.page-sub{font-size:13px;color:#888;margin-bottom:20px}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:20px}
+.metric{background:#f0f0ec;border-radius:10px;padding:14px}
+.metric-label{font-size:11px;color:#888;margin-bottom:4px}
+.metric-value{font-size:24px;font-weight:600;color:#1a1a18}
+.metric-delta{font-size:11px;color:#1d9e75;margin-top:2px}
+.card{background:#fff;border:1px solid #e8e8e4;border-radius:12px;padding:16px 18px;margin-bottom:14px}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.card-title{font-size:14px;font-weight:600;color:#1a1a18}
+.btn{background:#fff;border:1px solid #d0d0cc;border-radius:8px;padding:7px 14px;font-size:12px;cursor:pointer;color:#555;transition:all 0.1s}
+.btn:hover{background:#f5f5f3;color:#1a1a18}
+.btn-primary{background:#e8f0fb;border-color:#b3c9f5;color:#1a56c4}
+.btn-primary:hover{background:#d5e5fa}
+.btn-danger{background:#fcebeb;border-color:#f5c0c0;color:#a32d2d}
+.btn-danger:hover{background:#f9d8d8}
+.btn-green{background:#e1f5ee;border-color:#a8e0cc;color:#0f6e56}
+.btn-green:hover{background:#d0f0e4}
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;font-weight:500}
+.tag-blue{background:#e8f0fb;color:#1a56c4}
+.tag-green{background:#e1f5ee;color:#0f6e56}
+.tag-amber{background:#faeeda;color:#854f0b}
+.tag-red{background:#fcebeb;color:#a32d2d}
+.tag-gray{background:#f0f0ec;color:#666}
+.row-actions{display:flex;gap:4px;margin-left:auto;opacity:0;transition:opacity 0.15s;flex-shrink:0}
+.row-wrap:hover .row-actions{opacity:1}
+.idea-card:hover .row-actions{opacity:1}
+.act-btn{background:none;border:none;cursor:pointer;font-size:13px;padding:2px 4px;border-radius:4px;color:#aaa;line-height:1}
+.act-btn:hover{background:#f0f0ec;color:#555}
+.idea-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.idea-card{background:#fff;border:1px solid #e8e8e4;border-radius:12px;padding:14px;position:relative}
+.idea-name{font-size:14px;font-weight:600;color:#1a1a18;margin-bottom:6px}
+.idea-desc{font-size:12px;color:#777;margin-bottom:10px;line-height:1.5}
+.score-row{display:flex;justify-content:space-between;font-size:11px;color:#aaa;margin-bottom:3px}
+.score-bar{height:4px;background:#eee;border-radius:2px;margin-bottom:5px}
+.score-fill{height:4px;border-radius:2px}
+.row-wrap{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid #f0f0ec}
+.row-wrap:last-child{border-bottom:none}
+.ms-dot{width:22px;height:22px;border-radius:50%;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600}
+.ms-done{background:#e1f5ee;color:#0f6e56}.ms-active{background:#e8f0fb;color:#1a56c4}.ms-pending{background:#f0f0ec;color:#888}
+.ms-title{font-size:13px;font-weight:500;color:#1a1a18}
+.ms-meta{font-size:11px;color:#aaa;margin-top:2px}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.kpi-card{background:#fff;border:1px solid #e8e8e4;border-radius:12px;padding:14px}
+.kpi-label{font-size:11px;color:#888;margin-bottom:4px}
+.kpi-value{font-size:26px;font-weight:600;color:#1a1a18}
+.kpi-target{font-size:11px;color:#aaa;margin-top:4px}
+.kpi-bar{height:3px;background:#eee;border-radius:2px;margin-top:8px}
+.kpi-inputs{display:flex;gap:6px;margin-top:10px}
+.kpi-inputs input{margin-bottom:0;font-size:12px;padding:5px 8px}
+.inv-avatar{width:34px;height:34px;border-radius:50%;background:#e8f0fb;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#1a56c4;flex-shrink:0}
+.week-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.task-item{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f5f5f3}
+.task-item:last-child{border-bottom:none}
+.task-cb{width:16px;height:16px;border-radius:4px;border:1.5px solid #ccc;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;user-select:none}
+.task-cb.checked{background:#e1f5ee;border-color:#1d9e75;color:#0f6e56}
+.task-text{font-size:12px;color:#555;flex:1}
+.task-text.done{text-decoration:line-through;color:#bbb}
+.market-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.market-label{font-size:12px;color:#777;width:60px;flex-shrink:0}
+.market-bar{height:22px;border-radius:8px;display:flex;align-items:center;padding:0 10px;min-width:60px}
+.market-val{font-size:12px;font-weight:600}
+.dec-q{font-size:13px;font-weight:600;color:#1a1a18}
+.dec-a{font-size:12px;color:#666;margin-top:3px}
+.dec-date{font-size:11px;color:#bbb;margin-top:2px}
+.res-label{font-size:12px;color:#777;width:130px;flex-shrink:0}
+.res-bar{flex:1;height:6px;background:#eee;border-radius:3px}
+.res-fill{height:6px;border-radius:3px}
+input[type=text],input[type=number],input[type=date],select,textarea{width:100%;padding:7px 10px;font-size:13px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#1a1a18;margin-bottom:8px;outline:none;font-family:inherit}
+input[type=text]:focus,input[type=number]:focus,input[type=date]:focus,select:focus,textarea:focus{border-color:#7aabf5}
+textarea{resize:vertical;min-height:60px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.form-label{font-size:11px;color:#777;margin-bottom:3px;font-weight:500}
+.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.35);z-index:100;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border:1px solid #e8e8e4;border-radius:14px;padding:22px;width:440px;max-width:92vw;max-height:90vh;overflow-y:auto}
+.modal-title{font-size:16px;font-weight:600;color:#1a1a18;margin-bottom:16px}
+.modal-actions{display:flex;gap:8px;margin-top:14px;justify-content:flex-end}
+.empty-state{font-size:12px;color:#bbb;padding:12px 0;text-align:center}
+#loading-overlay{position:fixed;inset:0;background:#f5f5f3;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;transition:opacity 0.4s}
+#loading-overlay.hidden{opacity:0;pointer-events:none}
+.loading-logo{font-size:24px;font-weight:700;color:#1a1a18;margin-bottom:8px}
+.loading-sub{font-size:13px;color:#aaa;margin-bottom:24px}
+.loading-spinner{width:24px;height:24px;border:2px solid #e0e0e0;border-top-color:#1a56c4;border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* VOTING STYLES */
+.vote-idea-card{background:#fff;border:1px solid #e8e8e4;border-radius:12px;padding:16px;margin-bottom:12px}
+.vote-idea-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.vote-idea-name{font-size:15px;font-weight:600;color:#1a1a18}
+.vote-status-badge{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500}
+.vote-q-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.vote-q-label{font-size:12px;color:#555;flex:1}
+.vote-q-weight{font-size:10px;color:#aaa;width:30px;text-align:right;flex-shrink:0}
+.vote-slider{flex:1;max-width:120px;accent-color:#1a56c4}
+.vote-q-val{font-size:12px;font-weight:600;color:#1a56c4;width:28px;text-align:center;flex-shrink:0}
+.result-bar-wrap{background:#f0f0ec;border-radius:8px;overflow:hidden;height:8px;flex:1}
+.result-bar-fill{height:8px;border-radius:8px;transition:width 0.6s}
+.winner-card{background:linear-gradient(135deg,#e8f0fb,#e1f5ee);border:2px solid #1d9e75;border-radius:14px;padding:20px;text-align:center;margin-bottom:16px}
+.winner-crown{font-size:32px;margin-bottom:6px}
+.winner-name{font-size:20px;font-weight:700;color:#1a1a18}
+.winner-score{font-size:14px;color:#0f6e56;margin-top:4px}
+.weight-legend{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.weight-chip{font-size:10px;background:#f0f0ec;border-radius:6px;padding:3px 8px;color:#555}
+.weight-chip span{font-weight:600;color:#1a56c4}
+
+/* EVENTS */
+.event-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f0f0ec}
+.event-row:last-child{border-bottom:none}
+.event-dot{width:8px;height:8px;border-radius:50%;background:#1a56c4;flex-shrink:0;margin-top:2px}
+.event-dot.past{background:#ccc}
+.event-title{font-size:13px;font-weight:500;color:#1a1a18}
+.event-date{font-size:11px;color:#aaa;margin-top:2px}
+.event-days{font-size:11px;font-weight:600;padding:2px 7px;border-radius:10px}
+
+/* AI ASSISTANT */
+.ai-wrap{display:flex;flex-direction:column;height:calc(100vh - 120px);min-height:400px}
+.ai-messages{flex:1;overflow-y:auto;padding:4px 0;display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
+.ai-msg{display:flex;gap:10px;align-items:flex-start;max-width:90%}
+.ai-msg.user{align-self:flex-end;flex-direction:row-reverse}
+.ai-bubble{padding:10px 14px;border-radius:12px;font-size:13px;line-height:1.6;white-space:pre-wrap}
+.ai-msg.assistant .ai-bubble{background:#f0f0ec;color:#1a1a18;border-radius:12px 12px 12px 3px}
+.ai-msg.user .ai-bubble{background:#1a56c4;color:#fff;border-radius:12px 12px 3px 12px}
+.ai-avatar{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;margin-top:2px}
+.ai-msg.assistant .ai-avatar{background:#e8f0fb;color:#1a56c4}
+.ai-msg.user .ai-avatar{background:#1a56c4;color:#fff}
+.ai-input-row{display:flex;gap:8px;align-items:flex-end}
+.ai-input{flex:1;padding:10px 14px;font-size:13px;border:1.5px solid #e0e0e0;border-radius:12px;outline:none;font-family:inherit;resize:none;max-height:120px;min-height:44px;line-height:1.5;background:#fff}
+.ai-input:focus{border-color:#7aabf5}
+.ai-send{width:44px;height:44px;border-radius:12px;background:#1a56c4;border:none;cursor:pointer;font-size:18px;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background 0.15s}
+.ai-send:hover{background:#1548a8}
+.ai-send:disabled{background:#ccc;cursor:not-allowed}
+.ai-typing{display:flex;gap:4px;align-items:center;padding:8px 12px;background:#f0f0ec;border-radius:12px;width:fit-content}
+.ai-dot{width:6px;height:6px;border-radius:50%;background:#aaa;animation:aiDot 1.2s infinite}
+.ai-dot:nth-child(2){animation-delay:0.2s}
+.ai-dot:nth-child(3){animation-delay:0.4s}
+@keyframes aiDot{0%,60%,100%{opacity:0.3}30%{opacity:1}}
+.ai-action-btn{display:inline-block;margin:4px 4px 0 0;padding:5px 12px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;border:1.5px solid #b3c9f5;background:#e8f0fb;color:#1a56c4;transition:all 0.15s}
+.ai-action-btn:hover{background:#d5e5fa}
+.ai-action-btn.danger{border-color:#f5c0c0;background:#fcebeb;color:#a32d2d}
+.ai-key-setup{background:#f5f5f3;border:1px solid #e8e8e4;border-radius:12px;padding:20px;margin-bottom:16px}
+.ai-key-setup input{margin-bottom:8px}
+.ai-suggestions{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.ai-sug{padding:6px 12px;border-radius:20px;font-size:11px;background:#f0f0ec;color:#555;cursor:pointer;border:1px solid #e0e0e0;transition:all 0.15s}
+.ai-sug:hover{background:#e8f0fb;color:#1a56c4;border-color:#b3c9f5}
+
+/* DEEP DIVE */
+.dd-tabs{display:flex;gap:0;margin-bottom:16px;border:1px solid #e8e8e4;border-radius:10px;overflow:hidden}
+.dd-tab{flex:1;padding:10px;font-size:13px;font-weight:500;cursor:pointer;text-align:center;background:#f5f5f3;color:#666;border:none;transition:all 0.15s}
+.dd-tab.active{background:#fff;color:#1a56c4;font-weight:600}
+.dd-idea-selector{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.dd-idea-btn{padding:7px 14px;border-radius:8px;border:1px solid #e8e8e4;background:#fff;font-size:12px;font-weight:500;cursor:pointer;color:#555;transition:all 0.15s}
+.dd-idea-btn.active{background:#1a56c4;border-color:#1a56c4;color:#fff}
+.dd-field{margin-bottom:14px}
+.dd-field-label{font-size:11px;font-weight:600;color:#777;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:5px}
+.dd-field-icon{margin-right:4px}
+.dd-textarea{width:100%;padding:10px 12px;font-size:13px;border:1px solid #e0e0e0;border-radius:8px;background:#fafaf8;color:#1a1a18;resize:vertical;min-height:80px;outline:none;font-family:inherit;line-height:1.5;transition:border 0.15s}
+.dd-textarea:focus{border-color:#7aabf5;background:#fff}
+.dd-compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.dd-compare-col{background:#fff;border:1px solid #e8e8e4;border-radius:12px;padding:14px}
+.dd-compare-name{font-size:13px;font-weight:700;color:#1a1a18;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #f0f0ec}
+.dd-compare-field{margin-bottom:10px}
+.dd-compare-label{font-size:10px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:3px}
+.dd-compare-val{font-size:12px;color:#444;line-height:1.5;white-space:pre-wrap}
+
+/* NOTES */
+.notes-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.notes-shared-area{width:100%;min-height:200px;padding:12px;font-size:13px;border:1px solid #e0e0e0;border-radius:8px;background:#fafaf8;color:#1a1a18;resize:vertical;outline:none;font-family:inherit;line-height:1.6}
+.notes-shared-area:focus{border-color:#7aabf5;background:#fff}
+
+/* DOCUMENTS */
+.doc-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f0f0ec}
+.doc-item:last-child{border-bottom:none}
+.doc-icon{font-size:22px;flex-shrink:0}
+.doc-name{font-size:13px;font-weight:500;color:#1a1a18}
+.doc-meta{font-size:11px;color:#aaa;margin-top:2px}
+.doc-download{font-size:11px;color:#1a56c4;cursor:pointer;text-decoration:none;padding:4px 10px;border:1px solid #b3c9f5;border-radius:6px;background:#e8f0fb}
+.doc-download:hover{background:#d5e5fa}
+
+@media(max-width:700px){
+  .hamburger{display:flex}
+  .sidebar{position:fixed;left:-240px;top:0;bottom:0;transition:left 0.25s}
+  .sidebar.open{left:0;box-shadow:4px 0 20px rgba(0,0,0,0.12)}
+  .sidebar-overlay.open{display:block}
+  .main{padding:16px;padding-top:56px}
+  .week-grid{grid-template-columns:1fr}
+  .form-row{grid-template-columns:1fr}
+  .vote-q-row{flex-wrap:wrap}
+}
+</style>
+</head>
+<body>
+
+<div id="loading-overlay">
+  <div class="loading-logo">Startup OS</div>
+  <div class="loading-sub">Verbindung zur Datenbank wird hergestellt…</div>
+  <div class="loading-spinner"></div>
+</div>
+
+<div id="welcome-screen" class="hidden">
+  <div class="welcome-inner">
+    <div class="welcome-logo">Startup OS · HSG</div>
+    <div class="welcome-title">Willkommen zurück 👋</div>
+    <div class="welcome-sub">Wer bist du heute?</div>
+    <div class="welcome-btns">
+      <button class="welcome-btn welcome-btn-r" onclick="enterAs('Raphael')">Raphael</button>
+      <button class="welcome-btn welcome-btn-m" onclick="enterAs('Martim')">Martim</button>
+    </div>
+    <div class="welcome-date" id="welcome-date"></div>
+  </div>
+</div>
+
+<button class="hamburger" onclick="toggleSidebar()">☰</button>
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+<div class="sidebar" id="sidebar">
+  <div class="logo">
+    <div class="logo-title">Startup OS</div>
+    <div class="logo-sub">Co-Founder Dashboard</div>
+    <div class="logo-date" id="today-date"></div>
+    <div class="sync-status">
+      <div class="sync-dot" id="sync-dot"></div>
+      <span id="sync-label" style="color:#aaa">Verbinde…</span>
+    </div>
+  </div>
+
+  <!-- Next event widget -->
+  <div class="next-event-widget" onclick="nav(document.querySelector('[data-page=events]'),'events')">
+    <div class="nev-label">📅 Nächster Termin</div>
+    <div id="nev-title" class="nev-empty">Noch kein Termin</div>
+    <div id="nev-date" class="nev-date" style="display:none"></div>
+  </div>
+
+  <div class="nav-section">Strategie</div>
+  <div class="nav-item active" data-page="ideas" onclick="nav(this,'ideas')"><span class="nav-icon">💡</span>Ideen-Board</div>
+  <div class="nav-item" data-page="vote" onclick="nav(this,'vote')"><span class="nav-icon">🗳️</span>Ideen-Abstimmung</div>
+  <div class="nav-item" data-page="matrix" onclick="nav(this,'matrix')"><span class="nav-icon">⚖️</span>Entscheidungs-Matrix</div>
+  <div class="nav-item" data-page="hyp" onclick="nav(this,'hyp')"><span class="nav-icon">🔬</span>Hypothesen</div>
+  <div class="nav-item" data-page="market" onclick="nav(this,'market')"><span class="nav-icon">📊</span>Market Sizing</div>
+  <div class="nav-section">Ausführung</div>
+  <div class="nav-item" data-page="milestone" onclick="nav(this,'milestone')"><span class="nav-icon">🗺️</span>Roadmap</div>
+  <div class="nav-item" data-page="events" onclick="nav(this,'events')"><span class="nav-icon">📅</span>Wichtige Termine</div>
+  <div class="nav-item" data-page="week" onclick="nav(this,'week')"><span class="nav-icon">📋</span>Weekly Planner</div>
+  <div class="nav-item" data-page="kpi" onclick="nav(this,'kpi')"><span class="nav-icon">📈</span>KPI Dashboard</div>
+  <div class="nav-item" data-page="resource" onclick="nav(this,'resource')"><span class="nav-icon">🧰</span>Resources</div>
+  <div class="nav-section">Wachstum</div>
+  <div class="nav-item" data-page="fundraising" onclick="nav(this,'fundraising')"><span class="nav-icon">💰</span>Fundraising</div>
+  <div class="nav-item" data-page="pitch" onclick="nav(this,'pitch')"><span class="nav-icon">🎤</span>Pitch Tracker</div>
+  <div class="nav-item" data-page="comp" onclick="nav(this,'comp')"><span class="nav-icon">🏁</span>Competitors</div>
+  <div class="nav-item" data-page="network" onclick="nav(this,'network')"><span class="nav-icon">🤝</span>Network</div>
+  <div class="nav-section">Ideenentwicklung</div>
+  <div class="nav-item" data-page="ai" onclick="nav(this,'ai')"><span class="nav-icon">🤖</span>AI Assistent</div>
+  <div class="nav-item" data-page="deepdive" onclick="nav(this,'deepdive')"><span class="nav-icon">🔍</span>Top-5 Deep Dive</div>
+  <div class="nav-item" data-page="notes" onclick="nav(this,'notes')"><span class="nav-icon">📝</span>Notizblock</div>
+  <div class="nav-item" data-page="docs" onclick="nav(this,'docs')"><span class="nav-icon">📁</span>Dokumente</div>
+  <div class="nav-section">Intern</div>
+  <div class="nav-item" data-page="team" onclick="nav(this,'team')"><span class="nav-icon">👥</span>Team & Hiring</div>
+  <div class="nav-item" data-page="legal" onclick="nav(this,'legal')"><span class="nav-icon">📋</span>Legal & Admin</div>
+  <div class="nav-item" data-page="log" onclick="nav(this,'log')"><span class="nav-icon">🗒️</span>Decision Log</div>
+  <div class="nav-item" data-page="momentum" onclick="nav(this,'momentum')"><span class="nav-icon">⚡</span>Momentum</div>
+</div>
+
+<div class="main">
+
+  <!-- IDEAS -->
+  <div class="page active" id="p-ideas">
+    <div class="page-title">Ideen-Board</div>
+    <div class="page-sub">Ideen erfassen und nach Markt, Machbarkeit & Passion bewerten</div>
+    <div style="margin-bottom:12px"><button class="btn btn-primary" onclick="openModal('modal-idea')">+ Neue Idee</button></div>
+    <div class="idea-grid" id="idea-list"></div>
+  </div>
+
+  <!-- VOTING -->
+  <div class="page" id="p-vote">
+    <div class="page-title">Ideen-Abstimmung</div>
+    <div class="page-sub">Geheime Bewertung – Ergebnisse erscheinen erst wenn beide abgestimmt haben</div>
+    <div id="vote-user-banner" style="background:#e8f0fb;border:1px solid #b3c9f5;border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#1a56c4;font-weight:500"></div>
+    <div id="vote-content"></div>
+  </div>
+
+  <!-- EVENTS -->
+  <div class="page" id="p-events">
+    <div class="page-title">Wichtige Termine</div>
+    <div class="page-sub">Coaching, Deadlines, Meetings – immer im Blick</div>
+    <div style="margin-bottom:12px"><button class="btn btn-primary" onclick="openModal('modal-event')">+ Termin hinzufügen</button></div>
+    <div class="card"><div id="events-list"></div></div>
+  </div>
+
+  <!-- MATRIX -->
+  <div class="page" id="p-matrix">
+    <div class="page-title">Entscheidungs-Matrix</div>
+    <div class="page-sub">Gewichteter Score-Vergleich aller Ideen</div>
+    <div class="card" id="matrix-content"></div>
+  </div>
+
+  <!-- HYPOTHESEN -->
+  <div class="page" id="p-hyp">
+    <div class="page-title">Hypothesen-Log</div>
+    <div class="page-sub">Annahmen festhalten und validieren</div>
+    <div style="margin-bottom:12px"><button class="btn btn-primary" onclick="openModal('modal-hyp')">+ Hypothese</button></div>
+    <div class="card" id="hyp-list"></div>
+  </div>
+
+  <!-- MARKET -->
+  <div class="page" id="p-market">
+    <div class="page-title">Market Sizing</div>
+    <div class="page-sub">TAM / SAM / SOM Berechnung</div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Marktgrösse schätzen</div></div>
+      <div class="form-label">TAM – Total Addressable Market (€M)</div>
+      <input type="number" id="tam" value="5000" oninput="saveMarket();calcMarket()">
+      <div class="form-label">SAM – Serviceable Addressable Market (%)</div>
+      <input type="number" id="sam-pct" value="10" oninput="saveMarket();calcMarket()">
+      <div class="form-label">SOM – Serviceable Obtainable Market (%)</div>
+      <input type="number" id="som-pct" value="5" oninput="saveMarket();calcMarket()">
+      <div style="display:flex;gap:8px;margin-top:4px">
+        <button class="btn btn-primary" onclick="aiEstimateMarket()" style="flex:1">🤖 KI-Marktschätzung</button>
+        <button class="btn" onclick="calcMarket()" style="flex:1">🔄 Neu berechnen</button>
+      </div>
+    </div>
+    <div class="card" id="market-bars"></div>
+  </div>
+
+  <!-- MILESTONE -->
+  <div class="page" id="p-milestone">
+    <div class="page-title">Roadmap & Milestones</div>
+    <div class="page-sub">Phasen, Deadlines, Ownership</div>
+    <div style="margin-bottom:12px"><button class="btn btn-primary" onclick="openModal('modal-ms')">+ Milestone</button></div>
+    <div class="card"><div id="ms-list"></div></div>
+  </div>
+
+  <!-- WEEKLY -->
+  <div class="page" id="p-week">
+    <div class="page-title">Weekly Planner</div>
+    <div class="page-sub">Wochenziele und tägliche Tasks</div>
+    <div class="week-grid">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Raphael – diese Woche</div>
+          <div style="display:flex;gap:6px">
+            <button class="btn" onclick="openModal('modal-task-r')">+</button>
+            <button class="btn btn-danger" onclick="clearTasks('r')" title="Alle Tasks löschen">🗑</button>
+          </div>
+        </div>
+        <div id="tasks-r"></div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Martim – diese Woche</div>
+          <div style="display:flex;gap:6px">
+            <button class="btn" onclick="openModal('modal-task-c')">+</button>
+            <button class="btn btn-danger" onclick="clearTasks('c')" title="Alle Tasks löschen">🗑</button>
+          </div>
+        </div>
+        <div id="tasks-c"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI -->
+  <div class="page" id="p-kpi">
+    <div class="page-title">KPI Dashboard</div>
+    <div class="page-sub">Kernmetriken verfolgen — Werte direkt bearbeiten</div>
+    <div class="kpi-grid" id="kpi-grid"></div>
+    <div style="margin-top:14px"><button class="btn btn-primary" onclick="openModal('modal-kpi')">+ KPI hinzufügen</button></div>
+  </div>
+
+  <!-- RESOURCE -->
+  <div class="page" id="p-resource">
+    <div class="page-title">Resource Tracker</div>
+    <div class="page-sub">Budget, Zeit und Skills — Werte direkt bearbeiten</div>
+    <div class="card"><div id="resource-list"></div></div>
+    <div style="margin-top:14px"><button class="btn btn-primary" onclick="openModal('modal-resource')">+ Resource hinzufügen</button></div>
+  </div>
+
+  <!-- FUNDRAISING -->
+  <div class="page" id="p-fundraising">
+    <div class="page-title">Fundraising Pipeline</div>
+    <div class="page-sub">Investoren tracken von Identified bis Term Sheet</div>
+    <div class="metrics" id="fund-metrics"></div>
+    <div style="margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="openModal('modal-inv')">+ Investor</button>
+      <button class="btn" onclick="aiAnalyzeInvestors()">🤖 Pipeline KI-Analyse</button>
+    </div>
+    <div class="card"><div id="investor-list"></div></div>
+  </div>
+
+  <!-- PITCH -->
+  <div class="page" id="p-pitch">
+    <div class="page-title">Pitch Tracker</div>
+    <div class="page-sub">Versionen, Feedback und Fortschritt</div>
+    <div style="margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="openModal('modal-pitch')">+ Pitch-Version</button>
+      <button class="btn" onclick="aiAnalyzePitchFeedback()">🤖 Feedback KI-Analyse</button>
+    </div>
+    <div class="card"><div id="pitch-list"></div></div>
+  </div>
+
+  <!-- COMP -->
+  <div class="page" id="p-comp">
+    <div class="page-title">Competitor Intelligence</div>
+    <div class="page-sub">Wettbewerber, Stärken und Schwächen</div>
+    <div style="margin-bottom:12px"><button class="btn btn-primary" onclick="openModal('modal-comp')">+ Wettbewerber</button></div>
+    <div class="card"><div id="comp-list"></div></div>
+  </div>
+
+  <!-- NETWORK -->
+  <div class="page" id="p-network">
+    <div class="page-title">Network & Mentors</div>
+    <div class="page-sub">Kontakte und Advisors</div>
+    <div style="margin-bottom:12px"><button class="btn btn-primary" onclick="openModal('modal-network')">+ Kontakt</button></div>
+    <div class="card"><div id="network-list"></div></div>
+  </div>
+
+  <!-- TEAM -->
+  <div class="page" id="p-team">
+    <div class="page-title">Team & Hiring</div>
+    <div class="page-sub">Geplante Hires und Prioritäten</div>
+    <div style="margin-bottom:12px"><button class="btn btn-primary" onclick="openModal('modal-team')">+ Hire planen</button></div>
+    <div class="card"><div id="team-list"></div></div>
+  </div>
+
+  <!-- LEGAL -->
+  <div class="page" id="p-legal">
+    <div class="page-title">Legal & Admin</div>
+    <div class="page-sub">Checkliste für Gründung und Compliance</div>
+    <div style="margin-bottom:12px"><button class="btn btn-primary" onclick="openModal('modal-legal')">+ Punkt hinzufügen</button></div>
+    <div class="card"><div id="legal-list"></div></div>
+  </div>
+
+  <!-- LOG -->
+  <div class="page" id="p-log">
+    <div class="page-title">Decision Log</div>
+    <div class="page-sub">Wichtige Entscheidungen dokumentieren</div>
+    <div style="margin-bottom:12px"><button class="btn btn-primary" onclick="openModal('modal-dec')">+ Entscheidung</button></div>
+    <div class="card"><div id="dec-list"></div></div>
+  </div>
+
+  <!-- MOMENTUM -->
+  <div class="page" id="p-momentum">
+    <div class="page-title">Momentum</div>
+    <div class="page-sub">Gesamtfortschritt auf einen Blick</div>
+    <div class="metrics" id="momentum-metrics"></div>
+    <div class="card" style="height:260px"><canvas id="momentumChart"></canvas></div>
+  </div>
+
+  <!-- AI ASSISTANT -->
+  <div class="page" id="p-ai">
+    <div class="page-title">AI Assistent</div>
+    <div class="page-sub">Powered by Claude · Kennt euer gesamtes Projekt und kann die App direkt bearbeiten</div>
+    <div id="ai-key-section" style="display:none">
+      <div class="ai-key-setup">
+        <div class="card-title" style="margin-bottom:10px">🔑 Anthropic API Key eingeben</div>
+        <div style="font-size:12px;color:#888;margin-bottom:10px">Der Key wird nur lokal in deinem Browser gespeichert und nie geteilt.</div>
+        <input type="password" id="ai-key-input" placeholder="sk-ant-api03-...">
+        <button class="btn btn-primary" onclick="saveApiKey()" style="width:100%">Key speichern & starten</button>
+      </div>
+    </div>
+    <div id="ai-chat-section" style="display:none">
+      <div class="ai-suggestions" id="ai-suggestions">
+        <span class="ai-sug" onclick="aiSuggest('Analysiere alle unsere Ideen tiefgehend: Stärken, Schwächen, USP und konkrete nächste Schritte – welche ist die stärkste und warum?')">💡 Beste Idee analysieren</span>
+        <span class="ai-sug" onclick="aiSuggest('Füge einen Milestone hinzu')">🗺️ Milestone hinzufügen</span>
+        <span class="ai-sug" onclick="aiSuggest('Was sollten wir diese Woche priorisieren? Berücksichtige unsere aktuellen KPIs, Milestones, Investoren-Pipeline und Termine.')">📅 Wochenprioritäten</span>
+        <span class="ai-sug" onclick="aiSuggest('Gib uns detailliertes Feedback zu unserem Gesamtfortschritt: Was läuft gut, was fehlt, und was sind die 3 wichtigsten nächsten Schritte?')">📊 Fortschritt bewerten</span>
+        <span class="ai-sug" onclick="aiSuggest('Welche Hypothesen sollten wir als nächstes testen? Erstelle einen konkreten Validierungsplan mit Methoden und Erfolgskriterien.')">🔬 Hypothesen vorschlagen</span>
+        <span class="ai-sug" onclick="aiSuggest('Bereite uns auf das nächste Coaching vor: Was sind die 3 wichtigsten Punkte, wie präsentieren wir unsere Fortschritte und welche Fragen sollten wir stellen?')">🎯 Coaching vorbereiten</span>
+        <span class="ai-sug" onclick="aiEstimateMarket()">📊 TAM/SAM/SOM schätzen</span>
+        <span class="ai-sug" onclick="aiAnalyzePitchFeedback()">🎤 Pitch-Feedback analysieren</span>
+        <span class="ai-sug" onclick="aiAnalyzeInvestors()">💰 Investoren analysieren</span>
+        <span class="ai-sug" onclick="aiSuggest('Erstelle eine vollständige Wettbewerbsanalyse: Wie positionieren wir uns gegen die bekannten Konkurrenten und was ist unsere Differenzierung?')">🏁 Wettbewerbsanalyse</span>
+      </div>
+      <div class="card ai-wrap">
+        <div class="ai-messages" id="ai-messages"></div>
+        <div class="ai-input-row">
+          <textarea class="ai-input" id="ai-input" placeholder="Frag mich etwas oder sag mir was ich tun soll…" rows="1"
+            onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAiMessage()}"
+            oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px'"></textarea>
+          <button class="ai-send" id="ai-send-btn" onclick="sendAiMessage()">↑</button>
+        </div>
+      </div>
+      <div style="text-align:right;margin-top:6px">
+        <button class="btn" onclick="clearAiKey()" style="font-size:11px;color:#aaa">🔑 API Key ändern</button>
+        <button class="btn btn-danger" onclick="clearAiChat()" style="font-size:11px;margin-left:6px">🗑 Chat löschen</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEEP DIVE -->
+  <div class="page" id="p-deepdive">
+    <div class="page-title">Top-5 Deep Dive</div>
+    <div class="page-sub">Entwickle jede der 5 ausgewählten Ideen in deinem eigenen Portal</div>
+    <div class="dd-idea-selector" id="dd-idea-selector"></div>
+    <div class="dd-tabs">
+      <button class="dd-tab active" onclick="ddTab('raphael',this)">🔵 Raphael</button>
+      <button class="dd-tab" onclick="ddTab('martim',this)">🟤 Martim</button>
+      <button class="dd-tab" onclick="ddTab('compare',this)">⚖️ Vergleich</button>
+    </div>
+    <div id="dd-portal-raphael"></div>
+    <div id="dd-portal-martim" style="display:none"></div>
+    <div id="dd-portal-compare" style="display:none"></div>
+  </div>
+
+  <!-- NOTES -->
+  <div class="page" id="p-notes">
+    <div class="page-title">Notizblock</div>
+    <div class="page-sub">Gemeinsamer Notizblock – Gedanken, Ideen, Wichtiges festhalten</div>
+    <div class="notes-grid">
+      <div class="card">
+        <div class="card-header"><div class="card-title">✏️ Raphael</div><span style="font-size:11px;color:#aaa" id="notes-r-saved"></span></div>
+        <textarea class="notes-shared-area" id="notes-r" placeholder="Deine Notizen, Gedanken, Erkenntnisse…" oninput="saveNoteDebounced('r')"></textarea>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">✏️ Martim</div><span style="font-size:11px;color:#aaa" id="notes-m-saved"></span></div>
+        <textarea class="notes-shared-area" id="notes-m" placeholder="Deine Notizen, Gedanken, Erkenntnisse…" oninput="saveNoteDebounced('m')"></textarea>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">📌 Gemeinsame Notizen</div><span style="font-size:11px;color:#aaa" id="notes-shared-saved"></span></div>
+      <textarea class="notes-shared-area" id="notes-shared" placeholder="Gemeinsame Gedanken, Meeting-Notizen, Entscheidungen…" oninput="saveNoteDebounced('shared')" style="min-height:140px"></textarea>
+    </div>
+  </div>
+
+  <!-- DOCUMENTS -->
+  <div class="page" id="p-docs">
+    <div class="page-title">Dokumente</div>
+    <div class="page-sub">Wichtige Dateien hochladen und teilen</div>
+    <div class="card" style="margin-bottom:14px">
+      <div class="card-header"><div class="card-title">📄 Automatischer Export</div></div>
+      <div style="font-size:12px;color:#888;margin-bottom:12px">Generiert Dokumente automatisch aus euren Plattformdaten (Ideen, Markt, Milestones, Investoren, KPIs).</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="generatePitchDeck()" style="flex:1;min-width:160px">🎤 Pitch Deck generieren</button>
+        <button class="btn btn-green" onclick="generateOnePager()" style="flex:1;min-width:160px">📋 One-Pager generieren</button>
+      </div>
+      <div style="font-size:11px;color:#aaa;margin-top:8px">→ Wird als HTML-Datei heruntergeladen (im Browser öffnen, dann drucken/als PDF speichern)</div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Datei hochladen</div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap">
+        <div style="flex:1;min-width:200px">
+          <div class="form-label">Bezeichnung</div>
+          <input type="text" id="doc-label" placeholder="z.B. Businessplan v1">
+          <div class="form-label">Kategorie</div>
+          <select id="doc-cat"><option>Businessplan</option><option>Marktanalyse</option><option>Finanzen</option><option>Legal</option><option>Pitch Deck</option><option>Sonstiges</option></select>
+        </div>
+        <div style="flex:1;min-width:200px">
+          <div class="form-label">Datei auswählen</div>
+          <input type="file" id="doc-file" style="width:100%;margin-bottom:8px;padding:6px;font-size:12px;border:1px solid #ddd;border-radius:8px">
+          <button class="btn btn-primary" onclick="uploadDoc()" style="width:100%">📤 Hochladen</button>
+        </div>
+      </div>
+      <div id="doc-upload-status" style="font-size:12px;color:#1d9e75;margin-top:8px;display:none"></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Alle Dokumente</div></div>
+      <div id="docs-list"></div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- ═══════════════ MODALS ═══════════════ -->
+
+<div class="modal-overlay" id="modal-idea"><div class="modal">
+  <div class="modal-title">Neue Idee hinzufügen</div>
+  <div class="form-label">Name</div><input type="text" id="idea-name" placeholder="z.B. AI-Recruiting Tool">
+  <div class="form-label">Beschreibung</div><textarea id="idea-desc" placeholder="Kurze Beschreibung der Idee…"></textarea>
+  <div class="form-row">
+    <div><div class="form-label">Marktpotenzial (1–10)</div><input type="number" id="idea-markt" min="1" max="10" value="7"></div>
+    <div><div class="form-label">Machbarkeit (1–10)</div><input type="number" id="idea-mach" min="1" max="10" value="6"></div>
+  </div>
+  <div class="form-row">
+    <div><div class="form-label">Passion (1–10)</div><input type="number" id="idea-pass" min="1" max="10" value="8"></div>
+    <div><div class="form-label">Bereich</div><select id="idea-sector"><option>Tech/SaaS</option><option>FinTech</option><option>E-Commerce</option><option>EdTech</option><option>HealthTech</option><option>Sonstiges</option></select></div>
+  </div>
+  <div class="modal-actions"><button class="btn" onclick="closeModal('modal-idea')">Abbrechen</button><button class="btn btn-primary" onclick="addIdea()">Hinzufügen</button></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-edit-idea"><div class="modal">
+  <div class="modal-title">Idee bearbeiten</div>
+  <div class="form-label">Name</div><input type="text" id="edit-idea-name">
+  <div class="form-label">Beschreibung</div><textarea id="edit-idea-desc"></textarea>
+  <div class="form-row">
+    <div><div class="form-label">Marktpotenzial</div><input type="number" id="edit-idea-markt" min="1" max="10"></div>
+    <div><div class="form-label">Machbarkeit</div><input type="number" id="edit-idea-mach" min="1" max="10"></div>
+  </div>
+  <div class="form-row">
+    <div><div class="form-label">Passion</div><input type="number" id="edit-idea-pass" min="1" max="10"></div>
+    <div><div class="form-label">Bereich</div><select id="edit-idea-sector"><option>Tech/SaaS</option><option>FinTech</option><option>E-Commerce</option><option>EdTech</option><option>HealthTech</option><option>Sonstiges</option></select></div>
+  </div>
+  <div class="modal-actions"><button class="btn" onclick="closeModal('modal-edit-idea')">Abbrechen</button><button class="btn btn-primary" onclick="saveEditIdea()">Speichern</button></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-ms"><div class="modal">
+  <div class="modal-title">Milestone hinzufügen</div>
+  <div class="form-label">Titel</div><input type="text" id="ms-title" placeholder="z.B. MVP fertig">
+  <div class="form-row">
+    <div><div class="form-label">Deadline</div><input type="text" id="ms-date" placeholder="z.B. Jul 2025"></div>
+    <div><div class="form-label">Owner</div><select id="ms-owner"><option>Raphael</option><option>Martim</option><option>Beide</option></select></div>
+  </div>
+  <div class="form-label">Status</div><select id="ms-status"><option>Offen</option><option>In Arbeit</option><option>Erledigt</option></select>
+  <div class="modal-actions"><button class="btn" onclick="closeModal('modal-ms')">Abbrechen</button><button class="btn btn-primary" onclick="addMs()">Hinzufügen</button></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-edit-ms"><div class="modal">
+  <div class="modal-title">Milestone bearbeiten</div>
+  <div class="form-label">Titel</div><input type="text" id="edit-ms-title">
+  <div class="form-row">
+    <div><div class="form-label">Deadline</div><input type="text" id="edit-ms-date"></div>
+    <div><div class="form-label">Owner</div><select id="edit-ms-owner"><option>Raphael</option><option>Martim</option><option>Beide</option></select></div>
+  </div>
+  <div class="form-label">Status</div><select id="edit-ms-status"><option>Offen</option><option>In Arbeit</option><option>Erledigt</option></select>
+  <div class="modal-actions"><button class="btn" onclick="closeModal('modal-edit-ms')">Abbrechen</button><button class="btn btn-primary" onclick="saveEditMs()">Speichern</button></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-event"><div class="modal">
+  <div class="modal-title">Termin hinzufügen</div>
+  <div class="form-label">Titel</div><input type="text" id="ev-title" placeholder="z.B. Startup Coaching HSG">
+  <div class="form-row">
+    <div><div class="form-label">Datum</div><input type="date" id="ev-date"></div>
+    <div><div class="form-label">Typ</div><select id="ev-type"><option>Coaching</option><option>Meeting</option><option>Deadline</option><option>Pitch</option><option>Sonstiges</option></select></div>
+  </div>
+  <div class="form-label">Notiz (optional)</div><input type="text" id="ev-note" placeholder="z.B. Raum 01-012, mit Prof. Müller">
+  <div class="modal-actions"><button class="btn" onclick="closeModal('modal-event')">Abbrechen</button><button class="btn btn-primary" onclick="addEvent()">Hinzufügen</button></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-inv"><div class="modal">
+  <div class="modal-title">Investor hinzufügen</div>
+  <div class="form-label">Name</div><input type="text" id="inv-name" placeholder="z.B. XYZ Ventures">
+  <div class="form-row">
+    <div><div class="form-label">Typ</div><select id="inv-type"><option>Angel</option><option>VC</option><option>Family Office</option><option>Accelerator</option></select></div>
+    <div><div class="form-label">Ziel (€K)</div><input type="number" id="inv-amount" placeholder="500"></div>
+  </div>
+  <div class="form-label">Status</div><select id="inv-status"><option>Identified</option><option>Contacted</option><option>Meeting</option><option>Due Diligence</option><option>Term Sheet</option></select>
+  <div class="form-label">Notizen</div><textarea id="inv-notes" placeholder="Kontext, Intro-Quelle…"></textarea>
+  <div class="modal-actions"><button class="btn" onclick="closeModal('modal-inv')">Abbrechen</button><button class="btn btn-primary" onclick="addInv()">Hinzufügen</button></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-edit-inv"><div class="modal">
+  <div class="modal-title">Investor bearbeiten</div>
+  <div class="form-label">Name</div><input type="text" id="edit-inv-name">
+  <div class="form-row">
+    <div><div class="form-label">Typ</div><select id="edit-inv-type"><option>Angel</option><option>VC</option><option>Family Office</option><option>Accelerator</option></select></div>
+    <div><div class="form-label">Ziel (€K)</div><input type="number" id="edit-inv-amount"></div>
+  </div>
+  <div class="form-label">Status</div><select id="edit-inv-status"><option>Identified</option><option>Contacted</option><option>Meeting</option><option>Due Diligence</option><option>Term Sheet</option></select>
+  <div class="form-label">Notizen</div><textarea id="edit-inv-notes"></textarea>
+  <div class="modal-actions"><button class="btn" onclick="closeModal('modal-edit-inv')">Abbrechen</button><button class="btn btn-primary" onclick="saveEditInv()">Speichern</button></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-hyp"><div class="modal">
+  <div class="modal-title">Hypothese hinzufügen</div>
+  <div class="form-label">Annahme</div><textarea id="hyp-text" placeholder="Wir glauben, dass…"></textarea>
+  <div class="form-row">
+    <div><div class="form-label">Status</div><select id="hyp-status"><option>Nicht getestet</option><option>In Validierung</option><option>Bestätigt</option><option>Widerlegt</option></select></div>
+    <div><div class="form-label">Methode</div><input type="text" id="hyp-method" placeholder="z.B. 10 Interviews"></div>
+  </div>
+  <div class="modal-actions"><button class="btn" onclick="closeModal('modal-hyp')">Abbrechen</button><button class="btn btn-primary" onclick="addHyp()">Hinzufügen</button></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-edit-hyp"><div class="modal">
+  <div class="modal-title">Hypothese bearbeiten</div>
+  <div class="form-label">Annahme</div><textarea id="edit-hyp-text"></textarea>
+  <div class="form-row">
+    <div><div class="form-label">Status</div><select id="edit-hyp-status"><option>Nicht getestet</option><option>In Validierung</option><option>Bestätigt</option><option>Widerlegt</option></select></div>
+    <div><div class="form-label">Methode</div><input type="text" id="edit-hyp-method"></div>
+  </div>
+  <div class="modal-actions"><button class="btn" onclick="closeModal('modal-edit-hyp')">Abbrechen</button><button class="btn btn-primary" onclick="saveEditHyp()">Speichern</button></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-comp"><div class="modal">
+  <div class="modal-title">Wettbewerber hinzufügen</div>
+  <div class="form-label">Name</div><input type="text" id="comp-name" placeholder="z.B. Competitor GmbH">
+  <div class="form-label">Stärken (kommagetrennt)</div><input type="text" id="comp-strengths" placeholder="Brand, Funding, Team">
+  <div class="form-label">Schwächen (kommagetrennt)</div><input type="text" id="comp-weak" placeholder="UX, Speed, Price">
+  <div class="modal-actions"><button class="btn" onclick="closeModal('modal-comp')">Abbrechen</button><button class="btn btn-primary" onclick="addComp()">Hinzufügen</button></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-edit-comp"><div class="modal">
+  <div class="modal-title">Wettbewerber bearbeiten</div>
+  <div class="form-label">Name</div><input type="text" id="edit-comp-name">
+  <div class="form-label">Stärken (kommagetrennt)</div><input type="text" id="edit-comp-strengths">
+  <div class="form-label">Schwächen (kommagetrennt)</div><input type="text" id="edit-comp-weak">
+  <div class="modal-actions"><button class="btn" onclick="closeModal('modal-edit-comp')">Abbrechen</button><button class="btn btn-primary" onclick="saveEditComp()">Speichern</button></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-network"><div class="modal">
+  <div class="modal-title">Kontakt hinzufügen</div>
+  <div class="form-label">Name</div><input type="text" id="nc-name" placeholder="z.B. Max Mustermann">
+  <div class="form-label">Rolle / Firma</div><input type="text" id="nc-role" placeholder="z.B. Partner @ Sequoia">
+  <div class="form-label">Kann helfen bei</div><input type="text" id="nc-help" placeholder="z.B. Fundraising, Intro zu…">
+  <div class="modal-actions"><button class="btn" onclick="closeModal('modal-network')">Abbrechen</button><button class="btn btn-primary" onclick="addNetwork()">Hinzufügen</button></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-edit-network"><div class="modal">
+  <div class="modal-title">Kontakt bearbeiten</div>
+  <div class="form-label">Name</div><input type="text" id="edit-nc-name">
+  <div class="form-label">Rolle / Firma</div><input type="text" id="edit-nc-role">
+  <div class="form-label">Kann helfen bei</div><input type="text" id="edit-nc-help">
+  <div class="modal-actions"><button class="btn" onclick="closeModal('modal-edit-network')">Abbrechen</button><button class="btn btn-primary" onclick="saveEditNetwork()">Speichern</button></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-team"><div class="modal">
+  <div class="modal-title">Hire planen</div>
+  <div class="form-label">Rolle</div><input type="text" id="team-role" placeholder="z.B. Full-Stack Dev">
+  <div class="form-row">
+    <div><div class="form-label">Priorität</div><select id="team-prio"><option>Hoch</option><option>Mittel</option><option>Niedrig</option></select></div>
+    <div><div class="form-label">Zeitpunkt</div><input type="text" id="team-when" placeholder="z.B. Q3 2025"></div>
+  </div>
+  <div class="modal-actions"><button class="btn" onclick="closeModal('modal-team')">Abbrechen</button><button class="btn btn-primary" onclick="addTeam()">Hinzufügen</button></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-pitch"><div class="modal">
+  <div class="modal-title">Pitch-Version hinzufügen</div>
+  <div class="form-label">Version / Name</div><input type="text" id="pitch-name" placeholder="z.B. Deck v2 – Seed">
+  <div class="form-label">Feedback</div><textarea id="pitch-fb" placeholder="Was wurde gesagt?"></textarea>
+  <div class="form-row">
+    <div><div class="form-label">Status</div><select id="pitch-status"><option>Entwurf</option><option>In Überprüfung</option><option>Präsentiert</option><option>Abgelehnt</option></select></div>
+    <div><div class="form-label">Bewertung</div><select id="pitch-score"><option>5 – Sehr gut</option><option>4 – Gut</option><option>3 – OK</option><option>2 – Schwach</option></select></div>
+  </div>
+  <div class="modal-actions"><button class="btn" onclick="closeModal('modal-pitch')">Abbrechen</button><button class="btn btn-primary" onclick="addPitch()">Hinzufügen</button></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-edit-pitch"><div class="modal">
+  <div class="modal-title">Pitch bearbeiten</div>
+  <div class="form-label">Version / Name</div><input type="text" id="edit-pitch-name">
+  <div class="form-label">Feedback</div><textarea id="edit-pitch-fb"></textarea>
+  <div class="form-row">
+    <div><div class="form-label">Status</div><select id="edit-pitch-status"><option>Entwurf</option><option>In Überprüfung</option><option>Präsentiert</option><option>Abgelehnt</option></select></div>
+    <div><div class="form-label">Bewertung</div><select id="edit-pitch-score"><option>5 – Sehr gut</option><option>4 – Gut</option><option>3 – OK</option><option>2 – Schwach</option></select></div>
+  </div>
+  <div class="modal-actions"><button class="btn" onclick="closeModal('modal-edit-pitch')">Abbrechen</button><button class="btn btn-primary" onclick="saveEditPitch()">Speichern</button></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-task-r"><div class="modal">
+  <div class="modal-title">Task für Raphael</div>
+  <div class="form-label">Aufgabe</div><input type="text" id="task-r-text" placeholder="Was ist zu tun?">
+  <div class="modal-actions"><button class="btn" onclick="closeModal('modal-task-r')">Abbrechen</button><button class="btn btn-primary" onclick="addTask('r')">Hinzufügen</button></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-task-c"><div class="modal">
+  <div class="modal-title">Task für Martim</div>
+  <div class="form-label">Aufgabe</div><input type="text" id="task-c-text" placeholder="Was ist zu tun?">
+  <div class="modal-actions"><button class="btn" onclick="closeModal('modal-task-c')">Abbrechen</button><button class="btn btn-primary" onclick="addTask('c')">Hinzufügen</button></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-dec"><div class="modal">
+  <div class="modal-title">Entscheidung dokumentieren</div>
+  <div class="form-label">Frage / Problem</div><input type="text" id="dec-q" placeholder="Welches Problem?">
+  <div class="form-label">Entscheidung</div><textarea id="dec-a" placeholder="Was wurde entschieden?"></textarea>
+  <div class="modal-actions"><button class="btn" onclick="closeModal('modal-dec')">Abbrechen</button><button class="btn btn-primary" onclick="addDec()">Hinzufügen</button></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-legal"><div class="modal">
+  <div class="modal-title">Legal-Punkt hinzufügen</div>
+  <div class="form-label">Titel</div><input type="text" id="legal-text-input" placeholder="z.B. Bankverbindung eröffnen">
+  <div class="form-label">Details</div><input type="text" id="legal-sub-input" placeholder="z.B. Geschäftskonto bei UBS">
+  <div class="modal-actions"><button class="btn" onclick="closeModal('modal-legal')">Abbrechen</button><button class="btn btn-primary" onclick="addLegal()">Hinzufügen</button></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-kpi"><div class="modal">
+  <div class="modal-title">KPI hinzufügen</div>
+  <div class="form-label">Bezeichnung</div><input type="text" id="kpi-label" placeholder="z.B. Kundeninterviews">
+  <div class="form-row">
+    <div><div class="form-label">Aktueller Wert</div><input type="number" id="kpi-value" value="0"></div>
+    <div><div class="form-label">Zielwert</div><input type="number" id="kpi-target" value="100"></div>
+  </div>
+  <div class="form-label">Einheit (optional)</div><input type="text" id="kpi-unit" placeholder="z.B. h, %, €">
+  <div class="modal-actions"><button class="btn" onclick="closeModal('modal-kpi')">Abbrechen</button><button class="btn btn-primary" onclick="addKpi()">Hinzufügen</button></div>
+</div></div>
+
+<div class="modal-overlay" id="modal-resource"><div class="modal">
+  <div class="modal-title">Resource hinzufügen</div>
+  <div class="form-label">Bezeichnung</div><input type="text" id="res-label-input" placeholder="z.B. Budget (€)">
+  <div class="form-row">
+    <div><div class="form-label">Verbraucht</div><input type="number" id="res-used" value="0"></div>
+    <div><div class="form-label">Maximum</div><input type="number" id="res-total" value="100"></div>
+  </div>
+  <div class="modal-actions"><button class="btn" onclick="closeModal('modal-resource')">Abbrechen</button><button class="btn btn-primary" onclick="addResource()">Hinzufügen</button></div>
+</div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDjJB33zZIAnqEdhTvQGDEpIJ8cOH9wMzs",
+  authDomain: "startup-os-hsg.firebaseapp.com",
+  projectId: "startup-os-hsg",
+  storageBucket: "startup-os-hsg.firebasestorage.app",
+  messagingSenderId: "269860853388",
+  appId: "1:269860853388:web:30f2fc8ca84fe82e564da9"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const STATE_DOC = doc(db, "startup-os", "state");
+
+window.state = {
+  ideas:[], milestones:[], investors:[], hyps:[], competitors:[],
+  network:[], tasks:{r:[],c:[]}, legal:[], decisions:[], team:[], pitches:[],
+  market:{tam:5000,samPct:10,somPct:5},
+  kpis:[], resources:[], events:[],
+  votes:{raphael:{}, martim:{}},
+  deepdive:{}, notes:{r:'',m:'',shared:''},
+  docs:[]
+};
+
+window.saveState = async function(){
+  try{ await setDoc(STATE_DOC, window.state); }
+  catch(e){ setSyncStatus('error','Speicherfehler'); }
+};
+
+function setSyncStatus(type,label){
+  const dot=document.getElementById('sync-dot'),lbl=document.getElementById('sync-label');
+  dot.className='sync-dot'+(type==='live'?' live':type==='error'?' error':'');
+  lbl.textContent=label;
+  lbl.style.color=type==='live'?'#1d9e75':type==='error'?'#d85a30':'#aaa';
+}
+
+// Mobile timeout — show app after 5s even without Firebase
+let firstLoad=true;
+const loadTimeout=setTimeout(()=>{
+  if(firstLoad){ firstLoad=false; showWelcome(); }
+},5000);
+
+onSnapshot(STATE_DOC,(snap)=>{
+  if(snap.exists()){
+    const d=snap.data();
+    window.state={
+      ideas:d.ideas||[], milestones:d.milestones||[], investors:d.investors||[],
+      hyps:d.hyps||[], competitors:d.competitors||[], network:d.network||[],
+      tasks:d.tasks||{r:[],c:[]}, legal:d.legal||[], decisions:d.decisions||[],
+      team:d.team||[], pitches:d.pitches||[],
+      market:d.market||{tam:5000,samPct:10,somPct:5},
+      kpis:d.kpis||[], resources:d.resources||[], events:d.events||[],
+      votes:d.votes||{raphael:{},martim:{}},
+      deepdive:d.deepdive||{}, notes:d.notes||{r:'',m:'',shared:''},
+      docs:d.docs||[]
+    };
+  }
+  const t=document.getElementById('tam'),s=document.getElementById('sam-pct'),o=document.getElementById('som-pct');
+  if(t)t.value=window.state.market.tam||5000;
+  if(s)s.value=window.state.market.samPct||10;
+  if(o)o.value=window.state.market.somPct||5;
+  renderCurrent();
+  updateNextEventWidget();
+  if(firstLoad){ clearTimeout(loadTimeout); firstLoad=false; showWelcome(); }
+  setSyncStatus('live','Live synchronisiert');
+},(err)=>{
+  setSyncStatus('error','Verbindungsfehler');
+  if(firstLoad){ clearTimeout(loadTimeout); firstLoad=false; showWelcome(); }
+});
+
+function showWelcome(){
+  document.getElementById('loading-overlay').classList.add('hidden');
+  const d=new Date();
+  const days=['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+  const months=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+  document.getElementById('welcome-date').textContent=days[d.getDay()]+', '+d.getDate()+'. '+months[d.getMonth()]+' '+d.getFullYear();
+  document.getElementById('welcome-screen').classList.remove('hidden');
+}
+</script>
+
+<script>
+var editIdx=-1, currentPage='ideas', currentUser='';
+
+// Voting criteria with weights
+var VOTE_CRITERIA=[
+  {key:'diff',   label:'Differenzierung',        weight:8,  desc:'Wie einzigartig ist die Idee?'},
+  {key:'rev',    label:'Umsatzpotenzial',         weight:8,  desc:'Wie klar ist das Geschäftsmodell?'},
+  {key:'scale',  label:'Skalierbarkeit',          weight:8,  desc:'Wie leicht kann die Idee wachsen?'},
+  {key:'tech',   label:'Technische Machbarkeit',  weight:6,  desc:'Wie umsetzbar mit unseren Mitteln?'},
+  {key:'timing', label:'Timing',                  weight:5,  desc:'Wie gut ist der Zeitpunkt?'},
+  {key:'valid',  label:'Validierungsgeschwindigkeit', weight:5, desc:'Wie schnell können wir testen?'}
+];
+// Initial criteria weights (from idea board): Markt 25%, Passion 20%, Machbarkeit 15%
+var IDEA_WEIGHTS={markt:25,pass:20,mach:15};
+
+(function(){
+  var d=new Date();
+  var m=['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+  document.getElementById('today-date').textContent=d.getDate()+'. '+m[d.getMonth()]+' '+d.getFullYear();
+})();
+
+function enterAs(name){
+  currentUser=name.toLowerCase(); // 'raphael' or 'martim'
+  document.getElementById('welcome-screen').classList.add('hidden');
+}
+
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('open');
+}
+
+function sc(v){return v>=8?'#1d9e75':v>=5?'#ef9f27':'#d85a30'}
+
+function nav(el,page){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if(el&&el.classList)el.classList.add('active');
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('p-'+page).classList.add('active');
+  currentPage=page;
+  render(page);
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('open');
+}
+
+function renderCurrent(){
+  render(currentPage);
+  // Sync notes textareas on every update
+  if(state.notes){
+    var nr=document.getElementById('notes-r'),nm=document.getElementById('notes-m'),ns=document.getElementById('notes-shared');
+    if(nr&&document.activeElement!==nr)nr.value=state.notes.r||'';
+    if(nm&&document.activeElement!==nm)nm.value=state.notes.m||'';
+    if(ns&&document.activeElement!==ns)ns.value=state.notes.shared||'';
+  }
+}
+
+function openModal(id){document.getElementById(id).classList.add('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open')}));
+
+function render(page){
+  var map={ai:renderAi,ideas:renderIdeas,vote:renderVote,events:renderEvents,matrix:renderMatrix,hyp:renderHyp,market:calcMarket,milestone:renderMs,week:renderWeek,kpi:renderKpi,resource:renderResource,fundraising:renderFund,pitch:renderPitch,comp:renderComp,network:renderNetwork,team:renderTeam,legal:renderLegal,log:renderLog,momentum:renderMomentum,deepdive:renderDeepDive,notes:renderNotes,docs:renderDocs};
+  if(map[page])map[page]();
+}
+
+/* ── TOP-5 DEEP DIVE ────────────────────── */
+var TOP5=['SmartSpend','TribeTravel','Marketing','M&A','Ascend'];
+var DD_FIELDS=[
+  {key:'problem',  label:'Problem',           icon:'🎯', ph:'Welches Problem löst diese Idee genau?'},
+  {key:'zielgruppe',label:'Zielgruppe',       icon:'👥', ph:'Wer ist der ideale Kunde?'},
+  {key:'loesung',  label:'Lösung',            icon:'💡', ph:'Wie funktioniert die Lösung konkret?'},
+  {key:'usp',      label:'USP',               icon:'⚡', ph:'Was unterscheidet uns vom Wettbewerb?'},
+  {key:'biz',      label:'Geschäftsmodell',   icon:'💰', ph:'Wie verdienen wir Geld?'},
+  {key:'steps',    label:'Nächste Schritte',  icon:'🚀', ph:'Was würden wir zuerst tun?'},
+  {key:'questions',label:'Offene Fragen',     icon:'❓', ph:'Unsicherheiten und offene Punkte…'}
+];
+var ddCurrentIdea=0, ddCurrentTab='raphael';
+
+function renderDeepDive(){
+  // Render idea selector buttons
+  document.getElementById('dd-idea-selector').innerHTML=TOP5.map((name,i)=>
+    '<button class="dd-idea-btn'+(i===ddCurrentIdea?' active':'')+'" onclick="ddSelectIdea('+i+')">'+name+'</button>'
+  ).join('');
+  ddRenderPortal('raphael');
+  ddRenderPortal('martim');
+  ddRenderCompare();
+}
+
+function ddSelectIdea(idx){
+  ddCurrentIdea=idx;
+  document.querySelectorAll('.dd-idea-btn').forEach((b,i)=>b.classList.toggle('active',i===idx));
+  ddRenderPortal('raphael');
+  ddRenderPortal('martim');
+  ddRenderCompare();
+}
+
+function ddTab(tab,el){
+  ddCurrentTab=tab;
+  document.querySelectorAll('.dd-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  ['raphael','martim','compare'].forEach(t=>{
+    var el2=document.getElementById('dd-portal-'+t);
+    if(el2)el2.style.display=t===tab?'block':'none';
+  });
+}
+
+function ddRenderPortal(user){
+  var idea=TOP5[ddCurrentIdea];
+  var key=idea+'_'+user;
+  var data=(state.deepdive&&state.deepdive[key])||{};
+  var html='<div class="card">';
+  html+='<div style="font-size:14px;font-weight:600;color:#1a1a18;margin-bottom:14px">'+capitalize(user)+' · '+idea+'</div>';
+  DD_FIELDS.forEach(f=>{
+    var val=data[f.key]||'';
+    html+='<div class="dd-field">'+
+      '<div class="dd-field-label"><span class="dd-field-icon">'+f.icon+'</span>'+f.label+'</div>'+
+      '<textarea class="dd-textarea" placeholder="'+f.ph+'" '+
+        'oninput="ddSave(\''+user+'\',\''+f.key+'\',this.value)" '+
+        'onchange="saveDdDebounced()">'+escHtml(val)+'</textarea>'+
+    '</div>';
+  });
+  html+='</div>';
+  document.getElementById('dd-portal-'+user).innerHTML=html;
+}
+
+function ddRenderCompare(){
+  var idea=TOP5[ddCurrentIdea];
+  var rData=(state.deepdive&&state.deepdive[idea+'_raphael'])||{};
+  var mData=(state.deepdive&&state.deepdive[idea+'_martim'])||{};
+  var html='<div class="dd-compare-grid">';
+  ['raphael','martim'].forEach(user=>{
+    var d=user==='raphael'?rData:mData;
+    html+='<div class="dd-compare-col">'+
+      '<div class="dd-compare-name">'+(user==='raphael'?'🔵 Raphael':'🟤 Martim')+' · '+idea+'</div>';
+    DD_FIELDS.forEach(f=>{
+      html+='<div class="dd-compare-field">'+
+        '<div class="dd-compare-label">'+f.icon+' '+f.label+'</div>'+
+        '<div class="dd-compare-val">'+(d[f.key]?escHtml(d[f.key]):'<span style="color:#ccc;font-style:italic">Noch nicht ausgefüllt</span>')+'</div>'+
+      '</div>';
+    });
+    html+='</div>';
+  });
+  html+='</div>';
+  document.getElementById('dd-portal-compare').innerHTML=html;
+}
+
+function ddSave(user,field,val){
+  if(!state.deepdive)state.deepdive={};
+  var idea=TOP5[ddCurrentIdea];
+  var key=idea+'_'+user;
+  if(!state.deepdive[key])state.deepdive[key]={};
+  state.deepdive[key][field]=val;
+}
+
+var _ddTimer=null;
+function saveDdDebounced(){clearTimeout(_ddTimer);_ddTimer=setTimeout(()=>saveState(),900);}
+
+function escHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+/* ── NOTES ──────────────────────────────── */
+var _noteTimers={r:null,m:null,shared:null};
+function renderNotes(){
+  var nr=document.getElementById('notes-r');
+  var nm=document.getElementById('notes-m');
+  var ns=document.getElementById('notes-shared');
+  if(nr&&state.notes)nr.value=state.notes.r||'';
+  if(nm&&state.notes)nm.value=state.notes.m||'';
+  if(ns&&state.notes)ns.value=state.notes.shared||'';
+}
+function saveNoteDebounced(who){
+  clearTimeout(_noteTimers[who]);
+  _noteTimers[who]=setTimeout(()=>{
+    if(!state.notes)state.notes={r:'',m:'',shared:''};
+    var el=document.getElementById('notes-'+(who==='shared'?'shared':who));
+    if(el)state.notes[who]=el.value;
+    saveState();
+    var savedEl=document.getElementById('notes-'+(who==='shared'?'shared':who)+'-saved');
+    if(savedEl){savedEl.textContent='Gespeichert ✓';setTimeout(()=>{if(savedEl)savedEl.textContent='';},2000);}
+  },800);
+}
+
+/* ── DOCUMENTS ──────────────────────────── */
+function renderDocs(){
+  var list=document.getElementById('docs-list');
+  if(!state.docs||!state.docs.length){list.innerHTML='<div class="empty-state">Noch keine Dokumente hochgeladen</div>';return;}
+  var typeIcon={Businessplan:'📄',Marktanalyse:'📊',Finanzen:'💶',Legal:'⚖️','Pitch Deck':'🎤',Sonstiges:'📎'};
+  list.innerHTML=state.docs.map((d,i)=>'<div class="doc-item">'+
+    '<div class="doc-icon">'+(typeIcon[d.cat]||'📎')+'</div>'+
+    '<div style="flex:1"><div class="doc-name">'+escHtml(d.label)+'</div><div class="doc-meta">'+d.cat+' · '+d.date+(d.size?' · '+d.size:'')+'</div></div>'+
+    (d.dataUrl?'<a class="doc-download" href="'+d.dataUrl+'" download="'+escHtml(d.name)+'">⬇ Download</a>':'')+
+    '<button class="act-btn" onclick="delDoc('+i+')" style="opacity:0.5;margin-left:8px">✕</button>'+
+  '</div>').join('');
+}
+function uploadDoc(){
+  var label=document.getElementById('doc-label').value.trim();
+  var cat=document.getElementById('doc-cat').value;
+  var file=document.getElementById('doc-file').files[0];
+  if(!label||!file){alert('Bitte Bezeichnung und Datei auswählen');return;}
+  var status=document.getElementById('doc-upload-status');
+  status.style.display='block';status.textContent='Wird hochgeladen…';status.style.color='#aaa';
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var size=file.size<1024?file.size+'B':file.size<1048576?Math.round(file.size/1024)+'KB':Math.round(file.size/1048576*10)/10+'MB';
+    if(file.size>4000000){status.textContent='⚠️ Datei zu gross (max. 4MB)';status.style.color='#d85a30';return;}
+    if(!state.docs)state.docs=[];
+    var d2=new Date();
+    state.docs.push({label,cat,name:file.name,size,dataUrl:e.target.result,date:d2.getDate()+'.'+(d2.getMonth()+1)+'.'+d2.getFullYear()});
+    saveState();
+    status.textContent='✓ Hochgeladen!';status.style.color='#1d9e75';
+    document.getElementById('doc-label').value='';document.getElementById('doc-file').value='';
+    setTimeout(()=>{status.style.display='none';},2500);
+  };
+  reader.readAsDataURL(file);
+}
+function delDoc(i){if(confirm('Dokument löschen?')){state.docs.splice(i,1);saveState();}}
+
+/* ── IDEAS ─────────────────────────────── */
+function renderIdeas(){
+  if(!state.ideas.length){document.getElementById('idea-list').innerHTML='<div class="empty-state">Noch keine Ideen – füge deine erste hinzu!</div>';return}
+  document.getElementById('idea-list').innerHTML=state.ideas.map((i,idx)=>{
+    var avg=Math.round((i.markt+i.mach+i.pass)/3*10)/10;
+    return'<div class="idea-card"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div class="idea-name">'+i.name+'</div><div class="row-actions" style="opacity:1"><button class="act-btn" onclick="aiAnalyzeIdea('+idx+')" title="KI-Analyse">🤖</button><button class="act-btn" onclick="openEditIdea('+idx+')">✏️</button><button class="act-btn" onclick="delIdea('+idx+')">✕</button></div></div>'+
+    '<div class="idea-desc">'+i.desc+'</div>'+
+    '<div class="score-row"><span>Markt</span><span>'+i.markt+'/10</span></div><div class="score-bar"><div class="score-fill" style="width:'+i.markt*10+'%;background:'+sc(i.markt)+'"></div></div>'+
+    '<div class="score-row"><span>Machbarkeit</span><span>'+i.mach+'/10</span></div><div class="score-bar"><div class="score-fill" style="width:'+i.mach*10+'%;background:'+sc(i.mach)+'"></div></div>'+
+    '<div class="score-row"><span>Passion</span><span>'+i.pass+'/10</span></div><div class="score-bar"><div class="score-fill" style="width:'+i.pass*10+'%;background:'+sc(i.pass)+'"></div></div>'+
+    '<div style="margin-top:8px;display:flex;align-items:center;justify-content:space-between"><span class="tag tag-blue">'+i.sector+'</span><span style="font-size:14px;font-weight:600">Ø '+avg+'</span></div></div>';
+  }).join('');
+}
+function addIdea(){
+  var n=document.getElementById('idea-name').value.trim();if(!n)return;
+  state.ideas.push({name:n,desc:document.getElementById('idea-desc').value,markt:+document.getElementById('idea-markt').value||7,mach:+document.getElementById('idea-mach').value||6,pass:+document.getElementById('idea-pass').value||8,sector:document.getElementById('idea-sector').value});
+  document.getElementById('idea-name').value='';document.getElementById('idea-desc').value='';
+  closeModal('modal-idea');saveState();
+}
+function delIdea(i){if(confirm('Idee löschen?')){state.ideas.splice(i,1);saveState();}}
+function openEditIdea(i){
+  editIdx=i;var d=state.ideas[i];
+  document.getElementById('edit-idea-name').value=d.name;
+  document.getElementById('edit-idea-desc').value=d.desc;
+  document.getElementById('edit-idea-markt').value=d.markt;
+  document.getElementById('edit-idea-mach').value=d.mach;
+  document.getElementById('edit-idea-pass').value=d.pass;
+  document.getElementById('edit-idea-sector').value=d.sector;
+  openModal('modal-edit-idea');
+}
+function saveEditIdea(){
+  state.ideas[editIdx]={name:document.getElementById('edit-idea-name').value,desc:document.getElementById('edit-idea-desc').value,markt:+document.getElementById('edit-idea-markt').value,mach:+document.getElementById('edit-idea-mach').value,pass:+document.getElementById('edit-idea-pass').value,sector:document.getElementById('edit-idea-sector').value};
+  closeModal('modal-edit-idea');saveState();
+}
+
+/* ── VOTING ────────────────────────────── */
+function renderVote(){
+  if(!currentUser){
+    document.getElementById('vote-content').innerHTML='<div class="empty-state">Bitte zuerst einloggen (Seite neu laden)</div>';
+    return;
+  }
+  if(!state.ideas.length){
+    document.getElementById('vote-content').innerHTML='<div class="empty-state">Noch keine Ideen zum Bewerten</div>';
+    return;
+  }
+
+  var banner=document.getElementById('vote-user-banner');
+  banner.textContent='Du stimmst als: '+capitalize(currentUser);
+
+  var myVotes=state.votes[currentUser]||{};
+  var otherUser=currentUser==='raphael'?'martim':'raphael';
+  var otherVotes=state.votes[otherUser]||{};
+
+  // Check if both have voted on all ideas
+  var bothVoted=state.ideas.every((_,idx)=>
+    myVotes[idx]&&VOTE_CRITERIA.every(c=>myVotes[idx][c.key]!==undefined)&&
+    otherVotes[idx]&&VOTE_CRITERIA.every(c=>otherVotes[idx][c.key]!==undefined)
+  );
+
+  var html='';
+
+  if(bothVoted){
+    // Show full results with combined score
+    html+='<div style="background:#e1f5ee;border:1px solid #a8e0cc;border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#0f6e56;font-weight:500">✅ Beide haben abgestimmt – Ergebnisse werden angezeigt!</div>';
+
+    // Calculate combined scores
+    var scored=state.ideas.map((idea,idx)=>{
+      var my=myVotes[idx]||{}, other=otherVotes[idx]||{};
+      // Base score from idea board (60% total)
+      var baseScore=(idea.markt*(IDEA_WEIGHTS.markt/100)+idea.pass*(IDEA_WEIGHTS.pass/100)+idea.mach*(IDEA_WEIGHTS.mach/100))*10;
+      // Vote score (40% total) — average of both voters
+      var voteScore=VOTE_CRITERIA.reduce((sum,c)=>{
+        var avg=((my[c.key]||0)+(other[c.key]||0))/2;
+        return sum+avg*(c.weight/100);
+      },0)*10;
+      var total=Math.round((baseScore+voteScore)*10)/10;
+      return{idea,idx,total,baseScore:Math.round(baseScore*10)/10,voteScore:Math.round(voteScore*10)/10};
+    }).sort((a,b)=>b.total-a.total);
+
+    // Winner card
+    var winner=scored[0];
+    html+='<div class="winner-card"><div class="winner-crown">🏆</div><div class="winner-name">'+winner.idea.name+'</div><div class="winner-score">Gesamtscore: '+winner.total+'/10</div></div>';
+
+    // Rankings
+    html+='<div class="card"><div class="card-title" style="margin-bottom:14px">Ranking aller Ideen</div>';
+    scored.forEach((s,rank)=>{
+      var pct=s.total*10;
+      html+='<div style="margin-bottom:14px">'+
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">'+
+          '<span style="font-size:13px;font-weight:700;color:#aaa;width:20px">'+(rank+1)+'.</span>'+
+          '<span style="font-size:14px;font-weight:600;color:#1a1a18;flex:1">'+s.idea.name+'</span>'+
+          '<span style="font-size:14px;font-weight:700;color:'+sc(s.total)+'">'+s.total+'</span>'+
+        '</div>'+
+        '<div style="display:flex;gap:6px;align-items:center">'+
+          '<div style="flex:1;background:#eee;border-radius:4px;height:6px"><div style="width:'+pct+'%;height:6px;border-radius:4px;background:'+sc(s.total)+'"></div></div>'+
+        '</div>'+
+        '<div style="display:flex;gap:12px;margin-top:4px;font-size:11px;color:#aaa">'+
+          '<span>Basis (60%): '+s.baseScore+'</span><span>Abstimmung (40%): '+s.voteScore+'</span>'+
+        '</div>'+
+      '</div>';
+    });
+    html+='</div>';
+
+    // Weight legend
+    html+='<div class="card"><div class="card-title" style="margin-bottom:10px">Gewichtungsübersicht</div>';
+    html+='<div style="font-size:12px;color:#777;margin-bottom:8px">Basis-Kriterien (60% gesamt)</div>';
+    html+='<div class="weight-legend">';
+    html+='<div class="weight-chip">Marktpotenzial <span>25%</span></div>';
+    html+='<div class="weight-chip">Passion <span>20%</span></div>';
+    html+='<div class="weight-chip">Machbarkeit <span>15%</span></div>';
+    html+='</div>';
+    html+='<div style="font-size:12px;color:#777;margin:10px 0 8px">Abstimmungs-Kriterien (40% gesamt)</div>';
+    html+='<div class="weight-legend">';
+    VOTE_CRITERIA.forEach(c=>{html+='<div class="weight-chip">'+c.label+' <span>'+c.weight+'%</span></div>';});
+    html+='</div></div>';
+
+    // Reset button
+    html+='<div style="text-align:center;margin-top:8px"><button class="btn btn-danger" onclick="resetVotes()">🔄 Abstimmung zurücksetzen</button></div>';
+
+  } else {
+    // Voting mode
+    html+='<div style="background:#faeeda;border:1px solid #f0d09a;border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#854f0b">⏳ Warte auf Abstimmung von '+capitalize(otherUser)+'…</div>';
+
+    state.ideas.forEach((idea,idx)=>{
+      var myV=myVotes[idx]||{};
+      var iDone=VOTE_CRITERIA.every(c=>myV[c.key]!==undefined);
+      html+='<div class="vote-idea-card">'+
+        '<div class="vote-idea-header">'+
+          '<div class="vote-idea-name">'+idea.name+'</div>'+
+          '<span class="vote-status-badge '+(iDone?'tag-green':'tag-amber')+'">'+(iDone?'✓ Abgestimmt':'Ausstehend')+'</span>'+
+        '</div>';
+      if(idea.desc)html+='<div style="font-size:12px;color:#888;margin-bottom:12px">'+idea.desc+'</div>';
+      VOTE_CRITERIA.forEach(c=>{
+        var val=myV[c.key]!==undefined?myV[c.key]:5;
+        html+='<div class="vote-q-row">'+
+          '<div style="flex:1"><div class="vote-q-label">'+c.label+'</div><div style="font-size:10px;color:#bbb">'+c.desc+'</div></div>'+
+          '<input type="range" class="vote-slider" min="0" max="10" step="1" value="'+val+'" '+
+            'oninput="setVote('+idx+',\''+c.key+'\',+this.value);document.getElementById(\'vv-'+idx+'-'+c.key+'\').textContent=this.value" '+
+            'onchange="saveVoteDebounced()">'+
+          '<div class="vote-q-val" id="vv-'+idx+'-'+c.key+'">'+val+'</div>'+
+          '<div class="vote-q-weight">'+c.weight+'%</div>'+
+        '</div>';
+      });
+      html+='<div style="margin-top:10px;text-align:right"><button class="btn btn-green" onclick="confirmVote('+idx+')">✓ Stimme bestätigen</button></div>';
+      html+='</div>';
+    });
+  }
+
+  document.getElementById('vote-content').innerHTML=html;
+}
+
+function capitalize(s){return s.charAt(0).toUpperCase()+s.slice(1);}
+
+function setVote(ideaIdx,key,val){
+  if(!state.votes[currentUser])state.votes[currentUser]={};
+  if(!state.votes[currentUser][ideaIdx])state.votes[currentUser][ideaIdx]={};
+  state.votes[currentUser][ideaIdx][key]=val;
+}
+
+var _voteTimer=null;
+function saveVoteDebounced(){
+  clearTimeout(_voteTimer);
+  _voteTimer=setTimeout(()=>saveState(),800);
+}
+
+function confirmVote(idx){
+  var myV=(state.votes[currentUser]||{})[idx]||{};
+  var missing=VOTE_CRITERIA.filter(c=>myV[c.key]===undefined);
+  if(missing.length){
+    // Set defaults for any not touched
+    VOTE_CRITERIA.forEach(c=>{ if(myV[c.key]===undefined)setVote(idx,c.key,5); });
+  }
+  saveState();
+  alert('Stimme für "'+state.ideas[idx].name+'" gespeichert!');
+}
+
+function resetVotes(){
+  if(confirm('Alle Abstimmungen löschen und neu beginnen?')){
+    state.votes={raphael:{},martim:{}};
+    saveState();
+  }
+}
+
+/* ── EVENTS ────────────────────────────── */
+function updateNextEventWidget(){
+  var today=new Date(); today.setHours(0,0,0,0);
+  var upcoming=(state.events||[]).filter(e=>new Date(e.date)>=today).sort((a,b)=>new Date(a.date)-new Date(b.date));
+  var titleEl=document.getElementById('nev-title');
+  var dateEl=document.getElementById('nev-date');
+  if(!upcoming.length){
+    titleEl.className='nev-empty';titleEl.textContent='Noch kein Termin';
+    dateEl.style.display='none';
+  } else {
+    var nxt=upcoming[0];
+    var d=new Date(nxt.date);
+    var diff=Math.round((d-today)/(1000*60*60*24));
+    titleEl.className='nev-title';titleEl.textContent=nxt.title;
+    var m=['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+    var dayStr=diff===0?'Heute':diff===1?'Morgen':'in '+diff+' Tagen';
+    dateEl.style.display='block';
+    dateEl.textContent=d.getDate()+'. '+m[d.getMonth()]+' · '+dayStr;
+  }
+}
+
+function renderEvents(){
+  var today=new Date(); today.setHours(0,0,0,0);
+  var evs=(state.events||[]).sort((a,b)=>new Date(a.date)-new Date(b.date));
+  if(!evs.length){document.getElementById('events-list').innerHTML='<div class="empty-state">Noch keine Termine</div>';return;}
+  var m=['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+  var typeColors={Coaching:'tag-blue',Meeting:'tag-amber',Deadline:'tag-red',Pitch:'tag-green',Sonstiges:'tag-gray'};
+  document.getElementById('events-list').innerHTML=evs.map((e,i)=>{
+    var d=new Date(e.date); var isPast=d<today;
+    var diff=Math.round((d-today)/(1000*60*60*24));
+    var dayStr=isPast?'vergangen':diff===0?'Heute':diff===1?'Morgen':'in '+diff+' Tagen';
+    var dayColor=isPast?'#bbb':diff<=3?'#d85a30':diff<=7?'#ef9f27':'#1d9e75';
+    return'<div class="event-row">'+
+      '<div class="event-dot'+(isPast?' past':'')+'"></div>'+
+      '<div style="flex:1">'+
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">'+
+          '<div class="event-title">'+e.title+'</div>'+
+          '<span class="tag '+(typeColors[e.type]||'tag-gray')+'">'+e.type+'</span>'+
+        '</div>'+
+        '<div class="event-date">'+d.getDate()+'. '+m[d.getMonth()]+' '+d.getFullYear()+(e.note?' · '+e.note:'')+'</div>'+
+      '</div>'+
+      '<span class="event-days" style="color:'+dayColor+';background:'+dayColor+'18">'+dayStr+'</span>'+
+      '<div class="row-actions"><button class="act-btn" onclick="delEvent('+i+')">✕</button></div>'+
+    '</div>';
+  }).join('');
+}
+function addEvent(){
+  var t=document.getElementById('ev-title').value.trim();if(!t)return;
+  var d=document.getElementById('ev-date').value;if(!d)return;
+  if(!state.events)state.events=[];
+  state.events.push({title:t,date:d,type:document.getElementById('ev-type').value,note:document.getElementById('ev-note').value});
+  document.getElementById('ev-title').value='';document.getElementById('ev-date').value='';document.getElementById('ev-note').value='';
+  closeModal('modal-event');saveState();
+}
+function delEvent(i){if(confirm('Termin löschen?')){state.events.splice(i,1);saveState();}}
+
+/* ── MATRIX ────────────────────────────── */
+function renderMatrix(){
+  if(!state.ideas.length){document.getElementById('matrix-content').innerHTML='<div class="empty-state">Keine Ideen vorhanden</div>';return}
+  var sorted=[...state.ideas].sort((a,b)=>((b.markt+b.mach+b.pass)/3)-((a.markt+a.mach+a.pass)/3));
+  document.getElementById('matrix-content').innerHTML='<table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr style="border-bottom:1px solid #eee"><th style="text-align:left;padding:6px 8px;color:#888;font-weight:500">Idee</th><th style="text-align:center;padding:6px;color:#888;font-weight:500">Markt</th><th style="text-align:center;padding:6px;color:#888;font-weight:500">Machbarkeit</th><th style="text-align:center;padding:6px;color:#888;font-weight:500">Passion</th><th style="text-align:center;padding:6px;color:#888;font-weight:500">Ø Score</th></tr></thead><tbody>'+
+  sorted.map((i,idx)=>{var avg=Math.round((i.markt+i.mach+i.pass)/3*10)/10;return'<tr style="border-bottom:1px solid #f5f5f3'+(idx===0?';background:#f8fff8':'')+'"><td style="padding:8px;font-weight:'+(idx===0?'600':'400')+';color:#1a1a18">'+i.name+'</td><td style="text-align:center;padding:6px;color:'+sc(i.markt)+'">'+i.markt+'</td><td style="text-align:center;padding:6px;color:'+sc(i.mach)+'">'+i.mach+'</td><td style="text-align:center;padding:6px;color:'+sc(i.pass)+'">'+i.pass+'</td><td style="text-align:center;padding:6px;font-weight:600;color:'+sc(avg)+'">'+avg+'</td></tr>';}).join('')+'</tbody></table>';
+}
+
+/* ── MILESTONES ──────────────────────── */
+function renderMs(){
+  var sc2={Erledigt:'ms-done',Offen:'ms-pending','In Arbeit':'ms-active'};
+  var ic={Erledigt:'✓','In Arbeit':'→',Offen:'○'};
+  document.getElementById('ms-list').innerHTML=state.milestones.length?state.milestones.map((m,i)=>
+    '<div class="row-wrap"><div class="ms-dot '+sc2[m.status]+'">'+ic[m.status]+'</div><div style="flex:1"><div class="ms-title">'+m.title+'</div><div class="ms-meta">'+m.date+' · '+m.owner+'</div></div><span class="tag '+(m.status==='Erledigt'?'tag-green':m.status==='In Arbeit'?'tag-blue':'tag-gray')+'">'+m.status+'</span><div class="row-actions"><button class="act-btn" onclick="openEditMs('+i+')">✏️</button><button class="act-btn" onclick="delMs('+i+')">✕</button></div></div>'
+  ).join(''):'<div class="empty-state">Noch keine Milestones</div>';
+}
+function addMs(){
+  var t=document.getElementById('ms-title').value.trim();if(!t)return;
+  state.milestones.push({title:t,date:document.getElementById('ms-date').value,owner:document.getElementById('ms-owner').value,status:document.getElementById('ms-status').value});
+  document.getElementById('ms-title').value='';closeModal('modal-ms');saveState();
+}
+function delMs(i){if(confirm('Milestone löschen?')){state.milestones.splice(i,1);saveState();}}
+function openEditMs(i){
+  editIdx=i;var d=state.milestones[i];
+  document.getElementById('edit-ms-title').value=d.title;document.getElementById('edit-ms-date').value=d.date;
+  document.getElementById('edit-ms-owner').value=d.owner;document.getElementById('edit-ms-status').value=d.status;
+  openModal('modal-edit-ms');
+}
+function saveEditMs(){
+  state.milestones[editIdx]={title:document.getElementById('edit-ms-title').value,date:document.getElementById('edit-ms-date').value,owner:document.getElementById('edit-ms-owner').value,status:document.getElementById('edit-ms-status').value};
+  closeModal('modal-edit-ms');saveState();
+}
+
+/* ── FUNDRAISING ─────────────────────── */
+function renderFund(){
+  var stages=['Identified','Contacted','Meeting','Due Diligence','Term Sheet'];
+  var counts={};stages.forEach(s=>counts[s]=0);
+  state.investors.forEach(i=>counts[i.status]=(counts[i.status]||0)+1);
+  document.getElementById('fund-metrics').innerHTML=stages.map(s=>'<div class="metric"><div class="metric-label">'+s+'</div><div class="metric-value">'+counts[s]+'</div></div>').join('');
+  document.getElementById('investor-list').innerHTML=state.investors.length?state.investors.map((inv,i)=>
+    '<div class="row-wrap" style="align-items:center"><div class="inv-avatar">'+inv.name.substring(0,2).toUpperCase()+'</div><div style="flex:1;margin-left:10px"><div style="font-size:13px;font-weight:500;color:#1a1a18">'+inv.name+'</div><div style="font-size:11px;color:#aaa">'+inv.type+' · '+inv.status+'</div></div><div style="font-size:13px;font-weight:600;color:#1a1a18">€'+inv.amount+'K</div><div class="row-actions"><button class="act-btn" onclick="openEditInv('+i+')">✏️</button><button class="act-btn" onclick="delInv('+i+')">✕</button></div></div>'
+  ).join(''):'<div class="empty-state">Noch keine Investoren</div>';
+}
+function addInv(){
+  var n=document.getElementById('inv-name').value.trim();if(!n)return;
+  state.investors.push({name:n,type:document.getElementById('inv-type').value,amount:+document.getElementById('inv-amount').value,status:document.getElementById('inv-status').value,notes:document.getElementById('inv-notes').value});
+  document.getElementById('inv-name').value='';document.getElementById('inv-notes').value='';closeModal('modal-inv');saveState();
+}
+function delInv(i){if(confirm('Investor löschen?')){state.investors.splice(i,1);saveState();}}
+function openEditInv(i){
+  editIdx=i;var d=state.investors[i];
+  document.getElementById('edit-inv-name').value=d.name;document.getElementById('edit-inv-type').value=d.type;
+  document.getElementById('edit-inv-amount').value=d.amount;document.getElementById('edit-inv-status').value=d.status;document.getElementById('edit-inv-notes').value=d.notes;
+  openModal('modal-edit-inv');
+}
+function saveEditInv(){
+  state.investors[editIdx]={name:document.getElementById('edit-inv-name').value,type:document.getElementById('edit-inv-type').value,amount:+document.getElementById('edit-inv-amount').value,status:document.getElementById('edit-inv-status').value,notes:document.getElementById('edit-inv-notes').value};
+  closeModal('modal-edit-inv');saveState();
+}
+
+/* ── HYPOTHESEN ──────────────────────── */
+function renderHyp(){
+  var sc3={'Nicht getestet':'tag-gray','In Validierung':'tag-amber','Bestätigt':'tag-green','Widerlegt':'tag-red'};
+  document.getElementById('hyp-list').innerHTML=state.hyps.length?state.hyps.map((h,i)=>
+    '<div class="row-wrap" style="align-items:flex-start"><div style="flex:1"><div style="font-size:13px;color:#1a1a18;margin-bottom:5px">'+h.text+'</div><div style="display:flex;gap:8px"><span class="tag '+sc3[h.status]+'">'+h.status+'</span><span style="font-size:11px;color:#aaa">'+h.method+'</span></div></div><div class="row-actions"><button class="act-btn" onclick="openEditHyp('+i+')">✏️</button><button class="act-btn" onclick="delHyp('+i+')">✕</button></div></div>'
+  ).join(''):'<div class="empty-state">Noch keine Hypothesen</div>';
+}
+function addHyp(){
+  var t=document.getElementById('hyp-text').value.trim();if(!t)return;
+  state.hyps.push({text:t,status:document.getElementById('hyp-status').value,method:document.getElementById('hyp-method').value});
+  document.getElementById('hyp-text').value='';closeModal('modal-hyp');saveState();
+}
+function delHyp(i){if(confirm('Hypothese löschen?')){state.hyps.splice(i,1);saveState();}}
+function openEditHyp(i){
+  editIdx=i;var d=state.hyps[i];
+  document.getElementById('edit-hyp-text').value=d.text;document.getElementById('edit-hyp-status').value=d.status;document.getElementById('edit-hyp-method').value=d.method;
+  openModal('modal-edit-hyp');
+}
+function saveEditHyp(){
+  state.hyps[editIdx]={text:document.getElementById('edit-hyp-text').value,status:document.getElementById('edit-hyp-status').value,method:document.getElementById('edit-hyp-method').value};
+  closeModal('modal-edit-hyp');saveState();
+}
+
+/* ── COMPETITORS ─────────────────────── */
+function renderComp(){
+  document.getElementById('comp-list').innerHTML=state.competitors.length?state.competitors.map((c,i)=>
+    '<div class="row-wrap"><div style="font-size:13px;font-weight:600;width:120px;flex-shrink:0">'+c.name+'</div><div style="display:flex;gap:4px;flex-wrap:wrap;flex:1">'+c.strengths.map(s=>'<span class="tag tag-green">'+s+'</span>').join('')+c.weak.map(w=>'<span class="tag tag-red">'+w+'</span>').join('')+'</div><div class="row-actions"><button class="act-btn" onclick="openEditComp('+i+')">✏️</button><button class="act-btn" onclick="delComp('+i+')">✕</button></div></div>'
+  ).join(''):'<div class="empty-state">Noch keine Wettbewerber</div>';
+}
+function addComp(){
+  var n=document.getElementById('comp-name').value.trim();if(!n)return;
+  state.competitors.push({name:n,strengths:document.getElementById('comp-strengths').value.split(',').map(s=>s.trim()).filter(Boolean),weak:document.getElementById('comp-weak').value.split(',').map(s=>s.trim()).filter(Boolean)});
+  document.getElementById('comp-name').value='';closeModal('modal-comp');saveState();
+}
+function delComp(i){if(confirm('Wettbewerber löschen?')){state.competitors.splice(i,1);saveState();}}
+function openEditComp(i){
+  editIdx=i;var d=state.competitors[i];
+  document.getElementById('edit-comp-name').value=d.name;document.getElementById('edit-comp-strengths').value=d.strengths.join(', ');document.getElementById('edit-comp-weak').value=d.weak.join(', ');
+  openModal('modal-edit-comp');
+}
+function saveEditComp(){
+  state.competitors[editIdx]={name:document.getElementById('edit-comp-name').value,strengths:document.getElementById('edit-comp-strengths').value.split(',').map(s=>s.trim()).filter(Boolean),weak:document.getElementById('edit-comp-weak').value.split(',').map(s=>s.trim()).filter(Boolean)};
+  closeModal('modal-edit-comp');saveState();
+}
+
+/* ── NETWORK ─────────────────────────── */
+function renderNetwork(){
+  document.getElementById('network-list').innerHTML=state.network.length?'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px">'+state.network.map((n,i)=>
+    '<div style="background:#fff;border:1px solid #e8e8e4;border-radius:12px;padding:14px"><div style="display:flex;justify-content:space-between"><div style="font-size:13px;font-weight:600;color:#1a1a18">'+n.name+'</div><div class="row-actions" style="opacity:1"><button class="act-btn" onclick="openEditNetwork('+i+')">✏️</button><button class="act-btn" onclick="delNetwork('+i+')">✕</button></div></div><div style="font-size:11px;color:#aaa;margin:2px 0 6px">'+n.role+'</div><div style="font-size:12px;color:#666;line-height:1.4">'+n.help+'</div></div>'
+  ).join('')+'</div>':'<div class="empty-state">Noch keine Kontakte</div>';
+}
+function addNetwork(){
+  var n=document.getElementById('nc-name').value.trim();if(!n)return;
+  state.network.push({name:n,role:document.getElementById('nc-role').value,help:document.getElementById('nc-help').value});
+  document.getElementById('nc-name').value='';closeModal('modal-network');saveState();
+}
+function delNetwork(i){if(confirm('Kontakt löschen?')){state.network.splice(i,1);saveState();}}
+function openEditNetwork(i){
+  editIdx=i;var d=state.network[i];
+  document.getElementById('edit-nc-name').value=d.name;document.getElementById('edit-nc-role').value=d.role;document.getElementById('edit-nc-help').value=d.help;
+  openModal('modal-edit-network');
+}
+function saveEditNetwork(){
+  state.network[editIdx]={name:document.getElementById('edit-nc-name').value,role:document.getElementById('edit-nc-role').value,help:document.getElementById('edit-nc-help').value};
+  closeModal('modal-edit-network');saveState();
+}
+
+/* ── TASKS ───────────────────────────── */
+function renderWeek(){
+  ['r','c'].forEach(who=>{
+    document.getElementById('tasks-'+who).innerHTML=state.tasks[who].length?state.tasks[who].map((t,i)=>
+      '<div class="task-item"><div class="task-cb'+(t.done?' checked':'')+'" onclick="toggleTask(\''+who+'\','+i+')">'+(t.done?'✓':'')+'</div><div class="task-text'+(t.done?' done':'')+'">'+t.text+'</div><button class="act-btn" style="opacity:0.4;margin-left:auto" onclick="delTask(\''+who+'\','+i+')">✕</button></div>'
+    ).join(''):'<div class="empty-state">Keine Tasks diese Woche</div>';
+  });
+}
+function toggleTask(who,i){state.tasks[who][i].done=!state.tasks[who][i].done;saveState();}
+function delTask(who,i){state.tasks[who].splice(i,1);saveState();}
+function addTask(who){
+  var t=document.getElementById('task-'+who+'-text').value.trim();if(!t)return;
+  state.tasks[who].push({text:t,done:false});
+  document.getElementById('task-'+who+'-text').value='';closeModal('modal-task-'+who);saveState();
+}
+function clearTasks(who){
+  if(confirm('Alle Tasks von '+(who==='r'?'Raphael':'Martim')+' löschen?')){state.tasks[who]=[];saveState();}
+}
+
+/* ── KPI ─────────────────────────────── */
+function renderKpi(){
+  if(!state.kpis.length){document.getElementById('kpi-grid').innerHTML='<div class="empty-state" style="grid-column:1/-1">Noch keine KPIs</div>';return;}
+  document.getElementById('kpi-grid').innerHTML=state.kpis.map((k,idx)=>{
+    var pct=k.target?Math.min(100,Math.round(k.value/k.target*100)):0;
+    return'<div class="kpi-card"><div class="kpi-label">'+k.label+'</div><div class="kpi-value">'+k.value+(k.unit||'')+'</div><div class="kpi-target">Ziel: '+k.target+(k.unit||'')+' · '+pct+'%</div><div class="kpi-bar"><div style="height:3px;border-radius:3px;width:'+pct+'%;background:'+sc(pct/10)+'"></div></div><div class="kpi-inputs"><input type="number" value="'+k.value+'" placeholder="Aktuell" oninput="updateKpi('+idx+',\'value\',this.value)" style="flex:1;margin-bottom:0;font-size:12px;padding:5px 8px"><input type="number" value="'+k.target+'" placeholder="Ziel" oninput="updateKpi('+idx+',\'target\',this.value)" style="flex:1;margin-bottom:0;font-size:12px;padding:5px 8px"><button class="act-btn" onclick="delKpi('+idx+')" style="opacity:0.5;flex-shrink:0">✕</button></div></div>';
+  }).join('');
+}
+function addKpi(){
+  var l=document.getElementById('kpi-label').value.trim();if(!l)return;
+  state.kpis.push({label:l,value:+document.getElementById('kpi-value').value||0,target:+document.getElementById('kpi-target').value||100,unit:document.getElementById('kpi-unit').value});
+  document.getElementById('kpi-label').value='';document.getElementById('kpi-unit').value='';closeModal('modal-kpi');saveState();
+}
+function updateKpi(idx,field,val){state.kpis[idx][field]=+val;saveState();}
+function delKpi(i){if(confirm('KPI löschen?')){state.kpis.splice(i,1);saveState();}}
+
+/* ── RESOURCE ────────────────────────── */
+function renderResource(){
+  if(!state.resources.length){document.getElementById('resource-list').innerHTML='<div class="empty-state">Noch keine Resources</div>';return;}
+  document.getElementById('resource-list').innerHTML=state.resources.map((r,idx)=>{
+    var pct=r.total?Math.min(100,Math.round(r.used/r.total*100)):0;
+    return'<div class="row-wrap" style="align-items:center;gap:8px"><div class="res-label">'+r.label+'</div><div class="res-bar"><div class="res-fill" style="width:'+pct+'%;background:'+sc(pct/10)+'"></div></div><input type="number" value="'+r.used+'" style="width:60px;margin:0;padding:4px 6px;font-size:11px" oninput="updateRes('+idx+',\'used\',this.value)"><span style="font-size:11px;color:#aaa">/</span><input type="number" value="'+r.total+'" style="width:60px;margin:0;padding:4px 6px;font-size:11px" oninput="updateRes('+idx+',\'total\',this.value)"><button class="act-btn" onclick="delRes('+idx+')" style="opacity:0.5">✕</button></div>';
+  }).join('');
+}
+function addResource(){
+  var l=document.getElementById('res-label-input').value.trim();if(!l)return;
+  state.resources.push({label:l,used:+document.getElementById('res-used').value||0,total:+document.getElementById('res-total').value||100});
+  document.getElementById('res-label-input').value='';closeModal('modal-resource');saveState();
+}
+function updateRes(idx,field,val){state.resources[idx][field]=+val;saveState();}
+function delRes(i){if(confirm('Resource löschen?')){state.resources.splice(i,1);saveState();}}
+
+/* ── LEGAL ───────────────────────────── */
+function renderLegal(){
+  document.getElementById('legal-list').innerHTML=state.legal.length?state.legal.map((l,i)=>
+    '<div class="row-wrap" style="align-items:center"><div style="width:16px;height:16px;border-radius:4px;border:1.5px solid '+(l.done?'#1d9e75':'#ccc')+';background:'+(l.done?'#e1f5ee':'#fff')+';display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:'+(l.done?'#0f6e56':'transparent')+';cursor:pointer;flex-shrink:0" onclick="toggleLegal('+i+')">'+(l.done?'✓':'')+'</div><div style="flex:1;margin-left:10px"><div style="font-size:13px;font-weight:500;color:#1a1a18">'+l.text+'</div><div style="font-size:11px;color:#aaa">'+l.sub+'</div></div><div class="row-actions"><button class="act-btn" onclick="delLegal('+i+')">✕</button></div></div>'
+  ).join(''):'<div class="empty-state">Noch keine Legal-Punkte</div>';
+}
+function toggleLegal(i){state.legal[i].done=!state.legal[i].done;saveState();}
+function delLegal(i){if(confirm('Punkt löschen?')){state.legal.splice(i,1);saveState();}}
+function addLegal(){
+  var t=document.getElementById('legal-text-input').value.trim();if(!t)return;
+  state.legal.push({text:t,sub:document.getElementById('legal-sub-input').value,done:false});
+  document.getElementById('legal-text-input').value='';document.getElementById('legal-sub-input').value='';closeModal('modal-legal');saveState();
+}
+
+/* ── DECISION LOG ────────────────────── */
+function renderLog(){
+  document.getElementById('dec-list').innerHTML=state.decisions.length?state.decisions.map((d,i)=>
+    '<div class="row-wrap" style="align-items:flex-start"><div style="flex:1"><div class="dec-q">'+d.q+'</div><div class="dec-a">'+d.a+'</div><div class="dec-date">'+d.date+'</div></div><div class="row-actions"><button class="act-btn" onclick="delDec('+i+')">✕</button></div></div>'
+  ).join(''):'<div class="empty-state">Noch keine Entscheidungen</div>';
+}
+function addDec(){
+  var q=document.getElementById('dec-q').value.trim();if(!q)return;
+  var d=new Date();
+  state.decisions.unshift({q,a:document.getElementById('dec-a').value,date:d.getDate()+'.'+(d.getMonth()+1)+'.'+d.getFullYear()});
+  document.getElementById('dec-q').value='';document.getElementById('dec-a').value='';closeModal('modal-dec');saveState();
+}
+function delDec(i){if(confirm('Entscheidung löschen?')){state.decisions.splice(i,1);saveState();}}
+
+/* ── TEAM ────────────────────────────── */
+function renderTeam(){
+  var pc={Hoch:'tag-red',Mittel:'tag-amber',Niedrig:'tag-gray'};
+  document.getElementById('team-list').innerHTML=state.team.length?state.team.map((t,i)=>
+    '<div class="row-wrap" style="align-items:center"><div style="flex:1"><div style="font-size:13px;font-weight:500;color:#1a1a18">'+t.role+'</div></div><span class="tag '+pc[t.prio]+'">'+t.prio+'</span><div style="font-size:12px;color:#888;padding:0 10px">'+t.when+'</div><div class="row-actions"><button class="act-btn" onclick="delTeam('+i+')">✕</button></div></div>'
+  ).join(''):'<div class="empty-state">Noch keine Hires geplant</div>';
+}
+function addTeam(){
+  var r=document.getElementById('team-role').value.trim();if(!r)return;
+  state.team.push({role:r,prio:document.getElementById('team-prio').value,when:document.getElementById('team-when').value});
+  document.getElementById('team-role').value='';closeModal('modal-team');saveState();
+}
+function delTeam(i){if(confirm('Eintrag löschen?')){state.team.splice(i,1);saveState();}}
+
+/* ── PITCH ───────────────────────────── */
+function renderPitch(){
+  var sc4={Entwurf:'tag-gray','In Überprüfung':'tag-blue','Präsentiert':'tag-amber','Abgelehnt':'tag-red'};
+  document.getElementById('pitch-list').innerHTML=state.pitches.length?state.pitches.map((p,i)=>
+    '<div class="row-wrap" style="align-items:flex-start"><div style="flex:1"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><div style="font-size:13px;font-weight:600;color:#1a1a18">'+p.name+'</div><span class="tag '+sc4[p.status]+'">'+p.status+'</span><span class="tag tag-gray">'+p.score+'</span></div><div style="font-size:12px;color:#666;line-height:1.4">'+p.fb+'</div></div><div class="row-actions"><button class="act-btn" onclick="aiAnalyzePitchSingle('+i+')" title="KI-Feedback-Analyse">🤖</button><button class="act-btn" onclick="openEditPitch('+i+')">✏️</button><button class="act-btn" onclick="delPitch('+i+')">✕</button></div></div>'
+  ).join(''):'<div class="empty-state">Noch keine Pitch-Versionen</div>';
+}
+function addPitch(){
+  var n=document.getElementById('pitch-name').value.trim();if(!n)return;
+  state.pitches.push({name:n,fb:document.getElementById('pitch-fb').value,status:document.getElementById('pitch-status').value,score:document.getElementById('pitch-score').value});
+  document.getElementById('pitch-name').value='';closeModal('modal-pitch');saveState();
+}
+function delPitch(i){if(confirm('Pitch löschen?')){state.pitches.splice(i,1);saveState();}}
+function openEditPitch(i){
+  editIdx=i;var d=state.pitches[i];
+  document.getElementById('edit-pitch-name').value=d.name;document.getElementById('edit-pitch-fb').value=d.fb;document.getElementById('edit-pitch-status').value=d.status;document.getElementById('edit-pitch-score').value=d.score;
+  openModal('modal-edit-pitch');
+}
+function saveEditPitch(){
+  state.pitches[editIdx]={name:document.getElementById('edit-pitch-name').value,fb:document.getElementById('edit-pitch-fb').value,status:document.getElementById('edit-pitch-status').value,score:document.getElementById('edit-pitch-score').value};
+  closeModal('modal-edit-pitch');saveState();
+}
+
+/* ── MARKET ──────────────────────────── */
+function calcMarket(){
+  var tam=+(document.getElementById('tam')||{value:5000}).value||5000;
+  var samP=+(document.getElementById('sam-pct')||{value:10}).value||10;
+  var somP=+(document.getElementById('som-pct')||{value:5}).value||5;
+  var sam=Math.round(tam*samP/100),som=Math.round(sam*somP/100);
+  var el=document.getElementById('market-bars');if(!el)return;
+  el.innerHTML='<div class="market-row"><div class="market-label">TAM</div><div class="market-bar" style="background:#b5d4f4;width:100%"><span class="market-val" style="color:#0c447c">€'+tam+'M</span></div></div><div class="market-row"><div class="market-label">SAM</div><div class="market-bar" style="background:#9fe1cb;width:'+samP+'%"><span class="market-val" style="color:#085041">€'+sam+'M</span></div></div><div class="market-row"><div class="market-label">SOM</div><div class="market-bar" style="background:#fac775;width:'+Math.max(5,samP*somP/100)+'%"><span class="market-val" style="color:#633806">€'+som+'M</span></div></div>';
+}
+function saveMarket(){
+  state.market={tam:+(document.getElementById('tam').value)||5000,samPct:+(document.getElementById('sam-pct').value)||10,somPct:+(document.getElementById('som-pct').value)||5};
+}
+
+/* ── MOMENTUM ────────────────────────── */
+function renderMomentum(){
+  var done=state.tasks.r.filter(t=>t.done).length+state.tasks.c.filter(t=>t.done).length;
+  var total=state.tasks.r.length+state.tasks.c.length;
+  var lDone=state.legal.filter(l=>l.done).length;
+  document.getElementById('momentum-metrics').innerHTML=
+    '<div class="metric"><div class="metric-label">Tasks erledigt</div><div class="metric-value">'+done+'/'+(total||0)+'</div><div class="metric-delta">diese Woche</div></div>'+
+    '<div class="metric"><div class="metric-label">Legal-Checkliste</div><div class="metric-value">'+lDone+'/'+(state.legal.length||0)+'</div></div>'+
+    '<div class="metric"><div class="metric-label">Ideen</div><div class="metric-value">'+state.ideas.length+'</div></div>'+
+    '<div class="metric"><div class="metric-label">Entscheidungen</div><div class="metric-value">'+state.decisions.length+'</div></div>';
+  if(window._mChart)window._mChart.destroy();
+  var ctx=document.getElementById('momentumChart').getContext('2d');
+  window._mChart=new Chart(ctx,{type:'bar',data:{labels:['Ideen','Milestones','Investoren','Tasks','Hypothesen','Competitors'],datasets:[{label:'Einträge',data:[state.ideas.length,state.milestones.length,state.investors.length,total,state.hyps.length,state.competitors.length],backgroundColor:'#378ADD',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{beginAtZero:true,ticks:{stepSize:1}}}}});
+}
+
+/* ── AI ASSISTANT ───────────────────────── */
+var aiHistory=[];
+var AI_KEY_STORAGE='startup_os_ai_key';
+
+function renderAi(){
+  var key=localStorage.getItem(AI_KEY_STORAGE);
+  if(!key){
+    document.getElementById('ai-key-section').style.display='block';
+    document.getElementById('ai-chat-section').style.display='none';
+  } else {
+    document.getElementById('ai-key-section').style.display='none';
+    document.getElementById('ai-chat-section').style.display='block';
+    if(aiHistory.length===0) addAiMessage('assistant','Hallo! Ich bin euer AI Assistent und kenne euer gesamtes Startup-Projekt. Ich kann Fragen beantworten, Ideen analysieren und Dinge direkt in der App hinzufügen oder bearbeiten.\n\nWas kann ich für euch tun? 🚀');
+  }
+}
+
+function saveApiKey(){
+  var key=document.getElementById('ai-key-input').value.trim();
+  if(!key||key.length<20){alert('Bitte einen gültigen API Key eingeben');return;}
+  localStorage.setItem(AI_KEY_STORAGE,key);
+  document.getElementById('ai-key-input').value='';
+  renderAi();
+}
+
+function clearAiKey(){
+  if(confirm('API Key löschen?')){localStorage.removeItem(AI_KEY_STORAGE);aiHistory=[];renderAi();}
+}
+
+function clearAiChat(){
+  if(confirm('Chat-Verlauf löschen?')){aiHistory=[];document.getElementById('ai-messages').innerHTML='';addAiMessage('assistant','Chat wurde geleert. Wie kann ich helfen? 🚀');}
+}
+
+var pendingActions=[];
+
+function addAiMessage(role,text,actions){
+  aiHistory.push({role,content:text});
+  var msgs=document.getElementById('ai-messages');
+  var div=document.createElement('div');
+  div.className='ai-msg '+role;
+  var avatar=role==='assistant'?'🤖':(currentUser==='raphael'?'R':'M');
+  var actionsHtml='';
+  if(actions&&actions.length){
+    actionsHtml='<div style="margin-top:8px">';
+    actions.forEach(function(a){
+      var idx=pendingActions.length;
+      pendingActions.push(a.actionData);
+      actionsHtml+='<span class="ai-action-btn" onclick="executeAction('+idx+')">'+a.label+'</span>';
+    });
+    actionsHtml+='</div>';
+  }
+  div.innerHTML='<div class="ai-avatar">'+avatar+'</div><div><div class="ai-bubble">'+escHtml(text)+'</div>'+actionsHtml+'</div>';
+  msgs.appendChild(div);
+  msgs.scrollTop=msgs.scrollHeight;
+}
+
+function showTyping(){
+  var msgs=document.getElementById('ai-messages');
+  var div=document.createElement('div');
+  div.className='ai-msg assistant';div.id='ai-typing';
+  div.innerHTML='<div class="ai-avatar">🤖</div><div class="ai-typing"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div>';
+  msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
+}
+
+function hideTyping(){var t=document.getElementById('ai-typing');if(t)t.remove();}
+
+function aiSuggest(text){
+  document.getElementById('ai-input').value=text;
+  sendAiMessage();
+}
+
+function buildSystemPrompt(){
+  var ideas=state.ideas.map(i=>'- '+i.name+' ['+i.sector+'] Markt:'+i.markt+'/10 Machbarkeit:'+i.mach+'/10 Passion:'+i.pass+'/10\n  Beschreibung: '+i.desc).join('\n');
+  var milestones=state.milestones.map(m=>'- ['+m.status+'] '+m.title+' ('+m.date+', Verantwortlich: '+m.owner+')').join('\n');
+  var tasks_r=state.tasks.r.map(t=>(t.done?'[x]':'[ ]')+' '+t.text).join('\n');
+  var tasks_m=state.tasks.c.map(t=>(t.done?'[x]':'[ ]')+' '+t.text).join('\n');
+  var events=(state.events||[]).slice(0,8).map(e=>'- '+e.title+' ('+e.date+', Typ: '+e.type+(e.note?', '+e.note:'')+')').join('\n');
+  var investors=state.investors.map(i=>'- '+i.name+' ['+i.type+'] Status: '+i.status+' Ziel: €'+i.amount+'K'+(i.notes?'\n  Notizen: '+i.notes:'')).join('\n');
+  var pitches=state.pitches.map(p=>'- '+p.name+' ['+p.status+'] Bewertung: '+p.score+(p.fb?'\n  Feedback: '+p.fb:'')).join('\n');
+  var hyps=state.hyps.map(h=>'- ['+h.status+'] '+h.text+(h.method?' (Methode: '+h.method+')':'')).join('\n');
+  var comps=state.competitors.map(c=>'- '+c.name+'\n  Stärken: '+(c.strengths.join(', ')||'–')+'\n  Schwächen: '+(c.weak.join(', ')||'–')).join('\n');
+  var network=state.network.map(n=>'- '+n.name+' ('+n.role+'): '+n.help).join('\n');
+  var kpis=state.kpis.map(k=>'- '+k.label+': '+k.value+(k.unit||'')+' / Ziel: '+k.target+(k.unit||'')).join('\n');
+  var resources=state.resources.map(r=>'- '+r.label+': '+r.used+' / '+r.total+' ('+Math.round(r.used/r.total*100)+'%)').join('\n');
+  var mkt=state.market;
+  var tam=mkt.tam||5000, sam=Math.round(tam*(mkt.samPct||10)/100), som=Math.round(sam*(mkt.somPct||5)/100);
+  var legal_done=state.legal.filter(l=>l.done).length;
+  var dec=state.decisions.slice(0,5).map(d=>'- '+d.q+': '+d.a).join('\n');
+  var team=state.team.map(t=>'- '+t.role+' [Priorität: '+t.prio+'] Zeitpunkt: '+t.when).join('\n');
+
+  return `Du bist der strategische KI-Assistent für das Startup von Raphael & Martim (HSG St. Gallen, Schweiz).
+Aktueller Nutzer: ${capitalize(currentUser||'?')} | Datum: ${new Date().toLocaleDateString('de-DE')}
+
+═══════════════════════════════════════
+📌 VOLLSTÄNDIGER STARTUP-KONTEXT
+═══════════════════════════════════════
+
+💡 IDEEN (${state.ideas.length} total):
+${ideas||'Noch keine Ideen'}
+
+🏆 TOP-5 DEEP DIVE Ideen: SmartSpend, TribeTravel, Marketing, M&A, Ascend
+
+📊 MARKT-SIZING:
+- TAM (Total Addressable Market): €${tam}M
+- SAM (Serviceable Addressable Market, ${mkt.samPct||10}%): €${sam}M
+- SOM (Obtainable Market, ${mkt.somPct||5}%): €${som}M
+
+🗺️ MILESTONES (${state.milestones.length} total, davon ${state.milestones.filter(m=>m.status==='Erledigt').length} erledigt):
+${milestones||'Keine Milestones'}
+
+📋 TASKS DIESE WOCHE:
+Raphael (${state.tasks.r.filter(t=>t.done).length}/${state.tasks.r.length} erledigt):
+${tasks_r||'Keine Tasks'}
+Martim (${state.tasks.c.filter(t=>t.done).length}/${state.tasks.c.length} erledigt):
+${tasks_m||'Keine Tasks'}
+
+📅 NÄCHSTE TERMINE:
+${events||'Keine Termine'}
+
+💰 FUNDRAISING PIPELINE (${state.investors.length} Investoren):
+${investors||'Noch keine Investoren'}
+
+🎤 PITCH TRACKER (${state.pitches.length} Versionen):
+${pitches||'Noch keine Pitches'}
+
+🔬 HYPOTHESEN (${state.hyps.length} total, ${state.hyps.filter(h=>h.status==='Bestätigt').length} bestätigt, ${state.hyps.filter(h=>h.status==='Widerlegt').length} widerlegt):
+${hyps||'Keine Hypothesen'}
+
+🏁 WETTBEWERBER (${state.competitors.length} total):
+${comps||'Keine Wettbewerber'}
+
+🤝 NETZWERK & MENTOREN (${state.network.length} Kontakte):
+${network||'Keine Kontakte'}
+
+📈 KPIs (${state.kpis.length} total):
+${kpis||'Keine KPIs definiert'}
+
+🧰 RESOURCES:
+${resources||'Keine Resources'}
+
+👥 TEAM & HIRING PLAN:
+${team||'Noch keine Hires geplant'}
+
+📋 LEGAL-CHECKLISTE: ${legal_done}/${state.legal.length} erledigt
+
+🗒️ LETZTE ENTSCHEIDUNGEN:
+${dec||'Keine Entscheidungen'}
+
+═══════════════════════════════════════
+🤖 AKTIONEN (wenn Nutzer etwas hinzufügen will)
+═══════════════════════════════════════
+Füge am Ende des Textes ACTION-Blöcke hinzu:
+[ACTION]{"type":"add_milestone","data":{"title":"...","date":"...","owner":"Beide","status":"Offen"}}[/ACTION]
+[ACTION]{"type":"add_task","data":{"who":"r","text":"..."}}[/ACTION]
+[ACTION]{"type":"add_event","data":{"title":"...","date":"YYYY-MM-DD","type":"Coaching","note":""}}[/ACTION]
+[ACTION]{"type":"add_idea","data":{"name":"...","desc":"...","markt":7,"mach":6,"pass":8,"sector":"Tech/SaaS"}}[/ACTION]
+[ACTION]{"type":"add_hyp","data":{"text":"...","status":"Nicht getestet","method":""}}[/ACTION]
+[ACTION]{"type":"add_investor","data":{"name":"...","type":"Angel","amount":0,"status":"Identified","notes":""}}[/ACTION]
+[ACTION]{"type":"add_kpi","data":{"label":"...","value":0,"target":100,"unit":""}}[/ACTION]
+[ACTION]{"type":"add_decision","data":{"q":"...","a":"..."}}[/ACTION]
+[ACTION]{"type":"add_competitor","data":{"name":"...","strengths":["..."],"weak":["..."]}}[/ACTION]
+[ACTION]{"type":"add_network","data":{"name":"...","role":"...","help":"..."}}[/ACTION]
+[ACTION]{"type":"add_pitch","data":{"name":"...","fb":"...","status":"Entwurf","score":"3 – OK"}}[/ACTION]
+[ACTION]{"type":"update_market","data":{"tam":5000,"samPct":10,"somPct":5}}[/ACTION]
+
+Antworte IMMER auf Deutsch. Sei präzise, strategisch und datenbasiert. Beziehe dich auf den konkreten Kontext.`;
+}
+
+async function sendAiMessage(){
+  var input=document.getElementById('ai-input');
+  var text=input.value.trim();
+  if(!text)return;
+  var key=localStorage.getItem(AI_KEY_STORAGE);
+  if(!key){renderAi();return;}
+
+  input.value='';input.style.height='auto';
+  addAiMessage('user',text);
+  document.getElementById('ai-send-btn').disabled=true;
+  showTyping();
+
+  // Build messages for API - filter only user/assistant pairs, ensure ends with user
+  var messages=[];
+  for(var i=0;i<aiHistory.length-1;i++){
+    if(aiHistory[i].role==='user'||aiHistory[i].role==='assistant'){
+      messages.push({role:aiHistory[i].role,content:aiHistory[i].content});
+    }
+  }
+  // Ensure last message is the user message we just sent
+  if(messages.length===0||messages[messages.length-1].role!=='user'){
+    messages.push({role:'user',content:text});
+  }
+
+  try {
+    var resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:2048,
+        system:buildSystemPrompt(),
+        messages:messages
+      })
+    });
+
+    var data=await resp.json();
+    hideTyping();
+
+    if(data.error){
+      addAiMessage('assistant','❌ Fehler: '+data.error.message);
+      document.getElementById('ai-send-btn').disabled=false;
+      return;
+    }
+
+    var fullText=data.content.map(b=>b.text||'').join('');
+
+    // Parse actions
+    var actionRegex=/\[ACTION\](.*?)\[\/ACTION\]/gs;
+    var cleanText=fullText.replace(actionRegex,'').trim();
+    var actionMatches=[...fullText.matchAll(actionRegex)];
+
+    if(actionMatches.length>0){
+      var actions=[];
+      actionMatches.forEach(function(m){
+        try{
+          var action=JSON.parse(m[1]);
+          actions.push({label:getActionLabel(action), actionData:action});
+        }catch(e){}
+      });
+      addAiMessage('assistant',cleanText,actions.length?actions:null);
+    } else {
+      addAiMessage('assistant',cleanText);
+    }
+
+  } catch(e){
+    hideTyping();
+    addAiMessage('assistant','❌ Verbindungsfehler. Bitte prüfe deine Internetverbindung.');
+  }
+
+  document.getElementById('ai-send-btn').disabled=false;
+  document.getElementById('ai-messages').scrollTop=document.getElementById('ai-messages').scrollHeight;
+}
+
+function getActionLabel(action){
+  var labels={
+    add_milestone:'✅ Milestone hinzufügen',add_task:'✅ Task hinzufügen',
+    add_idea:'✅ Idee hinzufügen',add_event:'✅ Termin hinzufügen',
+    add_investor:'✅ Investor hinzufügen',add_hyp:'✅ Hypothese hinzufügen',
+    add_kpi:'✅ KPI hinzufügen',add_decision:'✅ Entscheidung speichern',
+    add_competitor:'✅ Wettbewerber hinzufügen',add_network:'✅ Kontakt hinzufügen',
+    add_pitch:'✅ Pitch-Version hinzufügen',update_market:'✅ Markt-Daten aktualisieren'
+  };
+  return labels[action.type]||'✅ Ausführen';
+}
+
+function escJs(s){return s.replace(/\\/g,'\\\\').replace(/'/g,"\\'");}
+
+function executeAction(idx){
+  try{
+    var action=pendingActions[idx];
+    if(!action){addAiMessage('assistant','❌ Aktion nicht gefunden.');return;}
+    var d=action.data;
+    switch(action.type){
+      case 'add_milestone':
+        if(!state.milestones)state.milestones=[];
+        state.milestones.push({title:d.title||'Neuer Milestone',date:d.date||'',owner:d.owner||'Beide',status:d.status||'Offen'});
+        break;
+      case 'add_task':
+        if(!state.tasks)state.tasks={r:[],c:[]};
+        var who=d.who==='c'?'c':'r';
+        state.tasks[who].push({text:d.text||'',done:false});
+        break;
+      case 'add_idea':
+        if(!state.ideas)state.ideas=[];
+        state.ideas.push({name:d.name||'',desc:d.desc||'',markt:d.markt||7,mach:d.mach||6,pass:d.pass||8,sector:d.sector||'Sonstiges'});
+        break;
+      case 'add_event':
+        if(!state.events)state.events=[];
+        state.events.push({title:d.title||'',date:d.date||'',type:d.type||'Sonstiges',note:d.note||''});
+        updateNextEventWidget();
+        break;
+      case 'add_investor':
+        if(!state.investors)state.investors=[];
+        state.investors.push({name:d.name||'',type:d.type||'Angel',amount:d.amount||0,status:d.status||'Identified',notes:d.notes||''});
+        break;
+      case 'add_hyp':
+        if(!state.hyps)state.hyps=[];
+        state.hyps.push({text:d.text||'',status:d.status||'Nicht getestet',method:d.method||''});
+        break;
+      case 'add_kpi':
+        if(!state.kpis)state.kpis=[];
+        state.kpis.push({label:d.label||'',value:d.value||0,target:d.target||100,unit:d.unit||''});
+        break;
+      case 'add_decision':
+        if(!state.decisions)state.decisions=[];
+        var dt=new Date();
+        state.decisions.unshift({q:d.q||'',a:d.a||'',date:dt.getDate()+'.'+(dt.getMonth()+1)+'.'+dt.getFullYear()});
+        break;
+      case 'add_competitor':
+        if(!state.competitors)state.competitors=[];
+        state.competitors.push({name:d.name||'',strengths:Array.isArray(d.strengths)?d.strengths:(d.strengths||'').split(',').map(s=>s.trim()).filter(Boolean),weak:Array.isArray(d.weak)?d.weak:(d.weak||'').split(',').map(s=>s.trim()).filter(Boolean)});
+        break;
+      case 'add_network':
+        if(!state.network)state.network=[];
+        state.network.push({name:d.name||'',role:d.role||'',help:d.help||''});
+        break;
+      case 'add_pitch':
+        if(!state.pitches)state.pitches=[];
+        state.pitches.push({name:d.name||'',fb:d.fb||'',status:d.status||'Entwurf',score:d.score||'3 – OK'});
+        break;
+      case 'update_market':
+        state.market={tam:d.tam||state.market.tam,samPct:d.samPct||state.market.samPct,somPct:d.somPct||state.market.somPct};
+        var te=document.getElementById('tam'),se=document.getElementById('sam-pct'),oe=document.getElementById('som-pct');
+        if(te)te.value=state.market.tam;if(se)se.value=state.market.samPct;if(oe)oe.value=state.market.somPct;
+        calcMarket();
+        break;
+      default:
+        addAiMessage('assistant','❌ Unbekannte Aktion: '+action.type);
+        return;
+    }
+    saveState().then(()=>{
+      addAiMessage('assistant','✅ Erledigt! Die Änderung wurde gespeichert und ist sofort für beide sichtbar.');
+      renderCurrent();
+    }).catch(()=>{
+      addAiMessage('assistant','❌ Fehler beim Speichern. Bitte versuche es erneut.');
+    });
+  }catch(e){
+    console.error('executeAction error:',e,jsonStr);
+    addAiMessage('assistant','❌ Fehler beim Ausführen: '+e.message);
+  }
+}
+
+/* ── KI-ANALYSE MODAL ──────────────────── */
+function ensureAnalysisModal(){
+  if(document.getElementById('modal-ai-analysis'))return;
+  var overlay=document.createElement('div');
+  overlay.className='modal-overlay';overlay.id='modal-ai-analysis';
+  overlay.onclick=function(e){if(e.target===this)closeModal('modal-ai-analysis');};
+  overlay.innerHTML='<div class="modal" style="width:580px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px"><div class="modal-title" id="ai-analysis-title" style="margin-bottom:0"></div><button class="act-btn" onclick="closeModal(\'modal-ai-analysis\')" style="font-size:18px;opacity:0.5">✕</button></div><div id="ai-analysis-content" style="font-size:13px;color:#444;line-height:1.7;white-space:pre-wrap;max-height:62vh;overflow-y:auto;background:#f9f9f7;border-radius:8px;padding:14px;margin-bottom:14px">⏳ KI analysiert…</div><div class="modal-actions"><button class="btn" onclick="closeModal(\'modal-ai-analysis\')">Schließen</button><button class="btn btn-primary" onclick="sendAnalysisToChat()">💬 Im Chat weiter besprechen</button></div></div>';
+  document.body.appendChild(overlay);
+}
+
+var _analysisLastText='';
+function sendAnalysisToChat(){
+  closeModal('modal-ai-analysis');
+  nav(document.querySelector('[data-page=ai]'),'ai');
+  if(_analysisLastText){
+    document.getElementById('ai-input').value='Lass uns das weiter besprechen: '+_analysisLastText.substring(0,200)+'…';
+  }
+}
+
+async function runAiAnalysis(title,prompt){
+  var key=localStorage.getItem(AI_KEY_STORAGE);
+  if(!key){alert('Bitte zuerst einen Anthropic API Key im AI Assistent eingeben.');return;}
+  ensureAnalysisModal();
+  document.getElementById('ai-analysis-title').textContent=title;
+  document.getElementById('ai-analysis-content').textContent='⏳ KI analysiert…';
+  openModal('modal-ai-analysis');
+  _analysisLastText='';
+  try{
+    var resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:2048,system:buildSystemPrompt(),messages:[{role:'user',content:prompt}]})
+    });
+    var data=await resp.json();
+    if(data.error){document.getElementById('ai-analysis-content').textContent='❌ Fehler: '+data.error.message;return;}
+    var text=data.content.map(b=>b.text||'').join('').replace(/\[ACTION\].*?\[\/ACTION\]/gs,'').trim();
+    _analysisLastText=text;
+    document.getElementById('ai-analysis-content').textContent=text;
+  }catch(e){
+    document.getElementById('ai-analysis-content').textContent='❌ Verbindungsfehler: '+e.message;
+  }
+}
+
+function aiAnalyzeIdea(idx){
+  var idea=state.ideas[idx];if(!idea)return;
+  var tam=state.market.tam||5000,samP=state.market.samPct||10,somP=state.market.somPct||5;
+  var sam=Math.round(tam*samP/100),som=Math.round(sam*somP/100);
+  var compsStr=state.competitors.length?state.competitors.map(c=>c.name).join(', '):'keine bekannt';
+  var prompt='Analysiere die Startup-Idee "'+idea.name+'" tiefgehend:\n\n'+
+    'Beschreibung: '+idea.desc+'\nBereich: '+idea.sector+'\n'+
+    'Scores: Markt '+idea.markt+'/10 | Machbarkeit '+idea.mach+'/10 | Passion '+idea.pass+'/10\n'+
+    'Marktrahmen: TAM €'+tam+'M, SAM €'+sam+'M, SOM €'+som+'M\n'+
+    'Bekannte Wettbewerber: '+compsStr+'\n\n'+
+    'Analysiere bitte:\n'+
+    '1. 🎯 Stärken und Schwächen der Idee\n'+
+    '2. 📊 Geschätztes TAM/SAM/SOM spezifisch für diese Idee (konkrete Zahlen mit Begründung)\n'+
+    '3. 👥 Zielgruppe und idealer Erstkunde (Persona)\n'+
+    '4. ⚡ USP und Differenzierung gegenüber Wettbewerb\n'+
+    '5. 🚀 5 konkrete nächste Schritte (umsetzbar in 30 Tagen)\n'+
+    '6. ⚠️ Top 3 Risiken und wie wir sie mitigieren\n'+
+    '7. 💡 Empfehlung: Lohnt es sich, diese Idee weiterzuverfolgen?\n\n'+
+    'Sei präzise, gib konkrete Zahlen und sei direkt in deiner Einschätzung.';
+  runAiAnalysis('🔍 KI-Analyse: '+idea.name,prompt);
+}
+
+function aiEstimateMarket(){
+  var topIdea=state.ideas.length>0?[...state.ideas].sort((a,b)=>((b.markt+b.mach+b.pass)-(a.markt+a.mach+a.pass)))[0]:null;
+  var allIdeas=state.ideas.map(i=>i.name+' ['+i.sector+']').join(', ')||'Noch keine Ideen';
+  var prompt='Schätze realistische Marktgrössen für unser Startup.\n\n'+
+    (topIdea?'Stärkste Idee: "'+topIdea.name+'" ['+topIdea.sector+']\nBeschreibung: '+topIdea.desc+'\n\n':'')+
+    'Alle Ideen: '+allIdeas+'\n\n'+
+    'Bitte gib:\n'+
+    '1. 📊 Realistisches TAM in €M (mit Quellenangabe/Begründung)\n'+
+    '2. 📉 SAM als % des TAM und in €M (mit Begründung)\n'+
+    '3. 🎯 SOM als % des SAM und in €M (für Jahr 1-3, mit Begründung)\n'+
+    '4. 💡 Welche Annahmen liegen der Berechnung zugrunde?\n'+
+    '5. 🔗 Vergleichbare Unternehmen und deren Marktanteile als Referenzpunkte\n'+
+    '6. ⚠️ Risiken bei der Marktschätzung\n\n'+
+    'Am Ende: Füge einen ACTION-Block hinzu:\n'+
+    '[ACTION]{"type":"update_market","data":{"tam":ZAHL,"samPct":ZAHL,"somPct":ZAHL}}[/ACTION]\n'+
+    '(ersetze ZAHL mit deinen Schätzwerten)';
+  runAiAnalysis('📊 KI-Marktschätzung',prompt);
+}
+
+function aiAnalyzePitchFeedback(){
+  if(!state.pitches.length&&!state.investors.some(i=>i.notes)){alert('Noch kein Pitch-Feedback vorhanden.');return;}
+  var pitchSummary=state.pitches.map(p=>'- '+p.name+' ['+p.status+', '+p.score+']: '+(p.fb||'Kein Feedback')).join('\n')||'Keine Pitches';
+  var invFeedback=state.investors.filter(i=>i.notes).map(i=>'- '+i.name+' ['+i.type+', '+i.status+']: '+i.notes).join('\n')||'Kein Investor-Feedback';
+  var prompt='Analysiere unser gesamtes Pitch-Feedback und gib Verbesserungsvorschläge:\n\n'+
+    'PITCH-VERSIONEN:\n'+pitchSummary+'\n\n'+
+    'INVESTOR-NOTIZEN:\n'+invFeedback+'\n\n'+
+    'Analysiere:\n'+
+    '1. 🔍 Häufigste Kritikpunkte und Muster im Feedback\n'+
+    '2. 💪 Was funktioniert gut? (Wiederhole diese Stärken)\n'+
+    '3. 🛠️ Top 5 konkrete Verbesserungen für den nächsten Pitch\n'+
+    '4. 📖 Empfohlene Pitch-Struktur (10-Slide-Prinzip auf unsere Situation angepasst)\n'+
+    '5. 🎯 Auf welche Investorentypen sollten wir uns fokussieren?\n'+
+    '6. 📅 Konkreter 2-Wochen-Aktionsplan für Pitch-Verbesserung\n'+
+    '7. 💡 Ein konkreter Einstiegssatz für das nächste Pitch-Meeting\n\n'+
+    'Sei spezifisch und actionable. Beziehe dich auf konkretes Feedback.';
+  runAiAnalysis('🎤 KI-Pitch-Feedback-Analyse',prompt);
+}
+
+function aiAnalyzePitchSingle(idx){
+  var p=state.pitches[idx];if(!p)return;
+  var prompt='Analysiere diese spezifische Pitch-Version detailliert:\n\n'+
+    'Name: '+p.name+'\nStatus: '+p.status+'\nBewertung: '+p.score+'\nFeedback: '+(p.fb||'Kein Feedback angegeben')+'\n\n'+
+    'Bitte analysiere:\n'+
+    '1. 🔍 Was bedeutet dieses Feedback konkret?\n'+
+    '2. 💪 Positive Aspekte zum Beibehalten\n'+
+    '3. 🛠️ 5 konkrete Verbesserungen für die nächste Version\n'+
+    '4. 🎯 Auf welche Investorentypen passt dieser Pitch am besten?\n'+
+    '5. 📅 Nächste Schritte (was sollte Version '+p.name+'+1 verbessern?)';
+  runAiAnalysis('🎤 Pitch-Analyse: '+p.name,prompt);
+}
+
+function aiAnalyzeInvestors(){
+  if(!state.investors.length){alert('Noch keine Investoren in der Pipeline.');return;}
+  var invList=state.investors.map(i=>'- '+i.name+' ['+i.type+'] Status: '+i.status+', Ziel: €'+i.amount+'K'+(i.notes?'\n  Notizen: '+i.notes:'')).join('\n');
+  var totalTarget=state.investors.reduce((s,i)=>s+i.amount,0);
+  var prompt='Analysiere unsere Investor-Pipeline strategisch:\n\n'+
+    'INVESTOREN ('+state.investors.length+' total, Gesamtziel: €'+totalTarget+'K):\n'+invList+'\n\n'+
+    'Analysiere:\n'+
+    '1. 📊 Pipeline-Status-Übersicht und Conversion-Rate\n'+
+    '2. 🎯 Priorisierung – welche 2-3 Investoren jetzt fokussieren?\n'+
+    '3. 💬 Konkrete nächste Schritte pro Investor\n'+
+    '4. ⚠️ Risiken in der Pipeline (z.B. zu wenig Term Sheets, falsche Investorentypen)\n'+
+    '5. 🔍 Lücken – welche Investorentypen oder -phasen fehlen?\n'+
+    '6. 💡 Verbesserungen für die Outreach-Strategie\n'+
+    '7. 🤝 Empfehlung: Welche Netzwerk-Kontakte könnten helfen?\n\n'+
+    'Beziehe dich auf unsere stärkste Idee und den Marktkontext.';
+  runAiAnalysis('💰 KI-Investor-Pipeline-Analyse',prompt);
+}
+
+/* ── DOKUMENT-EXPORT ───────────────────── */
+function generatePitchDeck(){
+  var ideas=[...state.ideas].sort((a,b)=>((b.markt+b.mach+b.pass)-(a.markt+a.mach+a.pass)));
+  var top=ideas[0]||{name:'[Startup Name]',desc:'Eine innovative Startup-Idee',sector:'Tech/SaaS',markt:7,mach:7,pass:7};
+  var tam=state.market.tam||5000,sam=Math.round(tam*(state.market.samPct||10)/100),som=Math.round(sam*(state.market.somPct||5)/100);
+  var milSlides=state.milestones.slice(0,5).map(m=>'<li>'+escHtml(m.title)+' – '+m.date+' <span style="color:rgba(255,255,255,0.4)">('+m.owner+')</span></li>').join('');
+  var kpiSlide=state.kpis.slice(0,4).map(k=>'<div class="kpi-box"><div class="kv">'+k.value+(k.unit||'')+'</div><div class="kl">'+escHtml(k.label)+'</div></div>').join('');
+  var teamSlide='<li>Raphael – Co-Founder, HSG St. Gallen</li><li>Martim – Co-Founder, HSG St. Gallen</li>'+state.team.slice(0,3).map(t=>'<li>'+escHtml(t.role)+' <span style="color:rgba(255,255,255,0.4)">(geplant, '+t.when+')</span></li>').join('');
+  var invSlide=state.investors.length?state.investors.slice(0,4).map(i=>'<li>'+escHtml(i.name)+' – '+i.type+' <span style="color:rgba(255,255,255,0.4)">'+i.status+'</span></li>').join(''):'<li>Aktive Investorensuche – Early Stage</li>';
+  var compSlide=state.competitors.length?state.competitors.slice(0,4).map(c=>'<li><strong>'+escHtml(c.name)+'</strong>: Schwächen – '+(c.weak.slice(0,2).join(', ')||'n/a')+'</li>').join(''):'<li>Differenzierung durch einzigartigen Ansatz</li>';
+  var hypSlide=state.hyps.filter(h=>h.status==='Bestätigt').slice(0,4).map(h=>'<li>✅ '+escHtml(h.text)+'</li>').join('')||'<li>Validierung aktiv laufend</li>';
+  var totalRaise=state.investors.reduce((s,i)=>s+(i.amount||0),0);
+
+  var html='<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Pitch Deck – '+escHtml(top.name)+'</title><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#0d0d1a;color:#fff}.slide{width:960px;min-height:540px;margin:24px auto;background:#14142a;border-radius:18px;padding:56px 64px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}.slide::before{content:"";position:absolute;top:-80px;right:-80px;width:320px;height:320px;background:radial-gradient(circle,rgba(26,86,196,0.15),transparent 70%);pointer-events:none}.cover{background:linear-gradient(135deg,#1a56c4 0%,#0d3a8e 50%,#061d4d 100%);text-align:center;align-items:center}.cover::before{background:radial-gradient(circle,rgba(255,255,255,0.06),transparent 60%)}.slide-label{font-size:10px;color:rgba(255,255,255,0.25);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:12px}h1{font-size:52px;font-weight:800;line-height:1.1;margin-bottom:14px}h2{font-size:30px;font-weight:700;color:#7aabf5;margin-bottom:22px}p{font-size:15px;line-height:1.75;color:rgba(255,255,255,0.8);margin-bottom:10px}ul{list-style:none;padding:0}ul li{font-size:14px;color:rgba(255,255,255,0.82);padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.06);line-height:1.5}ul li::before{content:"→ ";color:#7aabf5;font-weight:700}.tag{display:inline-block;background:rgba(122,171,245,0.18);color:#7aabf5;padding:5px 14px;border-radius:20px;font-size:13px;font-weight:600}.mkt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:22px}.mkt-box{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:22px;text-align:center}.mkt-val{font-size:34px;font-weight:800;color:#7aabf5;margin-bottom:4px}.mkt-lbl{font-size:11px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.06em}.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:20px}.kpi-box{background:rgba(29,158,117,0.12);border:1px solid rgba(29,158,117,0.25);border-radius:12px;padding:18px;text-align:center}.kv{font-size:30px;font-weight:800;color:#1d9e75}.kl{font-size:11px;color:rgba(255,255,255,0.45);margin-top:4px}.score-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}.score-chip{background:rgba(255,255,255,0.07);border-radius:8px;padding:8px 16px;font-size:13px}.footer{text-align:center;font-size:11px;color:rgba(255,255,255,0.18);margin-top:36px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.06)}@media print{.slide{margin:0;border-radius:0;page-break-after:always}}</style></head><body>';
+
+  var slides=[
+    // Cover
+    '<div class="slide cover"><div class="tag">'+escHtml(top.sector)+'</div><h1 style="margin-top:18px">'+escHtml(top.name)+'</h1><p style="font-size:18px;max-width:560px;margin-top:10px">'+escHtml(top.desc||'Eine innovative Startup-Idee')+'</p><div style="margin-top:28px;font-size:13px;color:rgba(255,255,255,0.38)">Raphael &amp; Martim · HSG St. Gallen · '+new Date().toLocaleDateString('de-DE')+'</div></div>',
+    // Problem
+    '<div class="slide"><div class="slide-label">Folie 1 – Das Problem</div><h2>Welches Problem lösen wir?</h2><p>In der <strong>'+escHtml(top.sector)+'</strong>-Branche existiert ein klares, ungelöstes Problem.</p>'+hypSlide.replace(/<li>/g,'<li style="padding-left:0">').replace(/✅/g,'')+'<p style="margin-top:16px;color:#7aabf5">→ Wir haben dieses Problem durch eigene Recherche validiert.</p></div>',
+    // Lösung
+    '<div class="slide"><div class="slide-label">Folie 2 – Unsere Lösung</div><h2>'+escHtml(top.name)+'</h2><p>Wir bieten eine einzigartige Lösung mit klarem Mehrwert.</p><div class="score-row"><div class="score-chip">📊 Marktpotenzial: '+top.markt+'/10</div><div class="score-chip">⚙️ Machbarkeit: '+top.mach+'/10</div><div class="score-chip">🔥 Passion: '+top.pass+'/10</div></div></div>',
+    // Markt
+    '<div class="slide"><div class="slide-label">Folie 3 – Marktgrösse</div><h2>Ein attraktiver Markt</h2><div class="mkt-grid"><div class="mkt-box"><div class="mkt-val">€'+tam+'M</div><div class="mkt-lbl">TAM</div></div><div class="mkt-box"><div class="mkt-val">€'+sam+'M</div><div class="mkt-lbl">SAM</div></div><div class="mkt-box"><div class="mkt-val">€'+som+'M</div><div class="mkt-lbl">SOM (Yr 1–3)</div></div></div></div>',
+    // Wettbewerb
+    '<div class="slide"><div class="slide-label">Folie 4 – Wettbewerb</div><h2>Unsere Differenzierung</h2><ul>'+compSlide+'</ul><p style="margin-top:18px;color:#7aabf5">→ Wir adressieren diese Schwächen direkt durch unsere Lösung.</p></div>',
+    // Traction
+    '<div class="slide"><div class="slide-label">Folie 5 – Traction & KPIs</div><h2>Unsere Fortschritte</h2>'+(kpiSlide?'<div class="kpi-row">'+kpiSlide+'</div>':'<p>Early-Stage Startup – Validierung aktiv laufend.</p>')+'</div>',
+    // Roadmap
+    '<div class="slide"><div class="slide-label">Folie 6 – Roadmap</div><h2>Unsere Meilensteine</h2><ul>'+(milSlides||'<li>Roadmap wird aktuell entwickelt</li>')+'</ul></div>',
+    // Team
+    '<div class="slide"><div class="slide-label">Folie 7 – Team</div><h2>Wer steckt dahinter?</h2><ul>'+teamSlide+'</ul></div>',
+    // Fundraising
+    '<div class="slide"><div class="slide-label">Folie 8 – Fundraising</div><h2>Wir suchen Partner</h2><ul>'+invSlide+'</ul>'+(totalRaise?'<p style="margin-top:16px">Fundraising-Ziel: <strong>€'+totalRaise+'K</strong></p>':'')+'</div>',
+    // Closing
+    '<div class="slide cover" style="background:linear-gradient(135deg,#0f6e56,#085041)"><h2 style="color:#fff;font-size:38px;line-height:1.3">Wir suchen Partner,<br>die unsere Vision teilen.</h2><p style="margin-top:20px;font-size:16px">Raphael &amp; Martim · HSG St. Gallen</p><div class="footer" style="border-color:rgba(255,255,255,0.12)">Startup OS · '+escHtml(top.name)+' · '+new Date().getFullYear()+' · Vertraulich</div></div>'
+  ];
+
+  html+=slides.join('')+'</body></html>';
+  var blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;a.download='PitchDeck_'+top.name.replace(/[^a-zA-Z0-9]/g,'_')+'_'+new Date().toISOString().slice(0,10)+'.html';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+}
+
+function generateOnePager(){
+  var ideas=[...state.ideas].sort((a,b)=>((b.markt+b.mach+b.pass)-(a.markt+a.mach+a.pass)));
+  var top=ideas[0]||{name:'[Startup Name]',desc:'Eine innovative Startup-Idee',sector:'Tech/SaaS',markt:7,mach:7,pass:7};
+  var tam=state.market.tam||5000,sam=Math.round(tam*(state.market.samPct||10)/100),som=Math.round(sam*(state.market.somPct||5)/100);
+  var hyps_ok=state.hyps.filter(h=>h.status==='Bestätigt').slice(0,3);
+  var nextMs=state.milestones.filter(m=>m.status!=='Erledigt').slice(0,4);
+  var topInv=state.investors.slice(0,3);
+  var totalRaise=state.investors.reduce((s,i)=>s+(i.amount||0),0);
+  var kpiHtml=state.kpis.slice(0,4).map(k=>'<div class="kpi-box"><div class="kv">'+k.value+(k.unit||'')+'</div><div class="kl">'+escHtml(k.label)+'</div></div>').join('');
+  var compStr=state.competitors.slice(0,4).map(c=>c.name).join(', ')||'Markt noch wenig besetzt';
+
+  var html='<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><title>One-Pager – '+escHtml(top.name)+'</title><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f0f0ec;padding:32px;color:#1a1a18}@media print{body{padding:0;background:#fff}}.page{max-width:820px;margin:0 auto;background:#fff;border-radius:16px;padding:40px;box-shadow:0 4px 24px rgba(0,0,0,0.08)}.header{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:20px;border-bottom:3px solid #1a56c4;margin-bottom:26px}.logo{font-size:30px;font-weight:800}.sub{font-size:12px;color:#888;margin-top:5px}.tag{background:#e8f0fb;color:#1a56c4;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600;white-space:nowrap}.grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}.section{margin-bottom:20px}.stitle{font-size:10px;font-weight:700;color:#1a56c4;text-transform:uppercase;letter-spacing:0.09em;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #e8f0fb}.sbody{font-size:13px;color:#444;line-height:1.65}ul{list-style:none;padding:0}ul li{font-size:13px;color:#444;padding:6px 0;border-bottom:1px solid #f0f0ec}ul li::before{content:"→ ";color:#1a56c4;font-weight:600}.mkt{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.mkt-box{background:#e8f0fb;border-radius:8px;padding:10px;text-align:center}.mkt-val{font-size:18px;font-weight:700;color:#1a56c4}.mkt-lbl{font-size:10px;color:#888;margin-top:2px}.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.kpi-box{background:#e1f5ee;border-radius:8px;padding:10px;text-align:center}.kv{font-size:18px;font-weight:700;color:#0f6e56}.kl{font-size:10px;color:#888;margin-top:2px}.score{display:inline-block;padding:2px 9px;border-radius:4px;font-size:11px;font-weight:600;margin-right:4px;margin-top:6px}.footer{text-align:center;font-size:10px;color:#ccc;margin-top:24px;padding-top:16px;border-top:1px solid #eee}</style></head><body><div class="page"><div class="header"><div><div class="logo">'+escHtml(top.name)+'</div><div class="sub">Raphael &amp; Martim · HSG St. Gallen · '+new Date().toLocaleDateString('de-DE')+'</div></div><span class="tag">'+escHtml(top.sector)+'</span></div>';
+  html+='<div class="grid"><div>';
+  html+='<div class="section"><div class="stitle">Das Problem</div><div class="sbody">'+escHtml(top.desc||'Ein klar definiertes Marktproblem wird adressiert.')+'</div></div>';
+  html+='<div class="section"><div class="stitle">Unsere Lösung</div><div class="sbody">'+escHtml(top.name)+' bietet eine differenzierte Lösung mit hohem Marktpotenzial.<br><span class="score" style="background:#e1f5ee;color:#0f6e56">Markt '+top.markt+'/10</span><span class="score" style="background:#e8f0fb;color:#1a56c4">Machbarkeit '+top.mach+'/10</span><span class="score" style="background:#faeeda;color:#854f0b">Passion '+top.pass+'/10</span></div></div>';
+  if(hyps_ok.length)html+='<div class="section"><div class="stitle">Validierung</div><ul>'+hyps_ok.map(h=>'<li>'+escHtml(h.text)+'</li>').join('')+'</ul></div>';
+  if(state.competitors.length)html+='<div class="section"><div class="stitle">Wettbewerber</div><div class="sbody">'+escHtml(compStr)+'</div></div>';
+  html+='</div><div>';
+  html+='<div class="section"><div class="stitle">Marktgrösse</div><div class="mkt"><div class="mkt-box"><div class="mkt-val">€'+tam+'M</div><div class="mkt-lbl">TAM</div></div><div class="mkt-box"><div class="mkt-val">€'+sam+'M</div><div class="mkt-lbl">SAM</div></div><div class="mkt-box"><div class="mkt-val">€'+som+'M</div><div class="mkt-lbl">SOM</div></div></div></div>';
+  if(nextMs.length)html+='<div class="section"><div class="stitle">Nächste Meilensteine</div><ul>'+nextMs.map(m=>'<li>'+escHtml(m.title)+' – '+m.date+'</li>').join('')+'</ul></div>';
+  if(kpiHtml)html+='<div class="section"><div class="stitle">KPIs</div><div class="kpi-row">'+kpiHtml+'</div></div>';
+  html+='<div class="section"><div class="stitle">Fundraising</div>'+(topInv.length?'<ul>'+topInv.map(i=>'<li>'+escHtml(i.name)+' ('+i.type+') – '+i.status+'</li>').join('')+'</ul>'+(totalRaise?'<div class="sbody" style="margin-top:6px;font-weight:600">Ziel: €'+totalRaise+'K</div>':''):'<div class="sbody">Suchen strategische Partner &amp; Angel-Investoren.</div>')+'</div>';
+  html+='</div></div>';
+  html+='<div class="footer">Startup OS · '+escHtml(top.name)+' · Raphael &amp; Martim · '+new Date().getFullYear()+' · Vertraulich · Nicht zur Weitergabe bestimmt</div></div></body></html>';
+
+  var blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;a.download='OnePager_'+top.name.replace(/[^a-zA-Z0-9]/g,'_')+'_'+new Date().toISOString().slice(0,10)+'.html';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+}
+
+render('ideas');
+</script>
+</body>
+</html>
