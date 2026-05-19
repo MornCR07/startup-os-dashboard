@@ -353,12 +353,9 @@ textarea{resize:vertical;min-height:60px}
 .mic-fab:hover{background:#388bfd;transform:scale(1.09);box-shadow:0 10px 32px rgba(47,129,247,0.6)}
 .mic-fab.recording{background:#f85149;animation:micPulse 1.2s ease-in-out infinite}
 
-/* ── SKELETON LOADING ────────────────────────────────── */
-@keyframes shimmer{0%{background-position:-600px 0}100%{background-position:600px 0}}
-.skel{border-radius:5px;background:linear-gradient(90deg,#21262d 25%,#2d333b 38%,#21262d 63%);background-size:1200px 100%;animation:shimmer 1.5s ease-in-out infinite}
-.skel-line{height:11px;margin-bottom:9px}.skel-h{height:16px;margin-bottom:12px}.skel-sm{height:8px}
-.skel-card{background:#21262d;border:1px solid #30363d;border-radius:12px;padding:18px;margin-bottom:12px}
-.skel-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+/* ── CONTENT FADE-IN ─────────────────────────────────── */
+@keyframes secFade{from{opacity:0}to{opacity:1}}
+.sec-fade{animation:secFade 0.4s ease both}
 
 /* ── PAGE TRANSITION ─────────────────────────────────── */
 @keyframes pageIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
@@ -3257,32 +3254,13 @@ function emptyState(key){
   return'<div class="empty-rich"><span class="empty-icon">'+s.icon+'</span><div class="empty-title">'+s.title+'</div><div class="empty-desc">'+s.desc+'</div><button class="btn btn-primary" style="padding:10px 22px;font-size:13px" onclick="'+s.fn+'">'+s.btn+'</button></div>';
 }
 
-/* ── SKELETON LOADING ─────────────────────────────────── */
-var PAGE_SKEL={
-  ideas:      {id:'idea-list',     html:function(){return'<div class="skel-grid">'+skelCard(4)+'</div>'}},
-  milestone:  {id:'ms-list',       html:function(){return skelRow(4)}},
-  events:     {id:'events-list',   html:function(){return skelRow(3)}},
-  hyp:        {id:'hyp-list',      html:function(){return skelRow(3)}},
-  comp:       {id:'comp-list',     html:function(){return skelRow(3)}},
-  network:    {id:'network-list',  html:function(){return'<div class="skel-grid">'+skelCard(4)+'</div>'}},
-  team:       {id:'team-list',     html:function(){return skelRow(3)}},
-  legal:      {id:'legal-list',    html:function(){return skelRow(4)}},
-  pitch:      {id:'pitch-list',    html:function(){return skelRow(3)}},
-  log:        {id:'log-list',      html:function(){return skelRow(3)}},
-  fundraising:{id:'investor-list', html:function(){return skelRow(3)}},
-  kpi:        {id:'kpi-grid',      html:function(){return'<div class="skel-grid">'+skelCard(6)+'</div>'}},
+/* ── CONTENT CONTAINER MAP (for fade-in) ──────────────── */
+var PAGE_CONTENT_ID={
+  ideas:'idea-list', milestone:'ms-list', events:'events-list',
+  hyp:'hyp-list', comp:'comp-list', network:'network-list',
+  team:'team-list', legal:'legal-list', pitch:'pitch-list',
+  log:'log-list', fundraising:'investor-list', kpi:'kpi-grid',
 };
-
-function skelRow(n){
-  var r='';
-  for(var i=0;i<n;i++)r+='<div class="skel-card"><div class="skel skel-h" style="width:60%"></div><div class="skel skel-line" style="width:40%"></div></div>';
-  return r;
-}
-function skelCard(n){
-  var r='';
-  for(var i=0;i<n;i++)r+='<div class="skel-card" style="min-height:160px"><div class="skel skel-h" style="width:70%;margin-bottom:10px"></div><div class="skel skel-line" style="width:55%"></div><div class="skel skel-line" style="width:45%;margin-bottom:18px"></div><div class="skel skel-sm" style="width:100%;margin-bottom:5px"></div><div class="skel skel-sm" style="width:80%;margin-bottom:5px"></div><div class="skel skel-sm" style="width:65%"></div></div>';
-  return r;
-}
 
 /* ── PAGE TRANSITION + STAGGER ────────────────────────── */
 var PAGE_ORDER=['ideas','vote','matrix','hyp','market','milestone','events','week','kpi','resource','fundraising','pitch','comp','network','ai','mentors','deepdive','notes','docs','team','legal','log','momentum'];
@@ -3301,10 +3279,7 @@ function nav(navEl,page){
   var outEl=document.getElementById('p-'+outPage);
   var inEl=document.getElementById('p-'+page);
 
-  // Prep skeleton or content before slide-in
-  var sk=PAGE_SKEL[page];
-  if(sk){var sc2=document.getElementById(sk.id);if(sc2)sc2.innerHTML=sk.html();}
-  else{render(page);}
+  render(page);
 
   // Direction: forward = new page is after current in nav order
   var oi=PAGE_ORDER.indexOf(outPage),ni=PAGE_ORDER.indexOf(page);
@@ -3312,8 +3287,9 @@ function nav(navEl,page){
 
   _doPageSlide(outEl,inEl,fwd,function(){
     _navBusy=false;
-    if(sk){setTimeout(function(){render(page);staggerChildren(inEl);},400);}
-    else{staggerChildren(inEl);}
+    var cid=PAGE_CONTENT_ID[page];
+    if(cid){var cc=document.getElementById(cid);if(cc){cc.classList.add('sec-fade');setTimeout(function(){cc.classList.remove('sec-fade');},450);}}
+    staggerChildren(inEl);
   });
 }
 
