@@ -1232,7 +1232,7 @@ onSnapshot(STATE_DOC,(snap)=>{
   if(t)t.value=window.state.market.tam||5000;
   if(s)s.value=window.state.market.samPct||10;
   if(o)o.value=window.state.market.somPct||5;
-  renderCurrent();
+  if(!window._navBusy) renderCurrent();
   updateNextEventWidget();
   if(firstLoad){ clearTimeout(loadTimeout); firstLoad=false; showWelcome(); }
   setSyncStatus('live','Live synchronisiert');
@@ -3278,7 +3278,7 @@ function _doPageSlide(outEl,inEl,fwd,cb){
   // Both pages absolutely positioned during slide
   var baseStyle='position:absolute;top:0;left:0;right:0;width:100%;min-height:'+mh+'px;background:var(--bg)';
   outEl.setAttribute('style',baseStyle+';z-index:1;pointer-events:none;display:block');
-  inEl.setAttribute('style',baseStyle+';z-index:2;display:block');
+  inEl.setAttribute('style',baseStyle+';z-index:2;display:block;opacity:0');
   outEl.classList.remove('active');
 
   var xOut=fwd?'pg-exit-l':'pg-exit-r';
