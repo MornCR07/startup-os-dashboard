@@ -463,6 +463,20 @@ textarea{resize:vertical;min-height:60px}
   .mentor-tabs{flex-wrap:wrap}
 }
 
+
+/* ── 3D TILT CARDS ──────────────────────────────────────── */
+.card,.idea-card,.kpi-card,.vote-idea-card,.mentor-tab{transform-origin:center center}
+
+/* ── CINEMATIC PAGE TRANSITIONS ─────────────────────────── */
+@keyframes pgSlideOutL{from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(-52px)}}
+@keyframes pgSlideOutR{from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(52px)}}
+@keyframes pgSlideInR{from{opacity:0;transform:translateX(52px)}to{opacity:1;transform:translateX(0)}}
+@keyframes pgSlideInL{from{opacity:0;transform:translateX(-52px)}to{opacity:1;transform:translateX(0)}}
+.pg-exit-l{animation:pgSlideOutL 330ms cubic-bezier(.4,0,.2,1) forwards!important;pointer-events:none!important}
+.pg-exit-r{animation:pgSlideOutR 330ms cubic-bezier(.4,0,.2,1) forwards!important;pointer-events:none!important}
+.pg-enter-r{animation:pgSlideInR 330ms cubic-bezier(.4,0,.2,1) both!important}
+.pg-enter-l{animation:pgSlideInL 330ms cubic-bezier(.4,0,.2,1) both!important}
+.main-transitioning{overflow:hidden!important;position:relative!important}
 </style>
 </head>
 <body>
@@ -3271,37 +3285,76 @@ function skelCard(n){
 }
 
 /* ── PAGE TRANSITION + STAGGER ────────────────────────── */
-function nav(el,page){
+var PAGE_ORDER=['ideas','vote','matrix','hyp','market','milestone','events','week','kpi','resource','fundraising','pitch','comp','network','ai','mentors','deepdive','notes','docs','team','legal','log','momentum'];
+var _navBusy=false;
+
+function nav(navEl,page){
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  if(el&&el.classList)el.classList.add('active');
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  var pageEl=document.getElementById('p-'+page);
-  pageEl.classList.add('active');
-  currentPage=page;
+  if(navEl&&navEl.classList)navEl.classList.add('active');
   document.getElementById('sidebar').classList.remove('open');
   document.getElementById('sidebar-overlay').classList.remove('open');
+  if(page===currentPage||_navBusy)return;
+  var outPage=currentPage;
+  currentPage=page;
+  _navBusy=true;
 
-  // Fade-in the page
-  pageEl.classList.remove('page-in');
-  void pageEl.offsetWidth; // reflow
-  pageEl.classList.add('page-in');
-  setTimeout(()=>pageEl.classList.remove('page-in'),350);
+  var outEl=document.getElementById('p-'+outPage);
+  var inEl=document.getElementById('p-'+page);
 
-  // Skeleton → real content
+  // Prep skeleton or content before slide-in
   var sk=PAGE_SKEL[page];
-  if(sk){
-    var el2=document.getElementById(sk.id);
-    if(el2){
-      el2.innerHTML=sk.html();
-      setTimeout(function(){
-        render(page);
-        staggerChildren(pageEl);
-      },400);
-      return;
-    }
+  if(sk){var sc2=document.getElementById(sk.id);if(sc2)sc2.innerHTML=sk.html();}
+  else{render(page);}
+
+  // Direction: forward = new page is after current in nav order
+  var oi=PAGE_ORDER.indexOf(outPage),ni=PAGE_ORDER.indexOf(page);
+  var fwd=(oi<0||ni<0||ni>=oi);
+
+  _doPageSlide(outEl,inEl,fwd,function(){
+    _navBusy=false;
+    if(sk){setTimeout(function(){render(page);staggerChildren(inEl);},400);}
+    else{staggerChildren(inEl);}
+  });
+}
+
+function _doPageSlide(outEl,inEl,fwd,cb){
+  if(!outEl||!inEl){
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    if(inEl){inEl.classList.add('active');render(currentPage);}
+    _navBusy=false;if(cb)cb();return;
   }
-  render(page);
-  staggerChildren(pageEl);
+  var main=document.querySelector('.main');
+  var mh=main.clientHeight;
+  main.scrollTop=0;
+  main.classList.add('main-transitioning');
+  main.style.height=mh+'px';
+
+  // Both pages absolutely positioned during slide
+  var baseStyle='position:absolute;top:0;left:0;right:0;width:100%;min-height:'+mh+'px;background:var(--bg)';
+  outEl.setAttribute('style',baseStyle+';z-index:1;pointer-events:none;display:block');
+  inEl.setAttribute('style',baseStyle+';z-index:2;display:block');
+  outEl.classList.remove('active');
+
+  var xOut=fwd?'pg-exit-l':'pg-exit-r';
+  var xIn=fwd?'pg-enter-r':'pg-enter-l';
+
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      outEl.classList.add(xOut);
+      inEl.classList.add(xIn);
+    });
+  });
+
+  setTimeout(function(){
+    outEl.removeAttribute('style');
+    outEl.classList.remove(xOut);
+    inEl.removeAttribute('style');
+    inEl.classList.remove(xIn);
+    inEl.classList.add('active');
+    main.classList.remove('main-transitioning');
+    main.style.height='';
+    if(cb)cb();
+  },345);
 }
 
 function staggerChildren(pageEl){
@@ -3392,6 +3445,36 @@ function typewriterAppend(container,div,text,scrollEl){
   }
   tick();
 }
+
+
+/* ── 3D KARTEN-TILT ─────────────────────────────────────── */
+(function(){
+  var sel='.card,.idea-card,.kpi-card,.vote-idea-card,.mentor-tab';
+  var cur=null;
+  function resetCard(el){
+    el.style.transition='transform 0.5s cubic-bezier(.4,0,.2,1),box-shadow 0.4s,border-color 0.15s';
+    el.style.transform='';
+    el.style.willChange='';
+    var snap=el.style.transition;
+    setTimeout(function(){if(el.style.transition===snap)el.style.transition='';},520);
+  }
+  document.addEventListener('mousemove',function(e){
+    var el=e.target.closest(sel);
+    if(cur&&cur!==el){resetCard(cur);cur=null;}
+    if(!el)return;
+    if(cur!==el)el.style.willChange='transform';
+    cur=el;
+    var r=el.getBoundingClientRect();
+    var dx=(e.clientX-r.left-r.width/2)/(r.width/2);
+    var dy=(e.clientY-r.top-r.height/2)/(r.height/2);
+    var rx=parseFloat((-dy*2.5).toFixed(2)),ry=parseFloat((dx*3.5).toFixed(2));
+    el.style.transition='box-shadow 0.12s,border-color 0.12s';
+    el.style.transform='perspective(900px) rotateX('+rx+'deg) rotateY('+ry+'deg) translateY(-4px)';
+  });
+  document.addEventListener('mouseleave',function(){
+    if(cur){resetCard(cur);cur=null;}
+  });
+})();
 
 render('ideas');
 </script>
