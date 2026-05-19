@@ -353,6 +353,39 @@ textarea{resize:vertical;min-height:60px}
 .mic-fab:hover{background:#388bfd;transform:scale(1.09);box-shadow:0 10px 32px rgba(47,129,247,0.6)}
 .mic-fab.recording{background:#f85149;animation:micPulse 1.2s ease-in-out infinite}
 
+/* ── SKELETON LOADING ────────────────────────────────── */
+@keyframes shimmer{0%{background-position:-600px 0}100%{background-position:600px 0}}
+.skel{border-radius:5px;background:linear-gradient(90deg,#21262d 25%,#2d333b 38%,#21262d 63%);background-size:1200px 100%;animation:shimmer 1.5s ease-in-out infinite}
+.skel-line{height:11px;margin-bottom:9px}.skel-h{height:16px;margin-bottom:12px}.skel-sm{height:8px}
+.skel-card{background:#21262d;border:1px solid #30363d;border-radius:12px;padding:18px;margin-bottom:12px}
+.skel-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+
+/* ── PAGE TRANSITION ─────────────────────────────────── */
+@keyframes pageIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.page-in{animation:pageIn 280ms cubic-bezier(.4,0,.2,1) both}
+
+/* ── STAGGER ITEMS ───────────────────────────────────── */
+@keyframes itemIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.stagger{animation:itemIn 300ms cubic-bezier(.4,0,.2,1) both;animation-fill-mode:both}
+
+/* ── SLIDE IN (new items) ────────────────────────────── */
+@keyframes slideInUp{from{opacity:0;transform:translateY(18px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.slide-in{animation:slideInUp 380ms cubic-bezier(.34,1.56,.64,1) both}
+
+/* ── MICRO: button press ─────────────────────────────── */
+.btn:active{transform:scale(0.97)!important;transition:transform 0.07s ease!important}
+.btn-primary:active,.btn-danger:active,.btn-green:active{transform:scale(0.97)!important;transition:transform 0.07s ease!important}
+.welcome-btn:active,.greeting-proceed:active{transform:scale(0.98)!important;transition:transform 0.07s ease!important}
+.mic-fab:active{transform:scale(0.91)!important;transition:transform 0.07s ease!important}
+.act-btn:active{transform:scale(0.88)!important}
+.nav-item:active{opacity:0.75}
+
+/* ── RICH EMPTY STATES ───────────────────────────────── */
+.empty-rich{padding:56px 24px;text-align:center}
+.empty-icon{font-size:54px;display:block;margin-bottom:16px;animation:pageIn 500ms ease both}
+.empty-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px}
+.empty-desc{font-size:13px;color:var(--text2);line-height:1.6;max-width:280px;margin:0 auto 24px}
+
 /* ── VOICE MODAL ────────────────────────────────────────── */
 .voice-modal{background:linear-gradient(145deg,rgba(33,38,45,0.96),rgba(15,22,41,0.96));border:1px solid #30363d;border-radius:18px;padding:26px;width:480px;max-width:93vw;max-height:88vh;overflow-y:auto;backdrop-filter:blur(20px)}
 .voice-wave{display:flex;align-items:flex-end;gap:4px;height:40px;margin:18px 0}
@@ -1544,7 +1577,7 @@ function delDoc(i){if(confirm('Dokument löschen?')){state.docs.splice(i,1);save
 
 /* ── IDEAS ─────────────────────────────── */
 function renderIdeas(){
-  if(!state.ideas.length){document.getElementById('idea-list').innerHTML='<div class="empty-state">Noch keine Ideen – füge deine erste hinzu!</div>';return}
+  if(!state.ideas.length){document.getElementById('idea-list').innerHTML=emptyState('ideas');return}
   document.getElementById('idea-list').innerHTML=state.ideas.map((i,idx)=>{
     var avg=Math.round((i.markt+i.mach+i.pass)/3*10)/10;
     return'<div class="idea-card"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div class="idea-name">'+i.name+'</div><div class="row-actions" style="opacity:1"><button class="act-btn" onclick="aiAnalyzeIdea('+idx+')" title="KI-Analyse">🤖</button><button class="act-btn" onclick="openEditIdea('+idx+')">✏️</button><button class="act-btn" onclick="delIdea('+idx+')">✕</button></div></div>'+
@@ -1559,7 +1592,7 @@ function addIdea(){
   var n=document.getElementById('idea-name').value.trim();if(!n)return;
   state.ideas.push({name:n,desc:document.getElementById('idea-desc').value,markt:+document.getElementById('idea-markt').value||7,mach:+document.getElementById('idea-mach').value||6,pass:+document.getElementById('idea-pass').value||8,sector:document.getElementById('idea-sector').value});
   document.getElementById('idea-name').value='';document.getElementById('idea-desc').value='';
-  closeModal('modal-idea');saveState();
+  closeModal('modal-idea');saveState();slideInLast('idea-list');
 }
 function delIdea(i){if(confirm('Idee löschen?')){state.ideas.splice(i,1);saveState();}}
 function openEditIdea(i){
@@ -1584,7 +1617,7 @@ function renderVote(){
     return;
   }
   if(!state.ideas.length){
-    document.getElementById('vote-content').innerHTML='<div class="empty-state">Noch keine Ideen zum Bewerten</div>';
+    document.getElementById('vote-content').innerHTML=emptyState('vote');
     return;
   }
 
@@ -1749,7 +1782,7 @@ function updateNextEventWidget(){
 function renderEvents(){
   var today=new Date(); today.setHours(0,0,0,0);
   var evs=(state.events||[]).sort((a,b)=>new Date(a.date)-new Date(b.date));
-  if(!evs.length){document.getElementById('events-list').innerHTML='<div class="empty-state">Noch keine Termine</div>';return;}
+  if(!evs.length){document.getElementById('events-list').innerHTML=emptyState('events');return;}
   var m=['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
   var typeColors={Coaching:'tag-blue',Meeting:'tag-amber',Deadline:'tag-red',Pitch:'tag-green',Sonstiges:'tag-gray'};
   document.getElementById('events-list').innerHTML=evs.map((e,i)=>{
@@ -1777,7 +1810,7 @@ function addEvent(){
   if(!state.events)state.events=[];
   state.events.push({title:t,date:d,type:document.getElementById('ev-type').value,note:document.getElementById('ev-note').value});
   document.getElementById('ev-title').value='';document.getElementById('ev-date').value='';document.getElementById('ev-note').value='';
-  closeModal('modal-event');saveState();
+  closeModal('modal-event');saveState();slideInLast('events-list');
 }
 function delEvent(i){if(confirm('Termin wirklich löschen?')){state.events.splice(i,1);saveState();}}
 
@@ -1800,12 +1833,12 @@ function renderMs(){
   var header=total?'<div style="margin-bottom:16px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><span style="font-size:12px;color:var(--text2)">'+done+' von '+total+' abgeschlossen</span><span style="font-size:12px;font-weight:700;color:var(--green)">'+pct+'%</span></div><div style="height:6px;background:rgba(255,255,255,0.06);border-radius:3px"><div style="height:6px;border-radius:3px;width:'+pct+'%;background:linear-gradient(90deg,#2f81f7,#3fb950);transition:width 0.6s"></div></div><div style="display:flex;gap:12px;margin-top:8px"><span style="font-size:11px;color:var(--green)">✓ '+done+' erledigt</span><span style="font-size:11px;color:var(--accent-h)">→ '+active+' aktiv</span><span style="font-size:11px;color:var(--text3)">○ '+(total-done-active)+' offen</span></div></div>':'';
   document.getElementById('ms-list').innerHTML=total?header+state.milestones.map((m,i)=>
     '<div class="row-wrap"><div class="ms-dot '+sc2[m.status]+'">'+ic[m.status]+'</div><div style="flex:1"><div class="ms-title">'+m.title+'</div><div class="ms-meta">'+m.date+' · '+m.owner+'</div></div><span class="tag '+(m.status==='Erledigt'?'tag-green':m.status==='In Arbeit'?'tag-blue':'tag-gray')+'">'+m.status+'</span><div class="row-actions"><button class="act-btn" onclick="openEditMs('+i+')">✏️</button><button class="act-btn" onclick="delMs('+i+')">✕</button></div></div>'
-  ).join(''):'<div class="empty-state">Noch keine Milestones</div>';
+  ).join(''):emptyState('milestone');
 }
 function addMs(){
   var t=document.getElementById('ms-title').value.trim();if(!t)return;
   state.milestones.push({title:t,date:document.getElementById('ms-date').value,owner:document.getElementById('ms-owner').value,status:document.getElementById('ms-status').value});
-  document.getElementById('ms-title').value='';closeModal('modal-ms');saveState();
+  document.getElementById('ms-title').value='';closeModal('modal-ms');saveState();slideInLast('ms-list');
 }
 function delMs(i){if(confirm('Milestone löschen?')){state.milestones.splice(i,1);saveState();}}
 function openEditMs(i){
@@ -1830,12 +1863,12 @@ function renderFund(){
   document.getElementById('fund-metrics').innerHTML=stages.map((s,si)=>'<div class="metric" style="background:linear-gradient(135deg,'+stageColors[si]+',rgba(15,22,41,0.5));border-color:'+stageBorder[si]+'"><div class="metric-label">'+s+'</div><div class="metric-value" style="color:'+stageTextColor[si]+'">'+counts[s]+'</div></div>').join('');
   document.getElementById('investor-list').innerHTML=state.investors.length?state.investors.map((inv,i)=>
     '<div class="row-wrap" style="align-items:center"><div class="inv-avatar">'+inv.name.substring(0,2).toUpperCase()+'</div><div style="flex:1;margin-left:10px"><div style="font-size:13px;font-weight:600;color:var(--text)">'+inv.name+'</div><div style="font-size:11px;color:var(--text2)">'+inv.type+' · '+inv.status+'</div></div><div style="font-size:15px;font-weight:800;color:var(--green)">€'+inv.amount+'K</div><div class="row-actions"><button class="act-btn" onclick="openEditInv('+i+')">✏️</button><button class="act-btn" onclick="delInv('+i+')">✕</button></div></div>'
-  ).join(''):'<div class="empty-state">Noch keine Investoren</div>';
+  ).join(''):emptyState('fundraising');
 }
 function addInv(){
   var n=document.getElementById('inv-name').value.trim();if(!n)return;
   state.investors.push({name:n,type:document.getElementById('inv-type').value,amount:+document.getElementById('inv-amount').value,status:document.getElementById('inv-status').value,notes:document.getElementById('inv-notes').value});
-  document.getElementById('inv-name').value='';document.getElementById('inv-notes').value='';closeModal('modal-inv');saveState();
+  document.getElementById('inv-name').value='';document.getElementById('inv-notes').value='';closeModal('modal-inv');saveState();slideInLast('investor-list');
 }
 function delInv(i){if(confirm('Investor löschen?')){state.investors.splice(i,1);saveState();}}
 function openEditInv(i){
@@ -1854,12 +1887,12 @@ function renderHyp(){
   var sc3={'Nicht getestet':'tag-gray','In Validierung':'tag-amber','Bestätigt':'tag-green','Widerlegt':'tag-red'};
   document.getElementById('hyp-list').innerHTML=state.hyps.length?state.hyps.map((h,i)=>
     '<div class="row-wrap" style="align-items:flex-start"><div style="flex:1"><div style="font-size:13px;color:#e2e2f0;margin-bottom:5px">'+h.text+'</div><div style="display:flex;gap:8px"><span class="tag '+sc3[h.status]+'">'+h.status+'</span><span style="font-size:11px;color:#8888aa">'+h.method+'</span></div></div><div class="row-actions"><button class="act-btn" onclick="openEditHyp('+i+')">✏️</button><button class="act-btn" onclick="delHyp('+i+')">✕</button></div></div>'
-  ).join(''):'<div class="empty-state">Noch keine Hypothesen</div>';
+  ).join(''):emptyState('hyp');
 }
 function addHyp(){
   var t=document.getElementById('hyp-text').value.trim();if(!t)return;
   state.hyps.push({text:t,status:document.getElementById('hyp-status').value,method:document.getElementById('hyp-method').value});
-  document.getElementById('hyp-text').value='';closeModal('modal-hyp');saveState();
+  document.getElementById('hyp-text').value='';closeModal('modal-hyp');saveState();slideInLast('hyp-list');
 }
 function delHyp(i){if(confirm('Hypothese löschen?')){state.hyps.splice(i,1);saveState();}}
 function openEditHyp(i){
@@ -1876,12 +1909,12 @@ function saveEditHyp(){
 function renderComp(){
   document.getElementById('comp-list').innerHTML=state.competitors.length?state.competitors.map((c,i)=>
     '<div class="row-wrap"><div style="font-size:13px;font-weight:600;width:120px;flex-shrink:0">'+c.name+'</div><div style="display:flex;gap:4px;flex-wrap:wrap;flex:1">'+c.strengths.map(s=>'<span class="tag tag-green">'+s+'</span>').join('')+c.weak.map(w=>'<span class="tag tag-red">'+w+'</span>').join('')+'</div><div class="row-actions"><button class="act-btn" onclick="openEditComp('+i+')">✏️</button><button class="act-btn" onclick="delComp('+i+')">✕</button></div></div>'
-  ).join(''):'<div class="empty-state">Noch keine Wettbewerber</div>';
+  ).join(''):emptyState('comp');
 }
 function addComp(){
   var n=document.getElementById('comp-name').value.trim();if(!n)return;
   state.competitors.push({name:n,strengths:document.getElementById('comp-strengths').value.split(',').map(s=>s.trim()).filter(Boolean),weak:document.getElementById('comp-weak').value.split(',').map(s=>s.trim()).filter(Boolean)});
-  document.getElementById('comp-name').value='';closeModal('modal-comp');saveState();
+  document.getElementById('comp-name').value='';closeModal('modal-comp');saveState();slideInLast('comp-list');
 }
 function delComp(i){if(confirm('Wettbewerber löschen?')){state.competitors.splice(i,1);saveState();}}
 function openEditComp(i){
@@ -1898,12 +1931,12 @@ function saveEditComp(){
 function renderNetwork(){
   document.getElementById('network-list').innerHTML=state.network.length?'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px">'+state.network.map((n,i)=>
     '<div style="background:#21262d;border:1px solid #30363d;border-radius:8px;padding:14px"><div style="display:flex;justify-content:space-between"><div style="font-size:13px;font-weight:600;color:#e6edf3">'+n.name+'</div><div class="row-actions" style="opacity:1"><button class="act-btn" onclick="openEditNetwork('+i+')">✏️</button><button class="act-btn" onclick="delNetwork('+i+')">✕</button></div></div><div style="font-size:11px;color:#8b949e;margin:2px 0 6px">'+n.role+'</div><div style="font-size:12px;color:#484f58;line-height:1.4">'+n.help+'</div></div>'
-  ).join('')+'</div>':'<div class="empty-state">Noch keine Kontakte</div>';
+  ).join('')+'</div>':emptyState('network');
 }
 function addNetwork(){
   var n=document.getElementById('nc-name').value.trim();if(!n)return;
   state.network.push({name:n,role:document.getElementById('nc-role').value,help:document.getElementById('nc-help').value});
-  document.getElementById('nc-name').value='';closeModal('modal-network');saveState();
+  document.getElementById('nc-name').value='';closeModal('modal-network');saveState();slideInLast('network-list');
 }
 function delNetwork(i){if(confirm('Kontakt löschen?')){state.network.splice(i,1);saveState();}}
 function openEditNetwork(i){
@@ -1920,13 +1953,13 @@ function saveEditNetwork(){
 function renderWeek(){
   ['r','c'].forEach(who=>{
     document.getElementById('tasks-'+who).innerHTML=state.tasks[who].length?state.tasks[who].map((t,i)=>
-      '<div class="task-item"><div class="task-cb'+(t.done?' checked':'')+'" onclick="toggleTask(\''+who+'\','+i+')">'+(t.done?'✓':'')+'</div><div class="task-text'+(t.done?' done':'')+'">'+t.text+'</div><button class="act-btn" style="opacity:0.4;margin-left:auto" onclick="delTask(\''+who+'\','+i+')">✕</button></div>'
+      '<div class="task-item"><div class="task-cb'+(t.done?' checked':'')+'" onclick="toggleTask(\''+who+'\','+i+',event)">'+(t.done?'✓':'')+'</div><div class="task-text'+(t.done?' done':'')+'">'+t.text+'</div><button class="act-btn" style="opacity:0.4;margin-left:auto" onclick="delTask(\''+who+'\','+i+')">✕</button></div>'
     ).join(''):'<div class="empty-state">Keine Tasks diese Woche</div>';
     var gi=document.getElementById('week-goal-'+who);
     if(gi&&document.activeElement!==gi)gi.value=(state.weekGoals&&state.weekGoals[who])||'';
   });
 }
-function toggleTask(who,i){state.tasks[who][i].done=!state.tasks[who][i].done;saveState();}
+function toggleTask(who,i,ev){state.tasks[who][i].done=!state.tasks[who][i].done;if(state.tasks[who][i].done){var _cx=ev?ev.clientX:window.innerWidth/2,_cy=ev?ev.clientY:window.innerHeight/2;confettiBurst(_cx,_cy);}saveState();}
 function delTask(who,i){state.tasks[who].splice(i,1);saveState();}
 function addTask(who){
   var t=document.getElementById('task-'+who+'-text').value.trim();if(!t)return;
@@ -1945,7 +1978,7 @@ function saveWeekGoal(who,val){
 
 /* ── KPI ─────────────────────────────── */
 function renderKpi(){
-  if(!state.kpis.length){document.getElementById('kpi-grid').innerHTML='<div class="empty-state" style="grid-column:1/-1">Noch keine KPIs</div>';return;}
+  if(!state.kpis.length){document.getElementById('kpi-grid').innerHTML=emptyState('kpi');return;}
   document.getElementById('kpi-grid').innerHTML=state.kpis.map((k,idx)=>{
     var pct=k.target?Math.min(100,Math.round(k.value/k.target*100)):0;
     var trend=pct>=80?'🟢 '+pct+'%':pct>=50?'🟡 '+pct+'%':'🔴 '+pct+'%';
@@ -1981,27 +2014,27 @@ function delRes(i){if(confirm('Resource löschen?')){state.resources.splice(i,1)
 function renderLegal(){
   document.getElementById('legal-list').innerHTML=state.legal.length?state.legal.map((l,i)=>
     '<div class="row-wrap" style="align-items:center"><div style="width:16px;height:16px;border-radius:4px;border:1.5px solid '+(l.done?'#3fb950':'rgba(255,255,255,0.13)')+';background:'+(l.done?'rgba(63,185,80,0.14)':'rgba(34,34,46,1)')+';display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:'+(l.done?'#3fb950':'transparent')+';cursor:pointer;flex-shrink:0" onclick="toggleLegal('+i+')">'+(l.done?'✓':'')+'</div><div style="flex:1;margin-left:10px"><div style="font-size:13px;font-weight:500;color:#e2e2f0">'+l.text+'</div><div style="font-size:11px;color:#8888aa">'+l.sub+'</div></div><div class="row-actions"><button class="act-btn" onclick="delLegal('+i+')">✕</button></div></div>'
-  ).join(''):'<div class="empty-state">Noch keine Legal-Punkte</div>';
+  ).join(''):emptyState('legal');
 }
 function toggleLegal(i){state.legal[i].done=!state.legal[i].done;saveState();}
 function delLegal(i){if(confirm('Punkt löschen?')){state.legal.splice(i,1);saveState();}}
 function addLegal(){
   var t=document.getElementById('legal-text-input').value.trim();if(!t)return;
   state.legal.push({text:t,sub:document.getElementById('legal-sub-input').value,done:false});
-  document.getElementById('legal-text-input').value='';document.getElementById('legal-sub-input').value='';closeModal('modal-legal');saveState();
+  document.getElementById('legal-text-input').value='';document.getElementById('legal-sub-input').value='';closeModal('modal-legal');saveState();slideInLast('legal-list');
 }
 
 /* ── DECISION LOG ────────────────────── */
 function renderLog(){
   document.getElementById('dec-list').innerHTML=state.decisions.length?state.decisions.map((d,i)=>
     '<div class="row-wrap" style="align-items:flex-start"><div style="flex:1"><div class="dec-q">'+d.q+'</div><div class="dec-a">'+d.a+'</div><div class="dec-date">'+d.date+'</div></div><div class="row-actions"><button class="act-btn" onclick="delDec('+i+')">✕</button></div></div>'
-  ).join(''):'<div class="empty-state">Noch keine Entscheidungen</div>';
+  ).join(''):emptyState('log');
 }
 function addDec(){
   var q=document.getElementById('dec-q').value.trim();if(!q)return;
   var d=new Date();
   state.decisions.unshift({q,a:document.getElementById('dec-a').value,date:d.getDate()+'.'+(d.getMonth()+1)+'.'+d.getFullYear()});
-  document.getElementById('dec-q').value='';document.getElementById('dec-a').value='';closeModal('modal-dec');saveState();
+  document.getElementById('dec-q').value='';document.getElementById('dec-a').value='';closeModal('modal-dec');saveState();slideInLast('dec-list');
 }
 function delDec(i){if(confirm('Entscheidung löschen?')){state.decisions.splice(i,1);saveState();}}
 
@@ -2010,12 +2043,12 @@ function renderTeam(){
   var pc={Hoch:'tag-red',Mittel:'tag-amber',Niedrig:'tag-gray'};
   document.getElementById('team-list').innerHTML=state.team.length?state.team.map((t,i)=>
     '<div class="row-wrap" style="align-items:center"><div style="flex:1"><div style="font-size:13px;font-weight:500;color:#e2e2f0">'+t.role+'</div></div><span class="tag '+pc[t.prio]+'">'+t.prio+'</span><div style="font-size:12px;color:#8888aa;padding:0 10px">'+t.when+'</div><div class="row-actions"><button class="act-btn" onclick="delTeam('+i+')">✕</button></div></div>'
-  ).join(''):'<div class="empty-state">Noch keine Hires geplant</div>';
+  ).join(''):emptyState('team');
 }
 function addTeam(){
   var r=document.getElementById('team-role').value.trim();if(!r)return;
   state.team.push({role:r,prio:document.getElementById('team-prio').value,when:document.getElementById('team-when').value});
-  document.getElementById('team-role').value='';closeModal('modal-team');saveState();
+  document.getElementById('team-role').value='';closeModal('modal-team');saveState();slideInLast('team-list');
 }
 function delTeam(i){if(confirm('Eintrag löschen?')){state.team.splice(i,1);saveState();}}
 
@@ -2024,12 +2057,12 @@ function renderPitch(){
   var sc4={Entwurf:'tag-gray','In Überprüfung':'tag-blue','Präsentiert':'tag-amber','Abgelehnt':'tag-red'};
   document.getElementById('pitch-list').innerHTML=state.pitches.length?state.pitches.map((p,i)=>
     '<div class="row-wrap" style="align-items:flex-start"><div style="flex:1"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><div style="font-size:13px;font-weight:600;color:#e2e2f0">'+p.name+'</div><span class="tag '+sc4[p.status]+'">'+p.status+'</span><span class="tag tag-gray">'+p.score+'</span></div><div style="font-size:12px;color:#8888aa;line-height:1.4">'+p.fb+'</div></div><div class="row-actions"><button class="act-btn" onclick="aiAnalyzePitchSingle('+i+')" title="KI-Feedback-Analyse">🤖</button><button class="act-btn" onclick="openEditPitch('+i+')">✏️</button><button class="act-btn" onclick="delPitch('+i+')">✕</button></div></div>'
-  ).join(''):'<div class="empty-state">Noch keine Pitch-Versionen</div>';
+  ).join(''):emptyState('pitch');
 }
 function addPitch(){
   var n=document.getElementById('pitch-name').value.trim();if(!n)return;
   state.pitches.push({name:n,fb:document.getElementById('pitch-fb').value,status:document.getElementById('pitch-status').value,score:document.getElementById('pitch-score').value});
-  document.getElementById('pitch-name').value='';closeModal('modal-pitch');saveState();
+  document.getElementById('pitch-name').value='';closeModal('modal-pitch');saveState();slideInLast('pitch-list');
 }
 function delPitch(i){if(confirm('Pitch löschen?')){state.pitches.splice(i,1);saveState();}}
 function openEditPitch(i){
@@ -2829,9 +2862,14 @@ function appendMentorMsg(id,role,text,mentor,noSave){
   var avatarHtml=role==='assistant'?
     '<div class="mentor-msg-avatar" style="background:'+mentor2.bg+';font-size:16px">'+mentor2.emoji+'</div>':
     '<div class="mentor-msg-avatar" style="background:#1a56c4;color:#fff;font-size:11px;font-weight:700">'+(currentUser==='raphael'?'R':'M')+'</div>';
-  div.innerHTML=avatarHtml+'<div class="mentor-bubble">'+escHtml(text)+'</div>';
-  container.appendChild(div);
-  container.scrollTop=container.scrollHeight;
+  if(role==='assistant'&&!noSave){
+    div.innerHTML=avatarHtml+'<div class="mentor-bubble"></div>';
+    typewriterAppend(container,div,text,container);
+  }else{
+    div.innerHTML=avatarHtml+'<div class="mentor-bubble">'+escHtml(text)+'</div>';
+    container.appendChild(div);
+    container.scrollTop=container.scrollHeight;
+  }
   if(!noSave){
     var hist=getMentorHistory(id);
     hist.push({role,content:text});
@@ -3176,6 +3214,183 @@ function generateOnePager(){
   var a=document.createElement('a');
   a.href=url;a.download='OnePager_'+top.name.replace(/[^a-zA-Z0-9]/g,'_')+'_'+new Date().toISOString().slice(0,10)+'.html';
   document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+}
+
+/* ══════════════════════════════════════════════════════════
+   VISUELLE VERBESSERUNGEN
+   ══════════════════════════════════════════════════════════ */
+
+/* ── RICH EMPTY STATES ────────────────────────────────── */
+var ES={
+  ideas:      {icon:'💡',title:'Noch keine Ideen',desc:'Jede große Startup begann mit einer Idee. Halte deine erste fest!',btn:'Erste Idee hinzufügen',fn:"openModal('modal-idea')"},
+  milestone:  {icon:'🗺️',title:'Roadmap ist noch leer',desc:'Setze euren ersten Milestone und haltet den Fortschritt im Blick.',btn:'Ersten Milestone setzen',fn:"openModal('modal-ms')"},
+  events:     {icon:'📅',title:'Keine Termine',desc:'Coaching-Sessions, Deadlines und wichtige Meetings hier eintragen.',btn:'Termin hinzufügen',fn:"openModal('modal-event')"},
+  kpi:        {icon:'📈',title:'KPIs noch nicht definiert',desc:'Messt euren Fortschritt mit klaren Kennzahlen.',btn:'Ersten KPI anlegen',fn:"openModal('modal-kpi')"},
+  fundraising:{icon:'💰',title:'Investor-Pipeline leer',desc:'Trackt eure Fundraising-Pipeline und Investor-Gespräche.',btn:'Investor hinzufügen',fn:"openModal('modal-inv')"},
+  hyp:        {icon:'🔬',title:'Keine Hypothesen',desc:'Formuliert Annahmen, testet sie systematisch und lernt schnell.',btn:'Erste Hypothese',fn:"openModal('modal-hyp')"},
+  comp:       {icon:'🏁',title:'Kein Wettbewerb erfasst',desc:'Analysiert euer Wettbewerbsumfeld für eine stärkere Positionierung.',btn:'Wettbewerber hinzufügen',fn:"openModal('modal-comp')"},
+  network:    {icon:'🤝',title:'Netzwerk aufbauen',desc:'Mentoren, Berater, wichtige Kontakte – alles an einem Ort.',btn:'Kontakt hinzufügen',fn:"openModal('modal-network')"},
+  team:       {icon:'👥',title:'Keine Stellen geplant',desc:'Plant eure zukünftigen Teamstellen und Prioritäten.',btn:'Stelle planen',fn:"openModal('modal-team')"},
+  legal:      {icon:'📋',title:'Legal-Checkliste leer',desc:'Haltet rechtliche und administrative Aufgaben im Überblick.',btn:'Ersten Punkt hinzufügen',fn:"openModal('modal-legal')"},
+  pitch:      {icon:'🎤',title:'Noch keine Pitches',desc:'Trackt eure Pitch-Erfahrungen und sammelt systematisch Feedback.',btn:'Pitch hinzufügen',fn:"openModal('modal-pitch')"},
+  log:        {icon:'🗒️',title:'Noch keine Entscheidungen',desc:'Dokumentiert wichtige Entscheidungen und deren Begründungen.',btn:'Entscheidung festhalten',fn:"openModal('modal-log')"},
+  vote:       {icon:'🗳️',title:'Keine Ideen zum Bewerten',desc:'Fügt zuerst Ideen im Ideen-Board hinzu, dann hier abstimmen.',btn:'Idee hinzufügen',fn:"nav(document.querySelector('[data-page=ideas]'),'ideas')"},
+};
+
+function emptyState(key){
+  var s=ES[key];
+  if(!s)return'<div class="empty-state">Noch kein Inhalt</div>';
+  return'<div class="empty-rich"><span class="empty-icon">'+s.icon+'</span><div class="empty-title">'+s.title+'</div><div class="empty-desc">'+s.desc+'</div><button class="btn btn-primary" style="padding:10px 22px;font-size:13px" onclick="'+s.fn+'">'+s.btn+'</button></div>';
+}
+
+/* ── SKELETON LOADING ─────────────────────────────────── */
+var PAGE_SKEL={
+  ideas:      {id:'idea-list',     html:function(){return'<div class="skel-grid">'+skelCard(4)+'</div>'}},
+  milestone:  {id:'ms-list',       html:function(){return skelRow(4)}},
+  events:     {id:'events-list',   html:function(){return skelRow(3)}},
+  hyp:        {id:'hyp-list',      html:function(){return skelRow(3)}},
+  comp:       {id:'comp-list',     html:function(){return skelRow(3)}},
+  network:    {id:'network-list',  html:function(){return'<div class="skel-grid">'+skelCard(4)+'</div>'}},
+  team:       {id:'team-list',     html:function(){return skelRow(3)}},
+  legal:      {id:'legal-list',    html:function(){return skelRow(4)}},
+  pitch:      {id:'pitch-list',    html:function(){return skelRow(3)}},
+  log:        {id:'log-list',      html:function(){return skelRow(3)}},
+  fundraising:{id:'investor-list', html:function(){return skelRow(3)}},
+  kpi:        {id:'kpi-grid',      html:function(){return'<div class="skel-grid">'+skelCard(6)+'</div>'}},
+};
+
+function skelRow(n){
+  var r='';
+  for(var i=0;i<n;i++)r+='<div class="skel-card"><div class="skel skel-h" style="width:60%"></div><div class="skel skel-line" style="width:40%"></div></div>';
+  return r;
+}
+function skelCard(n){
+  var r='';
+  for(var i=0;i<n;i++)r+='<div class="skel-card" style="min-height:160px"><div class="skel skel-h" style="width:70%;margin-bottom:10px"></div><div class="skel skel-line" style="width:55%"></div><div class="skel skel-line" style="width:45%;margin-bottom:18px"></div><div class="skel skel-sm" style="width:100%;margin-bottom:5px"></div><div class="skel skel-sm" style="width:80%;margin-bottom:5px"></div><div class="skel skel-sm" style="width:65%"></div></div>';
+  return r;
+}
+
+/* ── PAGE TRANSITION + STAGGER ────────────────────────── */
+function nav(el,page){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if(el&&el.classList)el.classList.add('active');
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  var pageEl=document.getElementById('p-'+page);
+  pageEl.classList.add('active');
+  currentPage=page;
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('open');
+
+  // Fade-in the page
+  pageEl.classList.remove('page-in');
+  void pageEl.offsetWidth; // reflow
+  pageEl.classList.add('page-in');
+  setTimeout(()=>pageEl.classList.remove('page-in'),350);
+
+  // Skeleton → real content
+  var sk=PAGE_SKEL[page];
+  if(sk){
+    var el2=document.getElementById(sk.id);
+    if(el2){
+      el2.innerHTML=sk.html();
+      setTimeout(function(){
+        render(page);
+        staggerChildren(pageEl);
+      },400);
+      return;
+    }
+  }
+  render(page);
+  staggerChildren(pageEl);
+}
+
+function staggerChildren(pageEl){
+  var items=pageEl.querySelectorAll('.card,.idea-card,.kpi-card,.metric,.vote-idea-card,.mentor-tab,.doc-item');
+  items.forEach(function(el,i){
+    el.style.animationDelay=(i*45)+'ms';
+    el.classList.remove('stagger');
+    void el.offsetWidth;
+    el.classList.add('stagger');
+    setTimeout(function(){el.classList.remove('stagger');el.style.animationDelay='';},350+i*45);
+  });
+}
+
+function slideInLast(containerId){
+  setTimeout(function(){
+    var c=document.getElementById(containerId);
+    if(!c)return;
+    var last=c.lastElementChild;
+    if(last&&last.tagName!=='TEMPLATE'){
+      last.classList.add('slide-in');
+      setTimeout(function(){last.classList.remove('slide-in');},500);
+    }
+  },60);
+}
+
+/* ── CONFETTI BURST (task completion) ─────────────────── */
+function confettiBurst(x,y){
+  var canvas=document.getElementById('confetti-canvas');
+  if(!canvas){
+    canvas=document.createElement('canvas');
+    canvas.id='confetti-canvas';
+    canvas.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999';
+    document.body.appendChild(canvas);
+  }
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
+  var ctx=canvas.getContext('2d');
+  var colors=['#2f81f7','#3fb950','#d29922','#f85149','#58a6ff','#56d364','#e3b341'];
+  var particles=[];
+  for(var i=0;i<18;i++){
+    particles.push({
+      x:x,y:y,
+      vx:(Math.random()-0.5)*9,
+      vy:Math.random()*-11-2,
+      size:Math.random()*5+2,
+      color:colors[i%colors.length],
+      alpha:1,grav:0.45,
+      rot:Math.random()*Math.PI*2,
+      rotV:(Math.random()-0.5)*0.25
+    });
+  }
+  var frame=0;
+  function tick(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    var alive=false;
+    particles.forEach(function(p){
+      p.x+=p.vx;p.y+=p.vy;p.vy+=p.grav;p.vx*=0.97;
+      p.alpha-=0.028;p.rot+=p.rotV;
+      if(p.alpha>0){alive=true;}
+      ctx.save();ctx.globalAlpha=Math.max(0,p.alpha);ctx.fillStyle=p.color;
+      ctx.translate(p.x,p.y);ctx.rotate(p.rot);
+      ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size);
+      ctx.restore();
+    });
+    frame++;
+    if(alive&&frame<60)requestAnimationFrame(tick);
+    else ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
+  tick();
+}
+
+/* ── MENTOR TYPEWRITER ────────────────────────────────── */
+function typewriterAppend(container,div,text,scrollEl){
+  var bubble=div.querySelector('.mentor-bubble');
+  if(!bubble){container.appendChild(div);return;}
+  bubble.textContent='';
+  container.appendChild(div);
+  if(scrollEl)scrollEl.scrollTop=scrollEl.scrollHeight;
+  var i=0;
+  var speed=Math.max(6,Math.min(18,Math.round(4000/text.length)));
+  function tick(){
+    if(i<text.length){
+      if(text[i]==='\n'&&text[i+1]==='\n'){bubble.textContent+='\n\n';i+=2;}
+      else{bubble.textContent+=text[i];i++;}
+      if(scrollEl)scrollEl.scrollTop=scrollEl.scrollHeight;
+      setTimeout(tick,speed);
+    }
+  }
+  tick();
 }
 
 render('ideas');
