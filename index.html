@@ -133,7 +133,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:24px}
 .metric{background:#21262d;border:1px solid #30363d;border-radius:var(--radius);padding:20px;transition:all var(--tr);position:relative;overflow:hidden}
 .metric::after{display:none}
-.metric:hover{border-color:#388bfd;transform:translateY(-2px);box-shadow:var(--shadow-hover)}
+.metric:hover{border-color:#388bfd;background:#262d37;box-shadow:var(--shadow-hover)}
 .metric-label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.09em;margin-bottom:10px}
 .metric-value{font-size:32px;font-weight:800;color:var(--text);letter-spacing:-0.03em;line-height:1}
 .metric-delta{font-size:11px;color:var(--green);margin-top:7px;font-weight:600}
@@ -141,7 +141,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 /* ── CARDS ──────────────────────────────────────────────── */
 .card{background:#21262d;border:1px solid #30363d;border-radius:var(--radius);padding:22px 24px;margin-bottom:16px;transition:all var(--tr);position:relative;overflow:hidden}
 .card::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.04),transparent)}
-.card:hover{border-color:#388bfd;box-shadow:0 8px 36px rgba(0,0,0,0.35),0 0 18px rgba(47,129,247,0.06)}
+.card:hover{border-color:#388bfd;background:#262d37;box-shadow:0 8px 36px rgba(0,0,0,0.35),0 0 18px rgba(47,129,247,0.06)}
 .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
 .card-title{font-size:14px;font-weight:700;color:var(--text);letter-spacing:-0.01em}
 
@@ -173,7 +173,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 /* ── IDEA CARDS ─────────────────────────────────────────── */
 .idea-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
 .idea-card{background:#21262d;border:1px solid #30363d;border-radius:var(--radius);padding:18px;position:relative;transition:all var(--tr)}
-.idea-card:hover{border-color:#388bfd;transform:translateY(-3px);box-shadow:0 14px 44px rgba(0,0,0,0.45),0 0 22px rgba(47,129,247,0.09)}
+.idea-card:hover{border-color:#388bfd;background:#262d37;box-shadow:0 14px 44px rgba(0,0,0,0.45),0 0 22px rgba(47,129,247,0.09)}
 .idea-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:7px;letter-spacing:-0.01em}
 .idea-desc{font-size:12px;color:var(--text2);margin-bottom:12px;line-height:1.55}
 .score-row{display:flex;justify-content:space-between;font-size:10px;font-weight:600;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.04em}
@@ -196,7 +196,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
 .kpi-card{background:#21262d;border:1px solid #30363d;border-radius:var(--radius);padding:20px;transition:all var(--tr);position:relative;overflow:hidden}
 .kpi-card::after{display:none}
-.kpi-card:hover{border-color:#388bfd;transform:translateY(-2px);box-shadow:var(--shadow-hover)}
+.kpi-card:hover{border-color:#388bfd;background:#262d37;box-shadow:var(--shadow-hover)}
 .kpi-label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px}
 .kpi-value{font-size:34px;font-weight:800;color:var(--text);letter-spacing:-0.03em;line-height:1}
 .kpi-target{font-size:11px;color:var(--text3);margin-top:7px;font-weight:500;display:flex;align-items:center;gap:5px}
@@ -255,7 +255,7 @@ textarea{resize:vertical;min-height:60px}
 
 /* ── VOTING ─────────────────────────────────────────────── */
 .vote-idea-card{background:#21262d;border:1px solid #30363d;border-radius:var(--radius);padding:18px;margin-bottom:12px;transition:all var(--tr)}
-.vote-idea-card:hover{border-color:#388bfd}
+.vote-idea-card:hover{border-color:#388bfd;background:#262d37}
 .vote-idea-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .vote-idea-name{font-size:15px;font-weight:700;color:var(--text)}
 .vote-status-badge{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600}
@@ -405,7 +405,7 @@ textarea{resize:vertical;min-height:60px}
 /* ── MENTORS ────────────────────────────────────────────── */
 .mentor-tabs{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
 .mentor-tab{display:flex;align-items:center;gap:8px;padding:11px 18px;border-radius:var(--radius);border:1px solid #30363d;background:#21262d;cursor:pointer;font-size:13px;font-weight:600;color:var(--text2);transition:all var(--tr);flex-shrink:0}
-.mentor-tab:hover{border-color:#388bfd;color:var(--text);transform:translateY(-1px)}
+.mentor-tab:hover{border-color:#388bfd;color:var(--text);background:#262d37}
 .mentor-tab.active{border-color:var(--mc);background:var(--mb);color:var(--mc);font-weight:700;box-shadow:0 6px 20px rgba(0,0,0,0.3)}
 .mentor-tab .mentor-emoji{font-size:18px}
 .mentor-tab .mentor-sub{font-size:10px;color:var(--text3);font-weight:400;margin-top:1px}
@@ -3447,34 +3447,6 @@ function typewriterAppend(container,div,text,scrollEl){
 }
 
 
-/* ── 3D KARTEN-TILT ─────────────────────────────────────── */
-(function(){
-  var sel='.card,.idea-card,.kpi-card,.vote-idea-card,.mentor-tab';
-  var cur=null;
-  function resetCard(el){
-    el.style.transition='transform 0.5s cubic-bezier(.4,0,.2,1),box-shadow 0.4s,border-color 0.15s';
-    el.style.transform='';
-    el.style.willChange='';
-    var snap=el.style.transition;
-    setTimeout(function(){if(el.style.transition===snap)el.style.transition='';},520);
-  }
-  document.addEventListener('mousemove',function(e){
-    var el=e.target.closest(sel);
-    if(cur&&cur!==el){resetCard(cur);cur=null;}
-    if(!el)return;
-    if(cur!==el)el.style.willChange='transform';
-    cur=el;
-    var r=el.getBoundingClientRect();
-    var dx=(e.clientX-r.left-r.width/2)/(r.width/2);
-    var dy=(e.clientY-r.top-r.height/2)/(r.height/2);
-    var rx=parseFloat((-dy*2.5).toFixed(2)),ry=parseFloat((dx*3.5).toFixed(2));
-    el.style.transition='box-shadow 0.12s,border-color 0.12s';
-    el.style.transform='perspective(900px) rotateX('+rx+'deg) rotateY('+ry+'deg) translateY(-4px)';
-  });
-  document.addEventListener('mouseleave',function(){
-    if(cur){resetCard(cur);cur=null;}
-  });
-})();
 
 render('ideas');
 </script>
