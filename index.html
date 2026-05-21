@@ -632,6 +632,7 @@ textarea{resize:vertical;min-height:60px}
   <div class="nav-item" data-page="ss-seg" onclick="nav(this,'ss-seg')"><span class="nav-icon">🧩</span>Segmentierung</div>
   <div class="nav-item" data-page="ss-obj" onclick="nav(this,'ss-obj')"><span class="nav-icon">🛡️</span>Einwände</div>
   <div class="nav-item" data-page="ss-success" onclick="nav(this,'ss-success')"><span class="nav-icon">🏆</span>Erfolgsgeschichten</div>
+  <div class="nav-item" data-page="ss-pricing" onclick="nav(this,'ss-pricing')"><span class="nav-icon">🏷️</span>Preisfindung</div>
 </div>
 
 <div class="main">
@@ -1005,7 +1006,7 @@ textarea{resize:vertical;min-height:60px}
         <span class="ss-roi-val green" id="ss-roi-save">—</span>
       </div>
       <div class="ss-roi-row">
-        <span class="ss-roi-label">SmartSpend Jahreskosten (5€ × MA × 12)</span>
+        <span class="ss-roi-label" id="ss-roi-cost-label">SmartSpend Jahreskosten (5 CHF × MA × 12)</span>
         <span class="ss-roi-val amber" id="ss-roi-cost">—</span>
       </div>
       <div class="ss-roi-row">
@@ -1198,6 +1199,8 @@ textarea{resize:vertical;min-height:60px}
       </div>
     </div>
   </div>
+
+  <div class="page" id="p-ss-pricing"></div>
 
 </div><!-- /main -->
 
@@ -1770,7 +1773,7 @@ function closeModal(id){document.getElementById(id).classList.remove('open')}
 document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open')}));
 
 function render(page){
-  var map={ai:renderAi,ideas:renderIdeas,vote:renderVote,events:renderEvents,matrix:renderMatrix,hyp:renderHyp,market:calcMarket,milestone:renderMs,week:renderWeek,kpi:renderKpi,resource:renderResource,fundraising:renderFund,pitch:renderPitch,comp:renderComp,network:renderNetwork,team:renderTeam,legal:renderLegal,log:renderLog,momentum:renderMomentum,deepdive:renderDeepDive,notes:renderNotes,docs:renderDocs,mentors:renderMentors,'ss-roi':renderSsRoi,'ss-hyp':renderSsHyp,'ss-next':renderSsNext,'ss-price':renderSsPrice,'ss-pipeline':renderSsPipeline,'ss-sales':renderSsSales,'ss-market':renderSsMarket,'ss-seg':renderSsSeg,'ss-obj':renderSsObj,'ss-success':renderSsSuccess};
+  var map={ai:renderAi,ideas:renderIdeas,vote:renderVote,events:renderEvents,matrix:renderMatrix,hyp:renderHyp,market:calcMarket,milestone:renderMs,week:renderWeek,kpi:renderKpi,resource:renderResource,fundraising:renderFund,pitch:renderPitch,comp:renderComp,network:renderNetwork,team:renderTeam,legal:renderLegal,log:renderLog,momentum:renderMomentum,deepdive:renderDeepDive,notes:renderNotes,docs:renderDocs,mentors:renderMentors,'ss-roi':renderSsRoi,'ss-hyp':renderSsHyp,'ss-next':renderSsNext,'ss-price':renderSsPrice,'ss-pipeline':renderSsPipeline,'ss-sales':renderSsSales,'ss-market':renderSsMarket,'ss-seg':renderSsSeg,'ss-obj':renderSsObj,'ss-success':renderSsSuccess,'ss-pricing':renderSsPricing};
   if(map[page])map[page]();
 }
 
@@ -3602,7 +3605,7 @@ var PAGE_CONTENT_ID={
 };
 
 /* ── PAGE TRANSITION + STAGGER ────────────────────────── */
-var PAGE_ORDER=['ideas','vote','matrix','hyp','market','milestone','events','week','kpi','resource','fundraising','pitch','comp','network','ai','mentors','deepdive','notes','docs','team','legal','log','momentum','ss-roi','ss-hyp','ss-next','ss-price','ss-pipeline','ss-sales','ss-market','ss-seg','ss-obj','ss-success'];
+var PAGE_ORDER=['ideas','vote','matrix','hyp','market','milestone','events','week','kpi','resource','fundraising','pitch','comp','network','ai','mentors','deepdive','notes','docs','team','legal','log','momentum','ss-roi','ss-hyp','ss-next','ss-price','ss-pipeline','ss-sales','ss-market','ss-seg','ss-obj','ss-success','ss-pricing'];
 var _navBusy=false;
 
 function nav(navEl,page){
@@ -3782,7 +3785,17 @@ function ssDefaultState(){
       {q:'"Datenschutz – das Unternehmen sieht sensible Finanzdaten."',a:'Das Unternehmen sieht ausschließlich anonymisierte Aggregatdaten. Individuelle Daten sind verschlüsselt und für Arbeitgeber nicht einsehbar. Details zur DSGVO-Konformität auf Anfrage.'},
       {q:'"Wir haben bereits ein EAP (Employee Assistance Program)."',a:'EAPs adressieren mentale Gesundheit allgemein. SmartSpend fokussiert spezifisch auf finanziellen Stress am Arbeitsplatz und ist als komplementäres Angebot konzipiert, nicht als Ersatz.'}
     ],
-    success:[]
+    success:[],
+    pricing:{
+      currentPrice:5,
+      costPlus:{api:0.50,server:0.30,support:0.20,other:0.10,margin:40},
+      vanWestendorp:{tooExpensive:null,expensive:null,cheap:null,tooCheap:null},
+      scenarios:{
+        conservative:{companies:3,employees:100},
+        realistic:{companies:10,employees:200},
+        optimistic:{companies:30,employees:300}
+      }
+    }
   };
 }
 
@@ -3805,8 +3818,11 @@ function ssGetState(){
   }
   if(!ss.salesArgs)ss.salesArgs=def.salesArgs;
   if(!ss.success)ss.success=def.success;
+  if(!ss.pricing)ss.pricing=def.pricing;
   return ss;
 }
+
+function ssGetPrice(){var ss=ssGetState();return(ss.pricing&&ss.pricing.currentPrice)||5;}
 
 /* ── ROI-RECHNER ─────────────────────────────────────────── */
 function renderSsRoi(){
@@ -3830,9 +3846,12 @@ function ssCalcRoi(){
   var rate=sal/2080;
   var loss=emp*156*rate;
   var save=emp*hrs*52*rate;
-  var cost=emp*5*12;
+  var curPrice=ssGetPrice();
+  var cost=emp*curPrice*12;
   var net=save-cost;
   var roi=save/cost;
+  var lbl=document.getElementById('ss-roi-cost-label');
+  if(lbl)lbl.textContent='SmartSpend Jahreskosten ('+curPrice+' CHF × MA × 12)';
   function fmt(n){
     if(n>=1000000)return(n/1000000).toFixed(1).replace('.',',')+'M€';
     if(n>=1000)return Math.round(n/1000)+'k€';
@@ -3856,13 +3875,14 @@ function ssExportRoi(){
   var sal=parseFloat(document.getElementById('ss-roi-salary').value)||60000;
   var hrs=parseFloat(document.getElementById('ss-roi-hours').value)||2;
   var rate=sal/2080;
-  var loss=emp*156*rate,save=emp*hrs*52*rate,cost=emp*5*12,net=save-cost,roi=save/cost;
+  var xp=ssGetPrice();
+  var loss=emp*156*rate,save=emp*hrs*52*rate,cost=emp*xp*12,net=save-cost,roi=save/cost;
   function fmt(n){return n>=1000000?(n/1000000).toFixed(1)+'M€':n>=1000?Math.round(n/1000)+'k€':Math.round(n)+'€';}
   var d=new Date();
   var out='SmartSpend ROI-Bericht\n'+'='.repeat(40)+'\n\n';
   out+='Erstellt: '+d.toLocaleDateString('de-DE')+'\n\n';
   out+='EINGABEN\n--------\nMitarbeiter: '+emp+'\nØ Jahresgehalt: '+sal.toLocaleString('de-DE')+'€\nGesparte Stunden/Woche: '+hrs+'h\n\n';
-  out+='ERGEBNISSE\n----------\nJährlicher Produktivitätsverlust (vorher): '+fmt(loss)+'\nJährliche Ersparnis durch SmartSpend: '+fmt(save)+'\nSmartSpend Jahreskosten (5€/MA/Monat): '+fmt(cost)+'\nNetto-Ersparnis pro Jahr: '+fmt(net)+'\nROI-Multiplikator: '+roi.toFixed(1)+'×\n\n';
+  out+='ERGEBNISSE\n----------\nJährlicher Produktivitätsverlust (vorher): '+fmt(loss)+'\nJährliche Ersparnis durch SmartSpend: '+fmt(save)+'\nSmartSpend Jahreskosten ('+xp+' CHF/MA/Monat): '+fmt(cost)+'\nNetto-Ersparnis pro Jahr: '+fmt(net)+'\nROI-Multiplikator: '+roi.toFixed(1)+'×\n\n';
   out+='GRUNDLAGE\n---------\nPwC Employee Financial Wellness Survey 2026:\nMitarbeiter verlieren 3h/Woche durch finanziellen Stress.\nSmartSpend reduziert das um '+hrs+'h/Woche pro Mitarbeiter.\n';
   var a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([out],{type:'text/plain'}));
@@ -3949,13 +3969,14 @@ function ssCalcPrice(){
   var cEl=document.getElementById('ss-price-cos');if(!cEl)return;
   var c=parseFloat(cEl.value)||5,e=parseFloat(document.getElementById('ss-price-emp').value)||150;
   if(state.smartspend)state.smartspend.priceInputs={companies:c,employees:e};
-  var mrr=c*e*5,arr=mrr*12;
+  var pp=ssGetPrice();
+  var mrr=c*e*pp,arr=mrr*12;
   function fmt(n){return n>=1000000?(n/1000000).toFixed(1)+'M€':n>=1000?Math.round(n/1000)+'k€':n+'€';}
   document.getElementById('ss-price-mrr').textContent=fmt(mrr)+'/Monat';
   document.getElementById('ss-price-arr').textContent=fmt(arr)+' ARR';
-  document.getElementById('ss-scen-c').textContent=fmt(3*100*5)+'/Mo';
-  document.getElementById('ss-scen-r').textContent=fmt(10*200*5)+'/Mo';
-  document.getElementById('ss-scen-o').textContent=fmt(30*300*5)+'/Mo';
+  document.getElementById('ss-scen-c').textContent=fmt(3*100*pp)+'/Mo';
+  document.getElementById('ss-scen-r').textContent=fmt(10*200*pp)+'/Mo';
+  document.getElementById('ss-scen-o').textContent=fmt(30*300*pp)+'/Mo';
   clearTimeout(window._ssPriceT);window._ssPriceT=setTimeout(()=>saveState(),1200);
 }
 
@@ -4146,6 +4167,391 @@ function ssAddSuccess(){
   saveState();closeModal('modal-ss-success');renderSsSuccess();
 }
 function ssDelSuccess(i){ssGetState().success.splice(i,1);saveState();renderSsSuccess();}
+
+/* ── PREISFINDUNG ────────────────────────────────────────── */
+function ssUpdateGlobalPrice(val){
+  var p=parseFloat(val);
+  if(isNaN(p)||p<0.5)p=0.5;
+  if(p>50)p=50;
+  var ss=ssGetState();
+  if(!ss.pricing)ss.pricing={};
+  ss.pricing.currentPrice=p;
+  var lbl=document.getElementById('ss-roi-cost-label');
+  if(lbl)lbl.textContent='SmartSpend Jahreskosten ('+p+' CHF × MA × 12)';
+  if(document.getElementById('ss-roi-emp'))ssCalcRoi();
+  if(document.getElementById('ss-price-cos'))ssCalcPrice();
+  var capEl=document.getElementById('ss-pf-capture');
+  var cap2El=document.getElementById('ss-pf-capture2');
+  var capVal=(p/325*100).toFixed(1)+'%';
+  if(capEl)capEl.textContent=capVal;
+  if(cap2El)cap2El.textContent=capVal;
+  var cpVsEl=document.getElementById('ss-pf-cp-vs');
+  if(cpVsEl){
+    var apiV=parseFloat((document.getElementById('ss-pf-cp-api')||{}).value)||0;
+    var srvV=parseFloat((document.getElementById('ss-pf-cp-server')||{}).value)||0;
+    var supV=parseFloat((document.getElementById('ss-pf-cp-support')||{}).value)||0;
+    var othV=parseFloat((document.getElementById('ss-pf-cp-other')||{}).value)||0;
+    var marV=parseFloat((document.getElementById('ss-pf-cp-margin')||{}).value)||40;
+    var cpPr=(apiV+srvV+supV+othV)*(1+marV/100);
+    cpVsEl.textContent=p>=cpPr?'✓ Über Kostenpreis':'⚠ Unter Kostenpreis';
+    cpVsEl.style.color=p>=cpPr?'#10b981':'var(--amber)';
+  }
+  ssUpdateScenDisplay();
+  clearTimeout(window._ssPricingT);
+  window._ssPricingT=setTimeout(function(){saveState();},800);
+}
+
+function ssUpdateScenDisplay(){
+  var price=ssGetPrice();
+  var ss=ssGetState();
+  var scen=(ss.pricing&&ss.pricing.scenarios)||{conservative:{companies:3,employees:100},realistic:{companies:10,employees:200},optimistic:{companies:30,employees:300}};
+  function fmt(n){
+    if(n>=1000000)return(n/1000000).toFixed(1).replace('.',',')+' MCHF';
+    if(n>=1000)return Math.round(n/1000)+'k CHF';
+    return Math.round(n)+' CHF';
+  }
+  ['conservative','realistic','optimistic'].forEach(function(k){
+    var sc=scen[k]||{companies:3,employees:100};
+    var mrr=(sc.companies||0)*(sc.employees||0)*price;
+    var mEl=document.getElementById('ss-pf-scen-mrr-'+k);
+    var aEl=document.getElementById('ss-pf-scen-arr-'+k);
+    if(mEl)mEl.textContent=fmt(mrr)+'/Mo.';
+    if(aEl)aEl.textContent=fmt(mrr*12)+' ARR';
+  });
+  var cMrr=(scen.conservative.companies||3)*(scen.conservative.employees||100)*price;
+  var rMrr=(scen.realistic.companies||10)*(scen.realistic.employees||200)*price;
+  var oMrr=(scen.optimistic.companies||30)*(scen.optimistic.employees||300)*price;
+  var sumEl=document.getElementById('ss-pf-scen-summary');
+  if(sumEl){
+    sumEl.innerHTML='<b style="color:var(--text)">ARR-Übersicht:</b> '+
+      'Konservativ: <b style="color:var(--text)">'+fmt(cMrr*12)+'</b> · '+
+      'Realistisch: <b style="color:var(--accent)">'+fmt(rMrr*12)+'</b> · '+
+      'Optimistisch: <b style="color:#10b981">'+fmt(oMrr*12)+'</b>';
+  }
+}
+
+function ssCalcCostPlus(){
+  var api=parseFloat((document.getElementById('ss-pf-cp-api')||{}).value)||0;
+  var srv=parseFloat((document.getElementById('ss-pf-cp-server')||{}).value)||0;
+  var sup=parseFloat((document.getElementById('ss-pf-cp-support')||{}).value)||0;
+  var oth=parseFloat((document.getElementById('ss-pf-cp-other')||{}).value)||0;
+  var margin=parseFloat((document.getElementById('ss-pf-cp-margin')||{}).value)||40;
+  var ss=ssGetState();
+  if(!ss.pricing)ss.pricing={};
+  ss.pricing.costPlus={api:api,server:srv,support:sup,other:oth,margin:margin};
+  var total=api+srv+sup+oth;
+  var cpPrice=total*(1+margin/100);
+  var curPrice=ssGetPrice();
+  var totEl=document.getElementById('ss-pf-cp-total');
+  var cpEl=document.getElementById('ss-pf-cp-price');
+  var vsEl=document.getElementById('ss-pf-cp-vs');
+  if(totEl)totEl.textContent=total.toFixed(2)+' CHF';
+  if(cpEl)cpEl.textContent=cpPrice.toFixed(2)+' CHF';
+  if(vsEl){
+    vsEl.textContent=curPrice>=cpPrice?'✓ Über Kostenpreis':'⚠ Unter Kostenpreis';
+    vsEl.style.color=curPrice>=cpPrice?'#10b981':'var(--amber)';
+  }
+  clearTimeout(window._ssCpT);window._ssCpT=setTimeout(function(){saveState();},800);
+}
+
+function ssCalcVanWestendorp(){
+  var te=document.getElementById('ss-pf-vw-expensive');
+  var ex=document.getElementById('ss-pf-vw-pricey');
+  var ch=document.getElementById('ss-pf-vw-cheap');
+  var tc=document.getElementById('ss-pf-vw-toocheap');
+  var teV=te&&te.value?parseFloat(te.value):null;
+  var exV=ex&&ex.value?parseFloat(ex.value):null;
+  var chV=ch&&ch.value?parseFloat(ch.value):null;
+  var tcV=tc&&tc.value?parseFloat(tc.value):null;
+  var ss=ssGetState();
+  if(!ss.pricing)ss.pricing={};
+  ss.pricing.vanWestendorp={tooExpensive:teV,expensive:exV,cheap:chV,tooCheap:tcV};
+  var resEl=document.getElementById('ss-pf-vw-result');
+  if(resEl){
+    if(teV&&exV&&chV&&tcV){
+      var optimal=((chV+exV)/2).toFixed(2);
+      resEl.innerHTML='<b style="color:#10b981">Akzeptanzbereich: '+chV+' – '+exV+' CHF/MA/Monat</b> · '+
+        'Optimaler Preis: ~<b style="color:var(--text)">'+optimal+' CHF</b> · '+
+        'Zu-günstig-Grenze: '+tcV+' CHF · '+
+        'Zu-teuer-Grenze: '+teV+' CHF';
+    } else {
+      resEl.textContent='Noch keine vollständigen Daten – alle 4 Felder ausfüllen für die Analyse.';
+    }
+  }
+  clearTimeout(window._ssVwT);window._ssVwT=setTimeout(function(){saveState();},800);
+}
+
+function ssScenSave(key,field,val){
+  var ss=ssGetState();
+  if(!ss.pricing)ss.pricing={};
+  if(!ss.pricing.scenarios)ss.pricing.scenarios={conservative:{companies:3,employees:100},realistic:{companies:10,employees:200},optimistic:{companies:30,employees:300}};
+  if(!ss.pricing.scenarios[key])ss.pricing.scenarios[key]={};
+  ss.pricing.scenarios[key][field]=parseFloat(val)||0;
+  ssUpdateScenDisplay();
+  clearTimeout(window._ssScenT);window._ssScenT=setTimeout(function(){saveState();},800);
+}
+
+function renderSsPricing(){
+  var el=document.getElementById('p-ss-pricing');
+  if(!el)return;
+  var ss=ssGetState();
+  var pr=ss.pricing||{};
+  var price=pr.currentPrice||5;
+  var cp=pr.costPlus||{api:0.50,server:0.30,support:0.20,other:0.10,margin:40};
+  var vw=pr.vanWestendorp||{tooExpensive:null,expensive:null,cheap:null,tooCheap:null};
+  var scen=pr.scenarios||{conservative:{companies:3,employees:100},realistic:{companies:10,employees:200},optimistic:{companies:30,employees:300}};
+
+  // Preserve master price input focus
+  var masterEl=document.getElementById('ss-pf-master-price');
+  if(masterEl&&document.activeElement===masterEl)return;
+
+  var monthlyRecovery=325; // 2h × 4 weeks × 40.63 CHF/h
+  var totalCost=(cp.api||0)+(cp.server||0)+(cp.support||0)+(cp.other||0);
+  var cpPrice=totalCost*(1+(cp.margin||40)/100);
+  var vwRange='';
+  if(vw.tooExpensive&&vw.expensive&&vw.cheap&&vw.tooCheap){
+    var optimal=((vw.cheap+vw.expensive)/2).toFixed(2);
+    vwRange='<b style="color:#10b981">Akzeptanzbereich: '+vw.cheap+' – '+vw.expensive+' CHF/MA/Monat</b> · '+
+      'Optimaler Preis: ~<b style="color:var(--text)">'+optimal+' CHF</b> · '+
+      'Zu-günstig: '+vw.tooCheap+' CHF · Zu-teuer: '+vw.tooExpensive+' CHF';
+  }
+
+  function fmt(n){
+    if(n>=1000000)return(n/1000000).toFixed(1).replace('.',',')+' MCHF';
+    if(n>=1000)return Math.round(n/1000)+'k CHF';
+    return Math.round(n)+' CHF';
+  }
+  var scConMrr=(scen.conservative.companies||3)*(scen.conservative.employees||100)*price;
+  var scRelMrr=(scen.realistic.companies||10)*(scen.realistic.employees||200)*price;
+  var scOptMrr=(scen.optimistic.companies||30)*(scen.optimistic.employees||300)*price;
+
+  var inpS='width:100%;margin:0 0 8px;background:rgba(33,38,45,0.6);border:1px solid #30363d;border-radius:8px;padding:8px 10px;color:var(--text);font-size:13px;font-family:inherit;box-sizing:border-box';
+  var numS='width:100%;background:rgba(33,38,45,0.6);border:1px solid #30363d;border-radius:8px;padding:7px 10px;color:var(--text);font-size:13px;font-family:inherit;box-sizing:border-box;text-align:right';
+
+  // Competitive bar: market range 2-10 USD, SmartSpend price
+  var mktMin=2,mktMax=12;
+  var posPct=Math.min(100,Math.max(0,(price-mktMin)/(mktMax-mktMin)*100));
+  var calmPct=Math.min(100,Math.max(0,(5.32-mktMin)/(mktMax-mktMin)*100));
+  var compBar='<div style="margin-top:14px">'+
+    '<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text2);margin-bottom:4px">'+
+      '<span>2 USD (Marktminimum)</span><span>10 USD (Marktstandard)</span><span>12 USD</span>'+
+    '</div>'+
+    '<div style="position:relative;height:12px;background:#21262d;border-radius:6px;overflow:visible;margin-bottom:18px">'+
+      '<div style="position:absolute;left:0;width:'+(8/10*100)+'%;height:100%;background:rgba(47,129,247,0.15);border-radius:6px"></div>'+
+      '<div style="position:absolute;left:'+calmPct+'%;transform:translateX(-50%);height:100%;width:3px;background:rgba(47,129,247,0.7);border-radius:2px"></div>'+
+      '<div style="position:absolute;left:'+posPct+'%;transform:translateX(-50%);height:18px;width:4px;top:-3px;background:#10b981;border-radius:2px;box-shadow:0 0 8px rgba(16,185,129,0.6)"></div>'+
+      '<div style="position:absolute;left:'+posPct+'%;transform:translateX(-50%);top:20px;font-size:10px;color:#10b981;white-space:nowrap;font-weight:700">▲ SmartSpend '+price+' CHF</div>'+
+      '<div style="position:absolute;left:'+calmPct+'%;transform:translateX(-50%);top:20px;font-size:10px;color:var(--accent);white-space:nowrap">Calm ~5.32$</div>'+
+    '</div>'+
+  '</div>';
+
+  function scenCard(label,icon,sc,color,key,mrr){
+    return'<div style="background:rgba(33,38,45,0.5);border:1px solid #30363d;border-radius:10px;padding:14px">'+
+      '<div style="font-size:12px;color:'+color+';font-weight:700;margin-bottom:8px">'+icon+' '+label+'</div>'+
+      '<div style="display:flex;gap:8px;margin-bottom:8px">'+
+        '<div style="flex:1">'+
+          '<div style="font-size:10px;color:var(--text2);margin-bottom:3px">Kunden</div>'+
+          '<input type="number" min="1" max="500" value="'+(sc.companies||0)+'" style="'+numS+';width:100%" '+
+            'oninput="ssScenSave(\''+key+'\',\'companies\',this.value)">'+
+        '</div>'+
+        '<div style="flex:1">'+
+          '<div style="font-size:10px;color:var(--text2);margin-bottom:3px">MA/Kunde</div>'+
+          '<input type="number" min="1" max="5000" value="'+(sc.employees||0)+'" style="'+numS+';width:100%" '+
+            'oninput="ssScenSave(\''+key+'\',\'employees\',this.value)">'+
+        '</div>'+
+      '</div>'+
+      '<div style="border-top:1px solid #30363d;padding-top:8px">'+
+        '<div style="font-size:11px;color:var(--text2)">MRR</div>'+
+        '<div id="ss-pf-scen-mrr-'+key+'" style="font-size:18px;font-weight:800;color:'+color+'">'+fmt(mrr)+'/Mo.</div>'+
+        '<div id="ss-pf-scen-arr-'+key+'" style="font-size:11px;color:var(--text2);margin-top:2px">'+fmt(mrr*12)+' ARR</div>'+
+      '</div>'+
+    '</div>';
+  }
+
+  function cpField(label,id,val,key){
+    return'<div>'+
+      '<div style="font-size:11px;color:var(--text2);margin-bottom:4px">'+label+'</div>'+
+      '<div style="display:flex;align-items:center;gap:6px">'+
+        '<input type="number" id="'+id+'" min="0" max="10" step="0.05" value="'+val+'" style="'+numS+';width:80px" oninput="ssCalcCostPlus()">'+
+        '<span style="font-size:11px;color:var(--text2)">CHF</span>'+
+      '</div>'+
+    '</div>';
+  }
+
+  function vwField(label,id,val,key,color){
+    return'<div>'+
+      '<div style="font-size:11px;color:'+color+';margin-bottom:4px;font-weight:600">'+label+'</div>'+
+      '<div style="display:flex;align-items:center;gap:6px">'+
+        '<input type="number" id="'+id+'" min="0" max="50" step="0.5" '+(val!==null?'value="'+val+'"':'')+' placeholder="CHF" style="'+numS+';width:90px" oninput="ssCalcVanWestendorp()">'+
+        '<span style="font-size:11px;color:var(--text2)">CHF/MA/Mo.</span>'+
+      '</div>'+
+    '</div>';
+  }
+
+  // Pricing summary logic
+  var summaryItems=[];
+  summaryItems.push({label:'Value-Based',value:(price/monthlyRecovery*100).toFixed(1)+'% Wertabschöpfung',ok:price/monthlyRecovery<0.2,note:'Ziel: 5–20% des erzeugten Werts'});
+  summaryItems.push({label:'Competitive',value:price<=10?'Im Marktbereich (2–10 USD)':'Über Marktstandard',ok:price<=10,note:'Calm Business: ~5.32 USD'});
+  summaryItems.push({label:'Cost-Plus',value:price>=cpPrice?('Marge: '+(((price/cpPrice)-1)*100).toFixed(0)+'%'):'Unter Kostenpreis',ok:price>=cpPrice,note:'Kostenpreis: '+cpPrice.toFixed(2)+' CHF'});
+  var vwOk=vw.cheap&&vw.expensive&&price>=vw.cheap&&price<=vw.expensive;
+  summaryItems.push({label:'Van Westendorp',value:vw.cheap&&vw.expensive?(vwOk?'Im Akzeptanzbereich':'Ausserhalb des Bereichs'):'Keine Daten',ok:vwOk||(!vw.cheap&&!vw.expensive),note:vw.cheap&&vw.expensive?vw.cheap+'–'+vw.expensive+' CHF Akzeptanzbereich':'Befragungen ausstehend'});
+  var summaryHtml=summaryItems.map(function(s){
+    return'<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #21262d">'+
+      '<div style="font-size:16px">'+(s.ok?'✓':'○')+'</div>'+
+      '<div style="flex:1">'+
+        '<div style="font-size:12px;font-weight:600;color:var(--text)">'+s.label+'</div>'+
+        '<div style="font-size:11px;color:var(--text2)">'+s.note+'</div>'+
+      '</div>'+
+      '<div style="font-size:12px;color:'+(s.ok?'#10b981':'var(--amber)')+';font-weight:600;text-align:right">'+s.value+'</div>'+
+    '</div>';
+  }).join('');
+
+  el.innerHTML=
+    '<div class="page-title">Preisfindung</div>'+
+    '<div class="page-sub">Methodische Preisstrategie für SmartSpend · 5 Methoden im Vergleich</div>'+
+
+    // A: Master Price
+    '<div class="card" style="background:linear-gradient(135deg,rgba(16,185,129,0.12),rgba(16,185,129,0.04));border:1.5px solid rgba(16,185,129,0.35);margin-bottom:16px">'+
+      '<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">'+
+        '<div style="flex:1;min-width:180px">'+
+          '<div style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#10b981;font-weight:700;margin-bottom:4px">Aktueller SmartSpend-Preis</div>'+
+          '<div style="font-size:12px;color:var(--text2);line-height:1.5">Dieser Preis steuert alle Berechnungen: ROI-Rechner, Umsatzrechner und alle Szenarien.</div>'+
+        '</div>'+
+        '<div style="display:flex;align-items:center;gap:10px;flex-shrink:0">'+
+          '<input type="number" id="ss-pf-master-price" min="0.5" max="50" step="0.5" value="'+price+'" '+
+            'style="width:90px;font-size:24px;font-weight:800;color:#10b981;background:rgba(16,185,129,0.1);border:2px solid rgba(16,185,129,0.4);border-radius:10px;padding:8px 10px;text-align:center;font-family:inherit;outline:none" '+
+            'oninput="ssUpdateGlobalPrice(this.value)">'+
+          '<div style="font-size:15px;font-weight:600;color:var(--text2)">CHF<br><span style="font-size:11px">/ MA / Mo.</span></div>'+
+        '</div>'+
+      '</div>'+
+    '</div>'+
+
+    // B: Value-Based
+    '<div class="card" style="margin-bottom:14px">'+
+      '<div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:3px">A · Value-Based Pricing</div>'+
+      '<div style="font-size:12px;color:var(--text2);margin-bottom:14px">Welchen Wert schafft SmartSpend – und wie viel davon verlangen wir?</div>'+
+      '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px">'+
+        '<div class="metric" style="text-align:center;padding:12px">'+
+          '<div class="metric-label">Ø Stundenlohn Schweiz</div>'+
+          '<div class="metric-value" style="color:var(--text)">40.63 CHF</div>'+
+          '<div style="font-size:10px;color:var(--text2);margin-top:2px">6\'500 CHF ÷ 160h (BFS 2024)</div>'+
+        '</div>'+
+        '<div class="metric" style="text-align:center;padding:12px">'+
+          '<div class="metric-label">Produktivitätsverlust/MA/Mo.</div>'+
+          '<div class="metric-value" style="color:var(--red)">487.50 CHF</div>'+
+          '<div style="font-size:10px;color:var(--text2);margin-top:2px">3h × 4 Wo × 40.63 (PwC 2026)</div>'+
+        '</div>'+
+        '<div class="metric" style="text-align:center;padding:12px">'+
+          '<div class="metric-label">Rückgewonnene Produktivität</div>'+
+          '<div class="metric-value" style="color:var(--green)">325 CHF</div>'+
+          '<div style="font-size:10px;color:var(--text2);margin-top:2px">2h × 4 Wo × 40.63 CHF</div>'+
+        '</div>'+
+        '<div class="metric" style="text-align:center;padding:12px;background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.3)">'+
+          '<div class="metric-label">Wertabschöpfung</div>'+
+          '<div class="metric-value" style="color:#10b981" id="ss-pf-capture">'+(price/325*100).toFixed(1)+'%</div>'+
+          '<div style="font-size:10px;color:var(--text2);margin-top:2px">'+price+' CHF ÷ 325 CHF</div>'+
+        '</div>'+
+      '</div>'+
+      '<div style="background:rgba(47,129,247,0.07);border:1px solid rgba(47,129,247,0.2);border-radius:8px;padding:12px;font-size:12px;color:var(--text2);line-height:1.6">'+
+        '<b style="color:var(--accent)">Bewertung:</b> Bei '+price+' CHF/MA/Monat schöpfen wir <b id="ss-pf-capture2" style="color:#10b981">'+(price/325*100).toFixed(1)+'%</b> des durch SmartSpend erzeugten Mehrwerts ab. '+
+        'Ein typischer B2B-SaaS-Wert liegt bei 5–20%. Quelle: PwC Employee Financial Wellness Survey 2026 · BFS 2024 (Ø Schweizer Lohn).'+
+      '</div>'+
+    '</div>'+
+
+    // C: Competitive Benchmarking
+    '<div class="card" style="margin-bottom:14px">'+
+      '<div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:3px">B · Competitive Benchmarking</div>'+
+      '<div style="font-size:12px;color:var(--text2);margin-bottom:14px">Marktpreise vergleichbarer B2B Wellness-Lösungen</div>'+
+      '<div style="overflow-x:auto">'+
+        '<table style="width:100%;border-collapse:collapse;font-size:12px">'+
+          '<thead><tr style="border-bottom:1px solid #30363d">'+
+            '<th style="text-align:left;padding:8px 10px;color:var(--text2);font-weight:600">Anbieter</th>'+
+            '<th style="text-align:right;padding:8px 10px;color:var(--text2);font-weight:600">Preis</th>'+
+            '<th style="text-align:left;padding:8px 10px;color:var(--text2);font-weight:600">Fokus</th>'+
+            '<th style="text-align:left;padding:8px 10px;color:var(--text2);font-weight:600">Positionierung</th>'+
+          '</tr></thead>'+
+          '<tbody>'+
+            '<tr><td style="padding:8px 10px;color:var(--text)">Calm Business</td><td style="text-align:right;padding:8px 10px;color:var(--accent)">~5.32 USD/MA/Mo.</td><td style="padding:8px 10px;color:var(--text2)">Mentale Gesundheit</td><td style="padding:8px 10px;color:var(--text2)">Direkte Benchmark</td></tr>'+
+            '<tr><td style="padding:8px 10px;color:var(--text)">Headspace for Work</td><td style="text-align:right;padding:8px 10px;color:var(--text)">~12 USD/MA/Mo.</td><td style="padding:8px 10px;color:var(--text2)">Achtsamkeit</td><td style="padding:8px 10px;color:var(--text2)">Premium-Segment</td></tr>'+
+            '<tr><td style="padding:8px 10px;color:var(--text)">Financial Finesse</td><td style="text-align:right;padding:8px 10px;color:var(--text)">~4–8 USD/MA/Mo.</td><td style="padding:8px 10px;color:var(--text2)">Finanzielle Wellness</td><td style="padding:8px 10px;color:var(--text2)">Nächster Wettbewerber</td></tr>'+
+            '<tr style="background:rgba(16,185,129,0.06)"><td style="padding:8px 10px;color:var(--text);font-weight:600">SmartSpend</td><td style="text-align:right;padding:8px 10px;font-weight:700;color:#10b981">'+price+' CHF/MA/Mo.</td><td style="padding:8px 10px;color:var(--text2)">Finanzstress spezifisch</td><td style="padding:8px 10px;color:#10b981;font-weight:600">Unser Angebot</td></tr>'+
+            '<tr style="background:rgba(210,153,34,0.06)"><td colspan="4" style="padding:7px 10px;color:var(--amber);font-size:11px">B2B Employee Wellness-Markt: 2–10 USD/MA/Monat</td></tr>'+
+          '</tbody>'+
+        '</table>'+
+      '</div>'+
+      compBar+
+    '</div>'+
+
+    // D: Cost-Plus
+    '<div class="card" style="margin-bottom:14px">'+
+      '<div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:3px">C · Cost-Plus Pricing</div>'+
+      '<div style="font-size:12px;color:var(--text2);margin-bottom:14px">Variable Kosten pro Mitarbeiter/Monat + Gewinnmarge</div>'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">'+
+        cpField('API-Kosten (OpenAI o.ä.)','ss-pf-cp-api',cp.api||0.50,'api')+
+        cpField('Server & Infrastruktur','ss-pf-cp-server',cp.server||0.30,'server')+
+        cpField('Support & Betrieb','ss-pf-cp-support',cp.support||0.20,'support')+
+        cpField('Sonstiges','ss-pf-cp-other',cp.other||0.10,'other')+
+      '</div>'+
+      '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap">'+
+        '<label style="font-size:12px;color:var(--text2);white-space:nowrap">Gewinnmarge (%)</label>'+
+        '<input type="number" id="ss-pf-cp-margin" min="0" max="300" step="5" value="'+(cp.margin||40)+'" style="'+inpS+';width:80px;margin:0;text-align:right" oninput="ssCalcCostPlus()">'+
+      '</div>'+
+      '<div style="display:flex;align-items:center;gap:16px;padding:12px;background:rgba(63,185,80,0.07);border:1px solid rgba(63,185,80,0.25);border-radius:8px;flex-wrap:wrap">'+
+        '<div><div style="font-size:11px;color:var(--text2)">Gesamtkosten/MA/Mo.</div><div id="ss-pf-cp-total" style="font-size:18px;font-weight:800;color:var(--text)">'+totalCost.toFixed(2)+' CHF</div></div>'+
+        '<div style="color:var(--text2);font-size:18px">→</div>'+
+        '<div><div style="font-size:11px;color:var(--text2)">Cost-Plus Preis</div><div id="ss-pf-cp-price" style="font-size:18px;font-weight:800;color:var(--green)">'+cpPrice.toFixed(2)+' CHF</div></div>'+
+        '<div style="flex:1;text-align:right;min-width:120px">'+
+          '<div style="font-size:11px;color:var(--text2)">vs. geplanter Preis ('+price+' CHF)</div>'+
+          '<div id="ss-pf-cp-vs" style="font-size:13px;font-weight:700;color:'+(price>=cpPrice?'#10b981':'var(--amber)')+'">'+(price>=cpPrice?'✓ Über Kostenpreis':'⚠ Unter Kostenpreis')+'</div>'+
+        '</div>'+
+      '</div>'+
+    '</div>'+
+
+    // E: Van Westendorp
+    '<div class="card" style="margin-bottom:14px">'+
+      '<div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:3px">D · Van Westendorp PSM</div>'+
+      '<div style="font-size:12px;color:var(--text2);margin-bottom:14px">4 Preisschwellen aus Kundenbefragungen – trage deine Interview-Ergebnisse ein</div>'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">'+
+        vwField('Zu teuer – würde nie kaufen','ss-pf-vw-expensive',vw.tooExpensive,'tooExpensive','var(--red)')+
+        vwField('Eher teuer – zögere beim Kauf','ss-pf-vw-pricey',vw.expensive,'expensive','var(--amber)')+
+        vwField('Eher günstig – gutes Angebot','ss-pf-vw-cheap',vw.cheap,'cheap','var(--green)')+
+        vwField('Zu günstig – Qualitätszweifel','ss-pf-vw-toocheap',vw.tooCheap,'tooCheap','var(--text2)')+
+      '</div>'+
+      '<div id="ss-pf-vw-result" style="font-size:12px;color:var(--text2);padding:10px;background:rgba(33,38,45,0.5);border-radius:8px;border:1px solid #30363d">'+
+        (vwRange||'Noch keine Daten – führe Kundenbefragungen durch und trage hier die Preisschwellen ein.')+
+      '</div>'+
+    '</div>'+
+
+    // F: Revenue Scenarios
+    '<div class="card" style="margin-bottom:14px">'+
+      '<div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:3px">E · Umsatz-Szenarien</div>'+
+      '<div style="font-size:12px;color:var(--text2);margin-bottom:14px">Monatlicher Umsatz bei verschiedenen Wachstumsszenarien (Preis: '+price+' CHF/MA/Mo.)</div>'+
+      '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">'+
+        scenCard('Konservativ','🌱',scen.conservative,'var(--text2)','conservative',scConMrr)+
+        scenCard('Realistisch','🚀',scen.realistic,'var(--accent)','realistic',scRelMrr)+
+        scenCard('Optimistisch','🔥',scen.optimistic,'#10b981','optimistic',scOptMrr)+
+      '</div>'+
+      '<div id="ss-pf-scen-summary" style="margin-top:12px;padding:10px;background:rgba(33,38,45,0.5);border:1px solid #30363d;border-radius:8px;font-size:12px;color:var(--text2)">'+
+        '<b style="color:var(--text)">ARR-Übersicht:</b> '+
+        'Konservativ: <b style="color:var(--text)">'+fmt(scConMrr*12)+'</b> · '+
+        'Realistisch: <b style="color:var(--accent)">'+fmt(scRelMrr*12)+'</b> · '+
+        'Optimistisch: <b style="color:#10b981">'+fmt(scOptMrr*12)+'</b>'+
+      '</div>'+
+    '</div>'+
+
+    // G: Pricing Summary
+    '<div class="card" style="background:linear-gradient(135deg,rgba(47,129,247,0.08),rgba(16,185,129,0.04));border:1.5px solid rgba(47,129,247,0.3)">'+
+      '<div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:3px">F · Preisempfehlung</div>'+
+      '<div style="font-size:12px;color:var(--text2);margin-bottom:14px">Gesamtbewertung aller Methoden für '+price+' CHF/MA/Monat</div>'+
+      summaryHtml+
+      '<div style="margin-top:14px;padding:12px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.3);border-radius:8px;font-size:12px;color:var(--text2);line-height:1.65">'+
+        '<b style="color:#10b981">Empfehlung:</b> '+price+' CHF/MA/Monat liegt im optimalen Bereich für eine Markteinführung im DACH-Raum. '+
+        'Competitive Benchmarking bestätigt die Preisakzeptanz (Calm Business: ~5.32 USD). '+
+        'Cost-Plus-Analyse zeigt '+(price>=cpPrice?'gesunde Marge von ~'+(((price/cpPrice)-1)*100).toFixed(0)+'%.':'– Kostenstruktur prüfen.')+ ' '+
+        'Van-Westendorp-Daten nach ersten Interviews eintragen um die Preisakzeptanz zu validieren.'+
+      '</div>'+
+    '</div>';
+}
 
 render('ideas');
 </script>
