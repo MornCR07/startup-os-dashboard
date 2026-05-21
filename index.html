@@ -989,7 +989,7 @@ textarea{resize:vertical;min-height:60px}
       <input type="number" id="ss-roi-hours" value="2" min="0.5" max="3" step="0.5" oninput="ssCalcRoi()">
       <div class="ss-pwc">
         <span style="font-size:20px;flex-shrink:0">📚</span>
-        <div><strong style="color:var(--accent-h)">PwC Employee Financial Wellness Survey 2023:</strong> Mitarbeiter verlieren durchschnittlich <strong>3 Stunden pro Woche</strong> durch finanziellen Stress – Ablenkung, private Finanzrecherche, Konzentrationsprobleme. SmartSpend gewinnt davon <strong>2 Stunden zurück</strong>.</div>
+        <div><strong style="color:var(--accent-h)">PwC Employee Financial Wellness Survey 2026:</strong> Mitarbeiter verlieren durchschnittlich <strong>3 Stunden pro Woche</strong> durch finanziellen Stress. SmartSpend gewinnt davon <strong>2 Stunden zurück</strong>.</div>
       </div>
     </div>
     <div class="card" id="ss-roi-output">
@@ -3742,6 +3742,7 @@ function typewriterAppend(container,div,text,scrollEl){
 
 function ssDefaultState(){
   return{
+    ssDataV:2,
     roiInputs:{employees:100,salary:60000,hours:2},
     hyps:[
       {id:1,text:'Unternehmen zahlen bereitwillig 5€/Mitarbeiter/Monat für SmartSpend',status:'Ungetestet'},
@@ -3755,7 +3756,7 @@ function ssDefaultState(){
       {id:3,text:'3 Pilotkunden für 3-monatige kostenlose Testphase gewinnen',owner:'Beide',done:false},
       {id:4,text:'ROI-Analyse mit echten Unternehmensdaten aus Interviews validieren',owner:'Martim',done:false},
       {id:5,text:'Klickbaren Prototype der App für erste Nutzertests erstellen',owner:'Raphael',done:false},
-      {id:6,text:'PwC-Studie und Marktdaten in professionelles Sales-Deck integrieren',owner:'Martim',done:false}
+      {id:6,text:'PwC-Studie 2026 in professionelles Sales-Deck integrieren',owner:'Martim',done:false}
     ],
     priceInputs:{companies:5,employees:150},
     pipeline:[
@@ -3766,30 +3767,22 @@ function ssDefaultState(){
       {id:5,name:'Baloise Group',status:'Identifiziert',notes:'~7.200 Mitarbeiter, Versicherung'}
     ],
     salesArgs:[
-      'Messbarer ROI ab Tag 1: Für jede 5€ Investition sparen Unternehmen 10–20€ durch wiedergewonnene Produktivität. ROI-Rechner belegt es konkret für jedes Unternehmen.',
-      'PwC-Studie (2023) belegt: Mitarbeiter verlieren 3h/Woche durch finanziellen Stress. SmartSpend reduziert das auf 1h – 2h Produktivität pro Mitarbeiter pro Woche zurückgewonnen.',
-      'Mitarbeiterbindung steigt: Finanzielle Sicherheit senkt Fluktuation um 25–40%. Eine Kündigung kostet 30–50% des Jahresgehalts – SmartSpend amortisiert sich allein durch weniger Abgänge.',
-      'Einfachste Implementierung: Kein IT-Aufwand, kein Datenzugang für den Arbeitgeber, Rollout in 2 Wochen, 100% DSGVO-konform, Server in Deutschland.',
-      'Einzige Lösung für den DACH-Markt: Maßgeschneidert für Schweizer Pensionskassen, deutsches Steuerrecht und österreichisches Sozialversicherungsrecht – keine US-Lösung passt hier.'
+      'PwC Employee Financial Wellness Survey 2026 belegt: Mitarbeiter verlieren 3h/Woche durch finanziellen Stress. SmartSpend reduziert das auf 1h – 2h Produktivität pro Mitarbeiter pro Woche zurückgewonnen.'
     ],
     market:{land:'DACH (Deutschland, Österreich, Schweiz)',minSize:50,maxSize:5000,sector:'Alle Sektoren'},
     seg:{
-      icp:'200–500 Mitarbeiter · Finanz-, Versicherungs- oder Retailsektor · HR-affine Unternehmenskultur · Bestehende oder geplante Wellbeing-Initiativen · Entscheider: CHRO oder CEO',
-      primary:{label:'Mittelstand DACH',size:'100–500 MA',sector:'Finanz, Retail, Telko',why:'Budget vorhanden, HR-Entscheider gut erreichbar, hohe Produktivitätssensibilität, kurze Verkaufszyklen (4–8 Wochen)'},
-      secondary:{label:'Großunternehmen',size:'500–5000 MA',sector:'Tech, Pharma, Logistik',why:'Großes Volumen pro Kunde, höherer ACV, oft bestehendes Wellbeing-Budget – aber längere Verkaufszyklen (3–6 Monate)'},
-      tertiary:{label:'KMU',size:'50–100 MA',sector:'Alle Sektoren',why:'Schnelle Entscheidungswege, einfach zu überzeugen – aber geringerer ACV und potenziell höhere Churn-Rate'}
+      icp:'200–500 Mitarbeiter · Finanz-, Versicherungs- oder Retailsektor · HR-affine Unternehmenskultur · Entscheider: CHRO oder CEO',
+      primary:{label:'Mittelstand DACH',size:'100–500 MA',sector:'Finanz, Retail, Telko',why:'HR-Entscheider gut erreichbar, überschaubare IT-Hürden, kurze Verkaufszyklen'},
+      secondary:{label:'Großunternehmen',size:'500–5000 MA',sector:'Tech, Pharma, Logistik',why:'Großes Volumen pro Kunde, höherer ACV – aber längere Verkaufszyklen'},
+      tertiary:{label:'KMU',size:'50–100 MA',sector:'Alle Sektoren',why:'Schnelle Entscheidungswege – aber geringerer ACV'}
     },
     objections:[
-      {q:'"Das ist zu teuer – 5€ pro Mitarbeiter ist viel."',a:'Bei 100 Mitarbeitern: 500€/Monat Kosten. PwC-Daten: 100 MA verlieren 300h/Monat durch Finanzstress. Bei 35€ Stundenlohn = 10.500€ Produktivitätsverlust/Monat. SmartSpend spart 2/3 davon zurück = 7.000€. Netto-Ersparnis: 6.500€/Monat. ROI: 13×.'},
-      {q:'"Meine Mitarbeiter werden die App nicht nutzen."',a:'Wir sichern >60% monatlich aktive Nutzungsrate durch wöchentliche Push-Erinnerungen, Gamification und direkten finanziellen Mehrwert (Steueroptimierung, Budgetplanung, Notfallfonds). Pilot mit Geld-zurück-Garantie bei <40% Aktivierungsrate.'},
-      {q:'"Datenschutz – das Unternehmen sieht sensible Finanzdaten."',a:'Nein. Das Unternehmen sieht ausschließlich anonymisierte Aggregatdaten (z.B. "72% haben einen Notfallfonds aufgebaut"). Individuelle Daten sind end-to-end verschlüsselt. Arbeitgeber haben keinerlei Zugang. 100% DSGVO-konform, ISO 27001, Server in Deutschland.'},
-      {q:'"Wir haben bereits ein EAP (Employee Assistance Program)."',a:'EAPs adressieren mentale Gesundheit allgemein – SmartSpend ist komplementär und fokussiert auf finanziellen Stress als #1-Stressursache (PwC: 63% nennen Geld als Hauptstressor). 78% der EAP-Nutzer berichten finanzielle Sorgen, die EAPs nicht lösen können.'}
+      {q:'"Das ist zu teuer – 5€ pro Mitarbeiter ist viel."',a:'Bei 100 Mitarbeitern: 500€/Monat. Laut PwC Employee Financial Wellness Survey 2026 verlieren diese 100 Mitarbeiter 300h/Monat durch finanziellen Stress. Bei 35€ Stundenlohn = 10.500€ Produktivitätsverlust/Monat. SmartSpend spart davon 2/3 zurück. Der ROI lässt sich mit unserem Rechner individuell berechnen.'},
+      {q:'"Meine Mitarbeiter werden die App nicht nutzen."',a:'Zu validieren im Pilot. Wir schlagen eine 3-monatige kostenlose Testphase vor, um die tatsächliche Nutzungsrate zu messen – bevor das Unternehmen eine Kaufentscheidung trifft.'},
+      {q:'"Datenschutz – das Unternehmen sieht sensible Finanzdaten."',a:'Das Unternehmen sieht ausschließlich anonymisierte Aggregatdaten. Individuelle Daten sind verschlüsselt und für Arbeitgeber nicht einsehbar. Details zur DSGVO-Konformität auf Anfrage.'},
+      {q:'"Wir haben bereits ein EAP (Employee Assistance Program)."',a:'EAPs adressieren mentale Gesundheit allgemein. SmartSpend fokussiert spezifisch auf finanziellen Stress am Arbeitsplatz und ist als komplementäres Angebot konzipiert, nicht als Ersatz.'}
     ],
-    success:[
-      {icon:'🏦',title:'Bank of America – Financial Wellness Program',stat:'3× produktiver',desc:'Mitarbeiter mit Zugang zum Financial Wellness Program zeigten 3× höhere Produktivität und 50% weniger Krankheitstage als die Kontrollgruppe. Einsparungen: ~3.000$/Mitarbeiter/Jahr.'},
-      {icon:'📊',title:'PwC Employee Financial Wellness Survey 2023',stat:'47% suchen neuen Job',desc:'47% der finanziell gestressten Mitarbeiter suchen aktiv einen neuen Arbeitgeber – doppelt so viele wie nicht-gestresste. Direkte Verbindung: Financial Wellness = Mitarbeiterbindung.'},
-      {icon:'🌿',title:'Deloitte Wellbeing at Work Report 2022',stat:'25% weniger Fehlzeiten',desc:'Unternehmen mit strukturierten Financial Wellness Programmen berichten 25% weniger Fehlzeiten und 32% höhere Mitarbeiterbindungsrate gegenüber dem Branchendurchschnitt.'}
-    ]
+    success:[]
   };
 }
 
@@ -3801,10 +3794,16 @@ function ssGetState(){
   if(!ss.roiInputs)ss.roiInputs=def.roiInputs;
   if(!ss.priceInputs)ss.priceInputs=def.priceInputs;
   if(!ss.pipeline)ss.pipeline=def.pipeline;
-  if(!ss.salesArgs)ss.salesArgs=def.salesArgs;
   if(!ss.market)ss.market=def.market;
   if(!ss.seg)ss.seg=def.seg;
   if(!ss.objections)ss.objections=def.objections;
+  // Migration v2: reset salesArgs and success to remove unverified statistics
+  if(!ss.ssDataV||ss.ssDataV<2){
+    ss.salesArgs=def.salesArgs;
+    ss.success=def.success;
+    ss.ssDataV=2;
+  }
+  if(!ss.salesArgs)ss.salesArgs=def.salesArgs;
   if(!ss.success)ss.success=def.success;
   return ss;
 }
@@ -3864,7 +3863,7 @@ function ssExportRoi(){
   out+='Erstellt: '+d.toLocaleDateString('de-DE')+'\n\n';
   out+='EINGABEN\n--------\nMitarbeiter: '+emp+'\nØ Jahresgehalt: '+sal.toLocaleString('de-DE')+'€\nGesparte Stunden/Woche: '+hrs+'h\n\n';
   out+='ERGEBNISSE\n----------\nJährlicher Produktivitätsverlust (vorher): '+fmt(loss)+'\nJährliche Ersparnis durch SmartSpend: '+fmt(save)+'\nSmartSpend Jahreskosten (5€/MA/Monat): '+fmt(cost)+'\nNetto-Ersparnis pro Jahr: '+fmt(net)+'\nROI-Multiplikator: '+roi.toFixed(1)+'×\n\n';
-  out+='GRUNDLAGE\n---------\nPwC Employee Financial Wellness Survey 2023:\nMitarbeiter verlieren 3h/Woche durch finanziellen Stress.\nSmartSpend reduziert das um '+hrs+'h/Woche pro Mitarbeiter.\n';
+  out+='GRUNDLAGE\n---------\nPwC Employee Financial Wellness Survey 2026:\nMitarbeiter verlieren 3h/Woche durch finanziellen Stress.\nSmartSpend reduziert das um '+hrs+'h/Woche pro Mitarbeiter.\n';
   var a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([out],{type:'text/plain'}));
   a.download='SmartSpend-ROI-Bericht.txt';a.click();
@@ -4036,29 +4035,60 @@ function ssSaveMkt(){
 
 /* ── SEGMENTIERUNG ───────────────────────────────────────── */
 function renderSsSeg(){
+  var icpEl=document.getElementById('ss-seg-icp-text');
+  var segEl=document.getElementById('ss-seg-segments');
+  if(!icpEl||!segEl)return;
+  // Don't re-render while user is actively editing inside these containers
+  var ae=document.activeElement;
+  if((icpEl.contains&&icpEl.contains(ae))||(segEl.contains&&segEl.contains(ae)))return;
+
   var ss=ssGetState();
   var seg=ss.seg||ssDefaultState().seg;
-  var icpEl=document.getElementById('ss-seg-icp-text');
-  if(icpEl)icpEl.textContent=seg.icp||'';
+
+  var inS='width:100%;margin:0 0 8px;background:rgba(33,38,45,0.6);border:1px solid #30363d;border-radius:var(--radius-sm);padding:7px 11px;font-size:13px;color:var(--text);font-family:inherit;outline:none;transition:border-color var(--tr)';
+  var taS='width:100%;margin:0;background:rgba(33,38,45,0.6);border:1px solid #30363d;border-radius:var(--radius-sm);padding:8px 11px;font-size:12px;color:var(--text);font-family:inherit;resize:vertical;min-height:62px;outline:none;line-height:1.6;transition:border-color var(--tr)';
+
+  // ICP textarea
+  icpEl.innerHTML=
+    '<textarea style="'+taS+';min-height:70px;font-size:13px" '+
+    'placeholder="Beschreibe das ideale Kundenprofil…" '+
+    'oninput="ssSegSave(\'icp\',null,this.value)">'+escHtml(seg.icp||'')+'</textarea>';
+
+  // Segment cards
   var segs=[
-    {d:seg.primary,label:'Primär',bg:'rgba(47,129,247,0.1)',color:'var(--accent-h)',border:'rgba(47,129,247,0.3)'},
-    {d:seg.secondary,label:'Sekundär',bg:'rgba(63,185,80,0.1)',color:'var(--green)',border:'rgba(63,185,80,0.3)'},
-    {d:seg.tertiary,label:'Tertiär',bg:'rgba(210,153,34,0.1)',color:'var(--amber)',border:'rgba(210,153,34,0.3)'}
+    {key:'primary',  label:'Primär',   bg:'rgba(47,129,247,0.1)',color:'var(--accent-h)',border:'rgba(47,129,247,0.3)'},
+    {key:'secondary',label:'Sekundär', bg:'rgba(63,185,80,0.1)', color:'var(--green)',   border:'rgba(63,185,80,0.3)'},
+    {key:'tertiary', label:'Tertiär',  bg:'rgba(210,153,34,0.1)',color:'var(--amber)',   border:'rgba(210,153,34,0.3)'}
   ];
-  var html=segs.map(function(seg){
-    var d=seg.d||{};
-    return'<div class="ss-seg-card" style="border-color:'+seg.border+'">'+
-      '<span class="ss-seg-badge" style="background:'+seg.bg+';color:'+seg.color+'">'+seg.label+'</span>'+
-      '<div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:12px">'+escHtml(d.label||'')+'</div>'+
-      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px">'+
-        '<div><div class="ss-seg-field-lbl">Größe</div><div class="ss-seg-field-val">'+escHtml(d.size||'')+'</div></div>'+
-        '<div><div class="ss-seg-field-lbl">Sektor</div><div class="ss-seg-field-val">'+escHtml(d.sector||'')+'</div></div>'+
+  segEl.innerHTML=segs.map(function(s){
+    var d=seg[s.key]||{};
+    var k=s.key;
+    return'<div class="ss-seg-card" style="border-color:'+s.border+'">'+
+      '<span class="ss-seg-badge" style="background:'+s.bg+';color:'+s.color+'">'+s.label+'</span>'+
+      '<div class="ss-seg-field-lbl">Segment-Name</div>'+
+      '<input type="text" style="'+inS+'" value="'+escHtml(d.label||'')+'" placeholder="z.B. Mittelstand DACH" '+
+        'oninput="ssSegSave(\''+k+'\',\'label\',this.value)" onchange="saveState()">'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+
+        '<div><div class="ss-seg-field-lbl">Unternehmensgröße</div>'+
+          '<input type="text" style="'+inS+'" value="'+escHtml(d.size||'')+'" placeholder="z.B. 100–500 MA" '+
+            'oninput="ssSegSave(\''+k+'\',\'size\',this.value)" onchange="saveState()"></div>'+
+        '<div><div class="ss-seg-field-lbl">Sektor</div>'+
+          '<input type="text" style="'+inS+'" value="'+escHtml(d.sector||'')+'" placeholder="z.B. Finanz, Retail" '+
+            'oninput="ssSegSave(\''+k+'\',\'sector\',this.value)" onchange="saveState()"></div>'+
       '</div>'+
-      '<div class="ss-seg-field-lbl">Warum dieses Segment?</div>'+
-      '<div class="ss-seg-field-val">'+escHtml(d.why||'')+'</div>'+
+      '<div class="ss-seg-field-lbl" style="margin-top:4px">Warum dieses Segment?</div>'+
+      '<textarea style="'+taS+'" placeholder="Begründung…" '+
+        'oninput="ssSegSave(\''+k+'\',\'why\',this.value)" onchange="saveState()">'+escHtml(d.why||'')+'</textarea>'+
     '</div>';
   }).join('');
-  document.getElementById('ss-seg-segments').innerHTML=html;
+}
+
+function ssSegSave(key,field,val){
+  var ss=ssGetState();
+  if(!ss.seg)ss.seg={};
+  if(key==='icp'){ss.seg.icp=val;}
+  else{if(!ss.seg[key])ss.seg[key]={};ss.seg[key][field]=val;}
+  clearTimeout(window._ssSegT);window._ssSegT=setTimeout(()=>saveState(),800);
 }
 
 /* ── HÄUFIGE EINWÄNDE ────────────────────────────────────── */
