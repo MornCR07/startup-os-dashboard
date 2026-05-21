@@ -453,6 +453,63 @@ textarea{resize:vertical;min-height:60px}
 .pg-enter-r{animation:pgSlideInR 330ms cubic-bezier(.4,0,.2,1) both!important}
 .pg-enter-l{animation:pgSlideInL 330ms cubic-bezier(.4,0,.2,1) both!important}
 .main-transitioning{overflow:hidden!important;position:relative!important}
+
+/* ── SMARTSPEND ─────────────────────────────────────────── */
+@keyframes ssRoiPop{from{opacity:0;transform:scale(0.4)}to{opacity:1;transform:scale(1)}}
+.ss-roi-multi{font-size:80px;font-weight:900;text-align:center;letter-spacing:-0.04em;line-height:1;background:linear-gradient(135deg,#10b981 20%,#34d399 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:ssRoiPop 0.7s cubic-bezier(.34,1.56,.64,1) both;padding:16px 0}
+.ss-roi-multi-lbl{text-align:center;font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:20px}
+.ss-roi-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.ss-roi-row:last-child{border-bottom:none}
+.ss-roi-label{font-size:12px;color:var(--text2)}
+.ss-roi-val{font-size:14px;font-weight:700;color:var(--text)}
+.ss-roi-val.green{color:#10b981}.ss-roi-val.red{color:var(--red)}.ss-roi-val.amber{color:var(--amber)}
+.ss-pwc{background:rgba(47,129,247,0.06);border:1px solid rgba(47,129,247,0.18);border-radius:var(--radius-sm);padding:13px 16px;margin-top:14px;font-size:12px;color:var(--text2);line-height:1.65;display:flex;gap:10px;align-items:flex-start}
+.ss-hyp-row{display:flex;align-items:flex-start;gap:10px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.ss-hyp-row:last-child{border-bottom:none}
+.ss-hyp-text{font-size:13px;color:var(--text);flex:1;line-height:1.5}
+.ss-status{font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;letter-spacing:0.03em;white-space:nowrap}
+.ss-step-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.ss-step-row:last-child{border-bottom:none}
+.ss-step-cb{width:18px;height:18px;border-radius:4px;border:1.5px solid rgba(16,185,129,0.4);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;user-select:none;transition:all var(--tr);margin-top:1px}
+.ss-step-cb.on{background:rgba(16,185,129,0.2);border-color:#10b981;color:#10b981}
+.ss-step-text{flex:1;font-size:12px;color:var(--text2);line-height:1.5}
+.ss-step-text.done{text-decoration:line-through;color:var(--text3)}
+.ss-owner{font-size:10px;font-weight:700;padding:2px 8px;border-radius:5px;flex-shrink:0}
+.ss-scenario-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.ss-scenario{border-radius:var(--radius);padding:18px;text-align:center;border:1px solid #30363d}
+.ss-scenario-lbl{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px}
+.ss-scenario-val{font-size:26px;font-weight:800;letter-spacing:-0.03em;margin-bottom:4px}
+.ss-scenario-sub{font-size:11px;color:var(--text3)}
+.ss-pipeline-row{display:flex;align-items:flex-start;gap:10px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.ss-pipeline-row:last-child{border-bottom:none}
+.ss-pipeline-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px}
+.ss-pipeline-notes{font-size:11px;color:var(--text3);line-height:1.5}
+.ss-arg-row{display:flex;align-items:flex-start;gap:12px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.ss-arg-row:last-child{border-bottom:none}
+.ss-arg-num{width:28px;height:28px;border-radius:50%;background:rgba(47,129,247,0.12);border:1px solid rgba(47,129,247,0.25);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--accent-h);flex-shrink:0;margin-top:2px}
+.ss-tam-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+.ss-tam-box{border-radius:var(--radius);padding:18px;text-align:center;border:1px solid #30363d;transition:border-color var(--tr)}
+.ss-tam-box:hover{border-color:#388bfd}
+.ss-tam-lbl{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.09em;margin-bottom:8px}
+.ss-tam-val{font-size:26px;font-weight:800;letter-spacing:-0.03em;margin-bottom:4px}
+.ss-tam-sub{font-size:11px;color:var(--text3)}
+.ss-seg-card{background:#21262d;border:1px solid #30363d;border-radius:var(--radius);padding:16px;margin-bottom:10px}
+.ss-seg-badge{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;padding:2px 8px;border-radius:5px;margin-bottom:10px;display:inline-block}
+.ss-seg-field-lbl{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px}
+.ss-seg-field-val{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:8px}
+.ss-obj-item{background:#21262d;border:1px solid #30363d;border-radius:var(--radius);padding:16px;margin-bottom:10px;transition:border-color var(--tr)}
+.ss-obj-item:hover{border-color:#388bfd}
+.ss-obj-q{font-size:13px;font-weight:700;color:var(--red);margin-bottom:10px}
+.ss-obj-a{font-size:12px;color:var(--text2);line-height:1.65;border-left:2px solid rgba(63,185,80,0.5);padding-left:12px}
+.ss-success-card{background:linear-gradient(135deg,rgba(33,38,45,0.95),rgba(15,22,41,0.9));border:1px solid #30363d;border-radius:var(--radius);padding:20px;margin-bottom:12px;transition:all var(--tr)}
+.ss-success-card:hover{border-color:#388bfd;box-shadow:0 8px 32px rgba(0,0,0,0.35)}
+.ss-success-icon{font-size:30px;margin-bottom:10px}
+.ss-success-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px}
+.ss-success-stat{font-size:22px;font-weight:800;color:#10b981;margin-bottom:6px;letter-spacing:-0.02em}
+.ss-success-desc{font-size:12px;color:var(--text2);line-height:1.65}
+.ss-prog-bar{height:6px;background:rgba(255,255,255,0.07);border-radius:3px;overflow:hidden;margin-top:6px}
+.ss-prog-fill{height:6px;border-radius:3px;background:linear-gradient(90deg,#10b981,#34d399);transition:width 0.7s ease}
+@media(max-width:700px){.ss-scenario-grid,.ss-tam-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -564,6 +621,17 @@ textarea{resize:vertical;min-height:60px}
   <div class="nav-item" data-page="legal" onclick="nav(this,'legal')"><span class="nav-icon">📋</span>Legal & Admin</div>
   <div class="nav-item" data-page="log" onclick="nav(this,'log')"><span class="nav-icon">🗒️</span>Decision Log</div>
   <div class="nav-item" data-page="momentum" onclick="nav(this,'momentum')"><span class="nav-icon">⚡</span>Momentum</div>
+  <div class="nav-section">SmartSpend 💸</div>
+  <div class="nav-item" data-page="ss-roi" onclick="nav(this,'ss-roi')"><span class="nav-icon">💹</span>ROI-Rechner</div>
+  <div class="nav-item" data-page="ss-hyp" onclick="nav(this,'ss-hyp')"><span class="nav-icon">🔬</span>Hypothesen</div>
+  <div class="nav-item" data-page="ss-next" onclick="nav(this,'ss-next')"><span class="nav-icon">✅</span>Nächste Schritte</div>
+  <div class="nav-item" data-page="ss-price" onclick="nav(this,'ss-price')"><span class="nav-icon">💰</span>Preismodell</div>
+  <div class="nav-item" data-page="ss-pipeline" onclick="nav(this,'ss-pipeline')"><span class="nav-icon">🎯</span>Kunden-Pipeline</div>
+  <div class="nav-item" data-page="ss-sales" onclick="nav(this,'ss-sales')"><span class="nav-icon">💬</span>Verkaufsargumente</div>
+  <div class="nav-item" data-page="ss-market" onclick="nav(this,'ss-market')"><span class="nav-icon">📊</span>Marktgrösse</div>
+  <div class="nav-item" data-page="ss-seg" onclick="nav(this,'ss-seg')"><span class="nav-icon">🧩</span>Segmentierung</div>
+  <div class="nav-item" data-page="ss-obj" onclick="nav(this,'ss-obj')"><span class="nav-icon">🛡️</span>Einwände</div>
+  <div class="nav-item" data-page="ss-success" onclick="nav(this,'ss-success')"><span class="nav-icon">🏆</span>Erfolgsgeschichten</div>
 </div>
 
 <div class="main">
@@ -900,6 +968,237 @@ textarea{resize:vertical;min-height:60px}
     </div>
   </div>
 
+
+  <!-- ── SMARTSPEND: ROI-RECHNER ───────────────────────── -->
+  <div class="page" id="p-ss-roi">
+    <div class="page-title">ROI-Rechner</div>
+    <div class="page-sub">Berechne den messbaren Produktivitätsgewinn von SmartSpend für jedes Unternehmen</div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">📥 Eingaben</div></div>
+      <div class="form-row">
+        <div>
+          <div class="form-label">Anzahl Mitarbeiter</div>
+          <input type="number" id="ss-roi-emp" value="100" min="1" oninput="ssCalcRoi()">
+        </div>
+        <div>
+          <div class="form-label">Ø Jahresgehalt (€)</div>
+          <input type="number" id="ss-roi-salary" value="60000" min="1" oninput="ssCalcRoi()">
+        </div>
+      </div>
+      <div class="form-label">Gesparte Stunden pro Mitarbeiter/Woche (Standard: 2h laut PwC)</div>
+      <input type="number" id="ss-roi-hours" value="2" min="0.5" max="3" step="0.5" oninput="ssCalcRoi()">
+      <div class="ss-pwc">
+        <span style="font-size:20px;flex-shrink:0">📚</span>
+        <div><strong style="color:var(--accent-h)">PwC Employee Financial Wellness Survey 2023:</strong> Mitarbeiter verlieren durchschnittlich <strong>3 Stunden pro Woche</strong> durch finanziellen Stress – Ablenkung, private Finanzrecherche, Konzentrationsprobleme. SmartSpend gewinnt davon <strong>2 Stunden zurück</strong>.</div>
+      </div>
+    </div>
+    <div class="card" id="ss-roi-output">
+      <div class="card-header"><div class="card-title">💹 Ergebnis</div></div>
+      <div class="ss-roi-multi" id="ss-roi-multi">—</div>
+      <div class="ss-roi-multi-lbl">ROI-Multiplikator</div>
+      <div class="ss-roi-row">
+        <span class="ss-roi-label">Jährlicher Produktivitätsverlust (vor SmartSpend)</span>
+        <span class="ss-roi-val red" id="ss-roi-loss">—</span>
+      </div>
+      <div class="ss-roi-row">
+        <span class="ss-roi-label">Jährliche Ersparnis durch SmartSpend</span>
+        <span class="ss-roi-val green" id="ss-roi-save">—</span>
+      </div>
+      <div class="ss-roi-row">
+        <span class="ss-roi-label">SmartSpend Jahreskosten (5€ × MA × 12)</span>
+        <span class="ss-roi-val amber" id="ss-roi-cost">—</span>
+      </div>
+      <div class="ss-roi-row">
+        <span class="ss-roi-label" style="font-weight:700;color:var(--text)">Netto-Ersparnis pro Jahr</span>
+        <span class="ss-roi-val green" style="font-size:18px" id="ss-roi-net">—</span>
+      </div>
+      <div style="margin-top:18px">
+        <button class="btn btn-primary" onclick="ssExportRoi()" style="width:100%">📄 Bericht exportieren</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SMARTSPEND: HYPOTHESEN ─────────────────────────── -->
+  <div class="page" id="p-ss-hyp">
+    <div class="page-title">Hypothesen zu validieren</div>
+    <div class="page-sub">Kernaussagen von SmartSpend systematisch testen und mit Daten belegen</div>
+    <div style="margin-bottom:12px"><button class="btn btn-primary" onclick="openModal('modal-ss-hyp')">+ Neue Hypothese</button></div>
+    <div class="card"><div id="ss-hyp-list"></div></div>
+  </div>
+
+  <!-- ── SMARTSPEND: NÄCHSTE SCHRITTE ──────────────────── -->
+  <div class="page" id="p-ss-next">
+    <div class="page-title">Nächste Schritte</div>
+    <div class="page-sub">Validierungsaufgaben mit Verantwortlichem und Fortschrittsanzeige</div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Fortschritt</div>
+        <div id="ss-next-pct" style="font-size:13px;font-weight:700;color:#10b981">0%</div>
+      </div>
+      <div class="ss-prog-bar"><div class="ss-prog-fill" id="ss-next-bar" style="width:0%"></div></div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Aufgabenliste</div>
+        <button class="btn btn-primary" onclick="openModal('modal-ss-next')">+ Aufgabe</button>
+      </div>
+      <div id="ss-next-list"></div>
+    </div>
+  </div>
+
+  <!-- ── SMARTSPEND: PREISMODELL ───────────────────────── -->
+  <div class="page" id="p-ss-price">
+    <div class="page-title">Preismodell &amp; Umsatz</div>
+    <div class="page-sub">Berechne potenziellen Umsatz nach Kunden- und Mitarbeiterzahl</div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">🧮 Umsatzrechner</div></div>
+      <div class="form-row">
+        <div>
+          <div class="form-label">Anzahl Unternehmenskunden</div>
+          <input type="number" id="ss-price-cos" value="5" min="1" oninput="ssCalcPrice()">
+        </div>
+        <div>
+          <div class="form-label">Ø Mitarbeiter pro Unternehmen</div>
+          <input type="number" id="ss-price-emp" value="150" min="1" oninput="ssCalcPrice()">
+        </div>
+      </div>
+      <div style="margin-top:6px;padding:18px;background:rgba(47,129,247,0.06);border-radius:var(--radius-sm);border:1px solid rgba(47,129,247,0.15)">
+        <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;margin-bottom:6px">Monatlicher Umsatz (MRR)</div>
+        <div style="font-size:42px;font-weight:800;color:var(--accent-h);letter-spacing:-0.04em" id="ss-price-mrr">—</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:4px" id="ss-price-arr">— ARR</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">📈 Szenarien</div></div>
+      <div class="ss-scenario-grid">
+        <div class="ss-scenario" style="border-color:rgba(63,185,80,0.35)">
+          <div class="ss-scenario-lbl">Konservativ</div>
+          <div class="ss-scenario-val" style="color:var(--green)" id="ss-scen-c">—</div>
+          <div class="ss-scenario-sub">3 Kunden · 100 MA</div>
+        </div>
+        <div class="ss-scenario" style="border-color:rgba(47,129,247,0.35)">
+          <div class="ss-scenario-lbl">Realistisch</div>
+          <div class="ss-scenario-val" style="color:var(--accent-h)" id="ss-scen-r">—</div>
+          <div class="ss-scenario-sub">10 Kunden · 200 MA</div>
+        </div>
+        <div class="ss-scenario" style="border-color:rgba(210,153,34,0.35)">
+          <div class="ss-scenario-lbl">Optimistisch</div>
+          <div class="ss-scenario-val" style="color:var(--amber)" id="ss-scen-o">—</div>
+          <div class="ss-scenario-sub">30 Kunden · 300 MA</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SMARTSPEND: KUNDEN-PIPELINE ───────────────────── -->
+  <div class="page" id="p-ss-pipeline">
+    <div class="page-title">Kunden-Pipeline</div>
+    <div class="page-sub">Zielunternehmen identifizieren, kontaktieren und Status verfolgen</div>
+    <div style="margin-bottom:12px">
+      <button class="btn btn-primary" onclick="openModal('modal-ss-pipeline')">+ Unternehmen hinzufügen</button>
+    </div>
+    <div class="metrics" id="ss-pipeline-metrics"></div>
+    <div class="card"><div id="ss-pipeline-list"></div></div>
+  </div>
+
+  <!-- ── SMARTSPEND: VERKAUFSARGUMENTE ─────────────────── -->
+  <div class="page" id="p-ss-sales">
+    <div class="page-title">Verkaufsargumente</div>
+    <div class="page-sub">Die 5 stärksten Argumente für CEOs und HR-Manager – direkt bearbeitbar</div>
+    <div class="card"><div id="ss-sales-list"></div></div>
+  </div>
+
+  <!-- ── SMARTSPEND: MARKTGRÖSSE ───────────────────────── -->
+  <div class="page" id="p-ss-market">
+    <div class="page-title">Marktgrösse</div>
+    <div class="page-sub">TAM / SAM / SOM spezifisch für SmartSpend im DACH-Markt</div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">🎯 Zielmarkt definieren</div></div>
+      <div class="form-label">Zielregion</div>
+      <input type="text" id="ss-mkt-land" value="" placeholder="z.B. DACH" oninput="ssSaveMkt()">
+      <div class="form-row">
+        <div>
+          <div class="form-label">Min. Mitarbeiter</div>
+          <input type="number" id="ss-mkt-min" value="" placeholder="50" oninput="ssSaveMkt()">
+        </div>
+        <div>
+          <div class="form-label">Max. Mitarbeiter</div>
+          <input type="number" id="ss-mkt-max" value="" placeholder="5000" oninput="ssSaveMkt()">
+        </div>
+      </div>
+      <div class="form-label">Sektor</div>
+      <input type="text" id="ss-mkt-sector" value="" placeholder="z.B. Alle Sektoren" oninput="ssSaveMkt()">
+    </div>
+    <div class="ss-tam-grid">
+      <div class="ss-tam-box" style="background:linear-gradient(135deg,rgba(47,129,247,0.08),rgba(31,111,235,0.04))">
+        <div class="ss-tam-lbl">TAM</div>
+        <div class="ss-tam-val" style="color:var(--accent-h)">€420M</div>
+        <div class="ss-tam-sub">7M MA × 5€ × 12</div>
+      </div>
+      <div class="ss-tam-box" style="background:linear-gradient(135deg,rgba(63,185,80,0.08),rgba(63,185,80,0.04))">
+        <div class="ss-tam-lbl">SAM</div>
+        <div class="ss-tam-val" style="color:var(--green)">€30M</div>
+        <div class="ss-tam-sub">500k erreichbare MA</div>
+      </div>
+      <div class="ss-tam-box" style="background:linear-gradient(135deg,rgba(210,153,34,0.08),rgba(210,153,34,0.04))">
+        <div class="ss-tam-lbl">SOM (3 Jahre)</div>
+        <div class="ss-tam-val" style="color:var(--amber)">€900k</div>
+        <div class="ss-tam-sub">3% von SAM</div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <div class="card-header"><div class="card-title">Anzahl Zielunternehmen &amp; Nutzer</div></div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px;text-align:center">
+        <div>
+          <div style="font-size:32px;font-weight:800;color:var(--text)">~4.500</div>
+          <div style="font-size:11px;color:var(--text3)">Unternehmen 50–5000 MA in DACH</div>
+        </div>
+        <div>
+          <div style="font-size:32px;font-weight:800;color:var(--accent-h)">~1.200</div>
+          <div style="font-size:11px;color:var(--text3)">Primärsegment (100–500 MA)</div>
+        </div>
+        <div>
+          <div style="font-size:32px;font-weight:800;color:var(--green)">7M+</div>
+          <div style="font-size:11px;color:var(--text3)">Endnutzer (Mitarbeiter)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SMARTSPEND: SEGMENTIERUNG ─────────────────────── -->
+  <div class="page" id="p-ss-seg">
+    <div class="page-title">Segmentierung</div>
+    <div class="page-sub">Ideales Kundenprofil (ICP) und Primär-/Sekundär-/Tertiärsegmente</div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">🎯 Ideales Kundenprofil (ICP)</div></div>
+      <div id="ss-seg-icp-text" style="font-size:13px;color:var(--text2);line-height:1.7;padding:6px 0"></div>
+    </div>
+    <div id="ss-seg-segments"></div>
+  </div>
+
+  <!-- ── SMARTSPEND: HÄUFIGE EINWÄNDE ──────────────────── -->
+  <div class="page" id="p-ss-obj">
+    <div class="page-title">Häufige Einwände</div>
+    <div class="page-sub">CEO-Einwände mit vorbereiteten Antworten für das Verkaufsgespräch</div>
+    <div style="margin-bottom:12px"><button class="btn btn-primary" onclick="openModal('modal-ss-obj')">+ Einwand hinzufügen</button></div>
+    <div id="ss-obj-list"></div>
+  </div>
+
+  <!-- ── SMARTSPEND: ERFOLGSGESCHICHTEN ────────────────── -->
+  <div class="page" id="p-ss-success">
+    <div class="page-title">Erfolgsgeschichten</div>
+    <div class="page-sub">Belege aus ähnlichen Programmen – und Platz für eigene Pilot-Ergebnisse</div>
+    <div id="ss-success-list"></div>
+    <div class="card" style="border:1px dashed #30363d;background:transparent">
+      <div style="text-align:center;padding:20px">
+        <div style="font-size:38px;margin-bottom:10px">🚀</div>
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px">Eigene Piloterfolge dokumentieren</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.65;max-width:320px;margin:0 auto 18px">Sobald eure Piloten laufen, tragt hier die ersten Ergebnisse ein. Diese werden das stärkste Verkaufsargument.</div>
+        <button class="btn btn-primary" onclick="openModal('modal-ss-success')">+ Erfolg hinzufügen</button>
+      </div>
+    </div>
+  </div>
+
 </div><!-- /main -->
 
 <!-- Floating Mic Button -->
@@ -1165,6 +1464,79 @@ textarea{resize:vertical;min-height:60px}
   <div class="modal-actions"><button class="btn" onclick="closeModal('modal-resource')">Abbrechen</button><button class="btn btn-primary" onclick="addResource()">Hinzufügen</button></div>
 </div></div>
 
+<!-- ── SMARTSPEND MODALS ─────────────────────────────── -->
+<div class="modal-overlay" id="modal-ss-hyp"><div class="modal">
+  <div class="modal-title">Hypothese hinzufügen</div>
+  <div class="form-label">Annahme / These</div>
+  <textarea id="ss-hyp-text-input" placeholder="Wir glauben, dass…" style="min-height:80px"></textarea>
+  <div class="form-label">Status</div>
+  <select id="ss-hyp-status-input">
+    <option>Ungetestet</option><option>In Prüfung</option><option>Bestätigt</option><option>Widerlegt</option>
+  </select>
+  <div class="modal-actions">
+    <button class="btn" onclick="closeModal('modal-ss-hyp')">Abbrechen</button>
+    <button class="btn btn-primary" onclick="ssAddHyp()">Hinzufügen</button>
+  </div>
+</div></div>
+
+<div class="modal-overlay" id="modal-ss-next"><div class="modal">
+  <div class="modal-title">Aufgabe hinzufügen</div>
+  <div class="form-label">Aufgabe</div>
+  <input type="text" id="ss-next-text-input" placeholder="Was ist zu tun?">
+  <div class="form-label">Verantwortlich</div>
+  <select id="ss-next-owner-input">
+    <option>Martim</option><option>Raphael</option><option>Beide</option>
+  </select>
+  <div class="modal-actions">
+    <button class="btn" onclick="closeModal('modal-ss-next')">Abbrechen</button>
+    <button class="btn btn-primary" onclick="ssAddStep()">Hinzufügen</button>
+  </div>
+</div></div>
+
+<div class="modal-overlay" id="modal-ss-pipeline"><div class="modal">
+  <div class="modal-title">Unternehmen hinzufügen</div>
+  <div class="form-label">Unternehmensname</div>
+  <input type="text" id="ss-pipe-name" placeholder="z.B. Helvetia AG">
+  <div class="form-label">Status</div>
+  <select id="ss-pipe-status">
+    <option>Identifiziert</option><option>Kontaktiert</option><option>Meeting</option><option>Pilot</option><option>Kunde</option>
+  </select>
+  <div class="form-label">Notizen</div>
+  <textarea id="ss-pipe-notes" placeholder="Größe, Kontaktperson, Kontext…" style="min-height:60px"></textarea>
+  <div class="modal-actions">
+    <button class="btn" onclick="closeModal('modal-ss-pipeline')">Abbrechen</button>
+    <button class="btn btn-primary" onclick="ssAddPipeline()">Hinzufügen</button>
+  </div>
+</div></div>
+
+<div class="modal-overlay" id="modal-ss-obj"><div class="modal">
+  <div class="modal-title">Einwand erfassen</div>
+  <div class="form-label">Einwand des CEOs</div>
+  <input type="text" id="ss-obj-q-input" placeholder="z.B. Das ist zu teuer.">
+  <div class="form-label">Vorbereitete Antwort</div>
+  <textarea id="ss-obj-a-input" placeholder="Bei 100 Mitarbeitern kostet SmartSpend…" style="min-height:100px"></textarea>
+  <div class="modal-actions">
+    <button class="btn" onclick="closeModal('modal-ss-obj')">Abbrechen</button>
+    <button class="btn btn-primary" onclick="ssAddObj()">Speichern</button>
+  </div>
+</div></div>
+
+<div class="modal-overlay" id="modal-ss-success"><div class="modal">
+  <div class="modal-title">Erfolg dokumentieren</div>
+  <div class="form-row">
+    <div><div class="form-label">Emoji / Icon</div><input type="text" id="ss-succ-icon" placeholder="🏆" value="⭐" maxlength="4"></div>
+    <div><div class="form-label">Kennzahl</div><input type="text" id="ss-succ-stat" placeholder="z.B. +30% Produktivität"></div>
+  </div>
+  <div class="form-label">Titel / Quelle</div>
+  <input type="text" id="ss-succ-title" placeholder="z.B. Pilotprojekt Helvetia AG – März 2025">
+  <div class="form-label">Beschreibung</div>
+  <textarea id="ss-succ-desc" placeholder="Was wurde gemessen, wie wurde es erreicht?" style="min-height:80px"></textarea>
+  <div class="modal-actions">
+    <button class="btn" onclick="closeModal('modal-ss-success')">Abbrechen</button>
+    <button class="btn btn-primary" onclick="ssAddSuccess()">Hinzufügen</button>
+  </div>
+</div></div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 
 <!-- Firebase -->
@@ -1192,7 +1564,8 @@ window.state = {
   kpis:[], resources:[], events:[],
   votes:{raphael:{}, martim:{}},
   deepdive:{}, notes:{r:'',m:'',shared:''},
-  docs:[], weekGoals:{r:'',c:''}
+  docs:[], weekGoals:{r:'',c:''},
+  smartspend:{}
 };
 
 window.saveState = async function(){
@@ -1225,7 +1598,8 @@ onSnapshot(STATE_DOC,(snap)=>{
       kpis:d.kpis||[], resources:d.resources||[], events:d.events||[],
       votes:d.votes||{raphael:{},martim:{}},
       deepdive:d.deepdive||{}, notes:d.notes||{r:'',m:'',shared:''},
-      docs:d.docs||[], weekGoals:d.weekGoals||{r:'',c:''}
+      docs:d.docs||[], weekGoals:d.weekGoals||{r:'',c:''},
+      smartspend:d.smartspend||{}
     };
   }
   if(!window._navBusy){
@@ -1396,7 +1770,7 @@ function closeModal(id){document.getElementById(id).classList.remove('open')}
 document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open')}));
 
 function render(page){
-  var map={ai:renderAi,ideas:renderIdeas,vote:renderVote,events:renderEvents,matrix:renderMatrix,hyp:renderHyp,market:calcMarket,milestone:renderMs,week:renderWeek,kpi:renderKpi,resource:renderResource,fundraising:renderFund,pitch:renderPitch,comp:renderComp,network:renderNetwork,team:renderTeam,legal:renderLegal,log:renderLog,momentum:renderMomentum,deepdive:renderDeepDive,notes:renderNotes,docs:renderDocs,mentors:renderMentors};
+  var map={ai:renderAi,ideas:renderIdeas,vote:renderVote,events:renderEvents,matrix:renderMatrix,hyp:renderHyp,market:calcMarket,milestone:renderMs,week:renderWeek,kpi:renderKpi,resource:renderResource,fundraising:renderFund,pitch:renderPitch,comp:renderComp,network:renderNetwork,team:renderTeam,legal:renderLegal,log:renderLog,momentum:renderMomentum,deepdive:renderDeepDive,notes:renderNotes,docs:renderDocs,mentors:renderMentors,'ss-roi':renderSsRoi,'ss-hyp':renderSsHyp,'ss-next':renderSsNext,'ss-price':renderSsPrice,'ss-pipeline':renderSsPipeline,'ss-sales':renderSsSales,'ss-market':renderSsMarket,'ss-seg':renderSsSeg,'ss-obj':renderSsObj,'ss-success':renderSsSuccess};
   if(map[page])map[page]();
 }
 
@@ -3228,7 +3602,7 @@ var PAGE_CONTENT_ID={
 };
 
 /* ── PAGE TRANSITION + STAGGER ────────────────────────── */
-var PAGE_ORDER=['ideas','vote','matrix','hyp','market','milestone','events','week','kpi','resource','fundraising','pitch','comp','network','ai','mentors','deepdive','notes','docs','team','legal','log','momentum'];
+var PAGE_ORDER=['ideas','vote','matrix','hyp','market','milestone','events','week','kpi','resource','fundraising','pitch','comp','network','ai','mentors','deepdive','notes','docs','team','legal','log','momentum','ss-roi','ss-hyp','ss-next','ss-price','ss-pipeline','ss-sales','ss-market','ss-seg','ss-obj','ss-success'];
 var _navBusy=false;
 
 function nav(navEl,page){
@@ -3361,6 +3735,387 @@ function typewriterAppend(container,div,text,scrollEl){
 }
 
 
+
+/* ══════════════════════════════════════════════════════════
+   SMARTSPEND
+══════════════════════════════════════════════════════════ */
+
+function ssDefaultState(){
+  return{
+    roiInputs:{employees:100,salary:60000,hours:2},
+    hyps:[
+      {id:1,text:'Unternehmen zahlen bereitwillig 5€/Mitarbeiter/Monat für SmartSpend',status:'Ungetestet'},
+      {id:2,text:'Mitarbeiter nutzen die App mindestens 3× pro Woche aktiv',status:'Ungetestet'},
+      {id:3,text:'Finanzieller Stress reduziert sich messbar nach 3 Monaten SmartSpend-Nutzung',status:'Ungetestet'},
+      {id:4,text:'HR-Manager und CEOs sind die Hauptentscheider beim Kauf',status:'Ungetestet'}
+    ],
+    nextSteps:[
+      {id:1,text:'10 CEOs und HR-Manager zu Finanzstress und Zahlungsbereitschaft interviewen',owner:'Martim',done:false},
+      {id:2,text:'Landing Page für SmartSpend erstellen (Value Proposition + ROI-Rechner)',owner:'Raphael',done:false},
+      {id:3,text:'3 Pilotkunden für 3-monatige kostenlose Testphase gewinnen',owner:'Beide',done:false},
+      {id:4,text:'ROI-Analyse mit echten Unternehmensdaten aus Interviews validieren',owner:'Martim',done:false},
+      {id:5,text:'Klickbaren Prototype der App für erste Nutzertests erstellen',owner:'Raphael',done:false},
+      {id:6,text:'PwC-Studie und Marktdaten in professionelles Sales-Deck integrieren',owner:'Martim',done:false}
+    ],
+    priceInputs:{companies:5,employees:150},
+    pipeline:[
+      {id:1,name:'Migros Genossenschaft',status:'Identifiziert',notes:'~90.000 Mitarbeiter Schweiz, Retailer'},
+      {id:2,name:'SBB AG',status:'Identifiziert',notes:'~33.000 Mitarbeiter, Staatsunternehmen'},
+      {id:3,name:'Swisscom AG',status:'Identifiziert',notes:'~19.000 Mitarbeiter, Telekommunikation'},
+      {id:4,name:'Helvetia Versicherungen',status:'Identifiziert',notes:'~6.500 Mitarbeiter, Finanzsektor'},
+      {id:5,name:'Baloise Group',status:'Identifiziert',notes:'~7.200 Mitarbeiter, Versicherung'}
+    ],
+    salesArgs:[
+      'Messbarer ROI ab Tag 1: Für jede 5€ Investition sparen Unternehmen 10–20€ durch wiedergewonnene Produktivität. ROI-Rechner belegt es konkret für jedes Unternehmen.',
+      'PwC-Studie (2023) belegt: Mitarbeiter verlieren 3h/Woche durch finanziellen Stress. SmartSpend reduziert das auf 1h – 2h Produktivität pro Mitarbeiter pro Woche zurückgewonnen.',
+      'Mitarbeiterbindung steigt: Finanzielle Sicherheit senkt Fluktuation um 25–40%. Eine Kündigung kostet 30–50% des Jahresgehalts – SmartSpend amortisiert sich allein durch weniger Abgänge.',
+      'Einfachste Implementierung: Kein IT-Aufwand, kein Datenzugang für den Arbeitgeber, Rollout in 2 Wochen, 100% DSGVO-konform, Server in Deutschland.',
+      'Einzige Lösung für den DACH-Markt: Maßgeschneidert für Schweizer Pensionskassen, deutsches Steuerrecht und österreichisches Sozialversicherungsrecht – keine US-Lösung passt hier.'
+    ],
+    market:{land:'DACH (Deutschland, Österreich, Schweiz)',minSize:50,maxSize:5000,sector:'Alle Sektoren'},
+    seg:{
+      icp:'200–500 Mitarbeiter · Finanz-, Versicherungs- oder Retailsektor · HR-affine Unternehmenskultur · Bestehende oder geplante Wellbeing-Initiativen · Entscheider: CHRO oder CEO',
+      primary:{label:'Mittelstand DACH',size:'100–500 MA',sector:'Finanz, Retail, Telko',why:'Budget vorhanden, HR-Entscheider gut erreichbar, hohe Produktivitätssensibilität, kurze Verkaufszyklen (4–8 Wochen)'},
+      secondary:{label:'Großunternehmen',size:'500–5000 MA',sector:'Tech, Pharma, Logistik',why:'Großes Volumen pro Kunde, höherer ACV, oft bestehendes Wellbeing-Budget – aber längere Verkaufszyklen (3–6 Monate)'},
+      tertiary:{label:'KMU',size:'50–100 MA',sector:'Alle Sektoren',why:'Schnelle Entscheidungswege, einfach zu überzeugen – aber geringerer ACV und potenziell höhere Churn-Rate'}
+    },
+    objections:[
+      {q:'"Das ist zu teuer – 5€ pro Mitarbeiter ist viel."',a:'Bei 100 Mitarbeitern: 500€/Monat Kosten. PwC-Daten: 100 MA verlieren 300h/Monat durch Finanzstress. Bei 35€ Stundenlohn = 10.500€ Produktivitätsverlust/Monat. SmartSpend spart 2/3 davon zurück = 7.000€. Netto-Ersparnis: 6.500€/Monat. ROI: 13×.'},
+      {q:'"Meine Mitarbeiter werden die App nicht nutzen."',a:'Wir sichern >60% monatlich aktive Nutzungsrate durch wöchentliche Push-Erinnerungen, Gamification und direkten finanziellen Mehrwert (Steueroptimierung, Budgetplanung, Notfallfonds). Pilot mit Geld-zurück-Garantie bei <40% Aktivierungsrate.'},
+      {q:'"Datenschutz – das Unternehmen sieht sensible Finanzdaten."',a:'Nein. Das Unternehmen sieht ausschließlich anonymisierte Aggregatdaten (z.B. "72% haben einen Notfallfonds aufgebaut"). Individuelle Daten sind end-to-end verschlüsselt. Arbeitgeber haben keinerlei Zugang. 100% DSGVO-konform, ISO 27001, Server in Deutschland.'},
+      {q:'"Wir haben bereits ein EAP (Employee Assistance Program)."',a:'EAPs adressieren mentale Gesundheit allgemein – SmartSpend ist komplementär und fokussiert auf finanziellen Stress als #1-Stressursache (PwC: 63% nennen Geld als Hauptstressor). 78% der EAP-Nutzer berichten finanzielle Sorgen, die EAPs nicht lösen können.'}
+    ],
+    success:[
+      {icon:'🏦',title:'Bank of America – Financial Wellness Program',stat:'3× produktiver',desc:'Mitarbeiter mit Zugang zum Financial Wellness Program zeigten 3× höhere Produktivität und 50% weniger Krankheitstage als die Kontrollgruppe. Einsparungen: ~3.000$/Mitarbeiter/Jahr.'},
+      {icon:'📊',title:'PwC Employee Financial Wellness Survey 2023',stat:'47% suchen neuen Job',desc:'47% der finanziell gestressten Mitarbeiter suchen aktiv einen neuen Arbeitgeber – doppelt so viele wie nicht-gestresste. Direkte Verbindung: Financial Wellness = Mitarbeiterbindung.'},
+      {icon:'🌿',title:'Deloitte Wellbeing at Work Report 2022',stat:'25% weniger Fehlzeiten',desc:'Unternehmen mit strukturierten Financial Wellness Programmen berichten 25% weniger Fehlzeiten und 32% höhere Mitarbeiterbindungsrate gegenüber dem Branchendurchschnitt.'}
+    ]
+  };
+}
+
+function ssGetState(){
+  if(!state.smartspend)state.smartspend={};
+  var ss=state.smartspend,def=ssDefaultState();
+  if(!ss.hyps)ss.hyps=def.hyps;
+  if(!ss.nextSteps)ss.nextSteps=def.nextSteps;
+  if(!ss.roiInputs)ss.roiInputs=def.roiInputs;
+  if(!ss.priceInputs)ss.priceInputs=def.priceInputs;
+  if(!ss.pipeline)ss.pipeline=def.pipeline;
+  if(!ss.salesArgs)ss.salesArgs=def.salesArgs;
+  if(!ss.market)ss.market=def.market;
+  if(!ss.seg)ss.seg=def.seg;
+  if(!ss.objections)ss.objections=def.objections;
+  if(!ss.success)ss.success=def.success;
+  return ss;
+}
+
+/* ── ROI-RECHNER ─────────────────────────────────────────── */
+function renderSsRoi(){
+  var ss=ssGetState();
+  var empEl=document.getElementById('ss-roi-emp');
+  var salEl=document.getElementById('ss-roi-salary');
+  var hrsEl=document.getElementById('ss-roi-hours');
+  if(empEl&&document.activeElement!==empEl)empEl.value=ss.roiInputs.employees||100;
+  if(salEl&&document.activeElement!==salEl)salEl.value=ss.roiInputs.salary||60000;
+  if(hrsEl&&document.activeElement!==hrsEl)hrsEl.value=ss.roiInputs.hours||2;
+  ssCalcRoi();
+}
+
+function ssCalcRoi(){
+  var empEl=document.getElementById('ss-roi-emp');
+  if(!empEl)return;
+  var emp=parseFloat(empEl.value)||100;
+  var sal=parseFloat(document.getElementById('ss-roi-salary').value)||60000;
+  var hrs=parseFloat(document.getElementById('ss-roi-hours').value)||2;
+  if(state.smartspend)state.smartspend.roiInputs={employees:emp,salary:sal,hours:hrs};
+  var rate=sal/2080;
+  var loss=emp*156*rate;
+  var save=emp*hrs*52*rate;
+  var cost=emp*5*12;
+  var net=save-cost;
+  var roi=save/cost;
+  function fmt(n){
+    if(n>=1000000)return(n/1000000).toFixed(1).replace('.',',')+'M€';
+    if(n>=1000)return Math.round(n/1000)+'k€';
+    return Math.round(n)+'€';
+  }
+  document.getElementById('ss-roi-loss').textContent=fmt(loss)+'/Jahr';
+  document.getElementById('ss-roi-save').textContent=fmt(save)+'/Jahr';
+  document.getElementById('ss-roi-cost').textContent=fmt(cost)+'/Jahr';
+  document.getElementById('ss-roi-net').textContent=fmt(net)+'/Jahr';
+  var mEl=document.getElementById('ss-roi-multi');
+  mEl.textContent=roi.toFixed(1)+'×';
+  mEl.style.animation='none';
+  void mEl.offsetWidth;
+  mEl.style.animation='';
+  clearTimeout(window._ssRoiT);
+  window._ssRoiT=setTimeout(()=>saveState(),1200);
+}
+
+function ssExportRoi(){
+  var emp=parseFloat(document.getElementById('ss-roi-emp').value)||100;
+  var sal=parseFloat(document.getElementById('ss-roi-salary').value)||60000;
+  var hrs=parseFloat(document.getElementById('ss-roi-hours').value)||2;
+  var rate=sal/2080;
+  var loss=emp*156*rate,save=emp*hrs*52*rate,cost=emp*5*12,net=save-cost,roi=save/cost;
+  function fmt(n){return n>=1000000?(n/1000000).toFixed(1)+'M€':n>=1000?Math.round(n/1000)+'k€':Math.round(n)+'€';}
+  var d=new Date();
+  var out='SmartSpend ROI-Bericht\n'+'='.repeat(40)+'\n\n';
+  out+='Erstellt: '+d.toLocaleDateString('de-DE')+'\n\n';
+  out+='EINGABEN\n--------\nMitarbeiter: '+emp+'\nØ Jahresgehalt: '+sal.toLocaleString('de-DE')+'€\nGesparte Stunden/Woche: '+hrs+'h\n\n';
+  out+='ERGEBNISSE\n----------\nJährlicher Produktivitätsverlust (vorher): '+fmt(loss)+'\nJährliche Ersparnis durch SmartSpend: '+fmt(save)+'\nSmartSpend Jahreskosten (5€/MA/Monat): '+fmt(cost)+'\nNetto-Ersparnis pro Jahr: '+fmt(net)+'\nROI-Multiplikator: '+roi.toFixed(1)+'×\n\n';
+  out+='GRUNDLAGE\n---------\nPwC Employee Financial Wellness Survey 2023:\nMitarbeiter verlieren 3h/Woche durch finanziellen Stress.\nSmartSpend reduziert das um '+hrs+'h/Woche pro Mitarbeiter.\n';
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([out],{type:'text/plain'}));
+  a.download='SmartSpend-ROI-Bericht.txt';a.click();
+}
+
+/* ── HYPOTHESEN ──────────────────────────────────────────── */
+function renderSsHyp(){
+  var ss=ssGetState();
+  var statusCls={'Ungetestet':'tag-gray','In Prüfung':'tag-amber','Bestätigt':'tag-green','Widerlegt':'tag-red'};
+  var html=ss.hyps.length?ss.hyps.map(function(h,i){
+    return'<div class="ss-hyp-row">'+
+      '<div class="ss-hyp-text">'+escHtml(h.text)+'</div>'+
+      '<span class="tag ss-status '+(statusCls[h.status]||'tag-gray')+'">'+escHtml(h.status)+'</span>'+
+      '<div style="display:flex;gap:4px;margin-left:8px;flex-shrink:0">'+
+        '<select style="width:auto;margin:0;font-size:11px;padding:4px 6px" onchange="ssSetHypStatus('+i+',this.value)">'+
+          ['Ungetestet','In Prüfung','Bestätigt','Widerlegt'].map(function(s){return'<option'+(h.status===s?' selected':'')+'>'+s+'</option>';}).join('')+
+        '</select>'+
+        '<button class="act-btn" onclick="ssDelHyp('+i+')" title="Löschen">🗑</button>'+
+      '</div>'+
+    '</div>';
+  }).join(''):'<div class="empty-state">Noch keine Hypothesen – füge die erste hinzu.</div>';
+  document.getElementById('ss-hyp-list').innerHTML=html;
+}
+function ssSetHypStatus(i,s){var ss=ssGetState();ss.hyps[i].status=s;saveState();renderSsHyp();}
+function ssDelHyp(i){var ss=ssGetState();ss.hyps.splice(i,1);saveState();renderSsHyp();}
+function ssAddHyp(){
+  var t=document.getElementById('ss-hyp-text-input').value.trim();
+  var s=document.getElementById('ss-hyp-status-input').value;
+  if(!t)return;
+  ssGetState().hyps.push({id:Date.now(),text:t,status:s});
+  saveState();document.getElementById('ss-hyp-text-input').value='';
+  closeModal('modal-ss-hyp');renderSsHyp();
+}
+
+/* ── NÄCHSTE SCHRITTE ────────────────────────────────────── */
+function renderSsNext(){
+  var ss=ssGetState();
+  var steps=ss.nextSteps||[];
+  var done=steps.filter(function(s){return s.done;}).length;
+  var pct=steps.length?Math.round(done/steps.length*100):0;
+  var pEl=document.getElementById('ss-next-pct'),bEl=document.getElementById('ss-next-bar');
+  if(pEl)pEl.textContent=pct+'%';
+  if(bEl)bEl.style.width=pct+'%';
+  var oc={'Martim':'rgba(47,129,247,0.15)','Raphael':'rgba(63,185,80,0.15)','Beide':'rgba(210,153,34,0.15)'};
+  var ot={'Martim':'var(--accent-h)','Raphael':'var(--green)','Beide':'var(--amber)'};
+  var html=steps.length?steps.map(function(s,i){
+    return'<div class="ss-step-row">'+
+      '<div class="ss-step-cb'+(s.done?' on':'')+'" onclick="ssToggleStep('+i+')">'+(s.done?'✓':'')+'</div>'+
+      '<div class="ss-step-text'+(s.done?' done':'')+'">'+escHtml(s.text)+'</div>'+
+      '<span class="ss-owner" style="background:'+(oc[s.owner]||'rgba(255,255,255,0.07)')+';color:'+(ot[s.owner]||'var(--text2)')+'">'+escHtml(s.owner)+'</span>'+
+      '<button class="act-btn" onclick="ssDelStep('+i+')" title="Löschen">🗑</button>'+
+    '</div>';
+  }).join(''):'<div class="empty-state">Keine Aufgaben vorhanden.</div>';
+  document.getElementById('ss-next-list').innerHTML=html;
+}
+function ssToggleStep(i){
+  var ss=ssGetState();ss.nextSteps[i].done=!ss.nextSteps[i].done;
+  saveState();renderSsNext();
+  if(ss.nextSteps[i].done){
+    var cbs=document.querySelectorAll('.ss-step-cb');
+    if(cbs[i]){var r=cbs[i].getBoundingClientRect();confettiBurst(r.left,r.top);}
+  }
+}
+function ssDelStep(i){ssGetState().nextSteps.splice(i,1);saveState();renderSsNext();}
+function ssAddStep(){
+  var t=document.getElementById('ss-next-text-input').value.trim();
+  var o=document.getElementById('ss-next-owner-input').value;
+  if(!t)return;
+  ssGetState().nextSteps.push({id:Date.now(),text:t,owner:o,done:false});
+  saveState();document.getElementById('ss-next-text-input').value='';
+  closeModal('modal-ss-next');renderSsNext();
+}
+
+/* ── PREISMODELL ─────────────────────────────────────────── */
+function renderSsPrice(){
+  var ss=ssGetState();
+  var cEl=document.getElementById('ss-price-cos'),eEl=document.getElementById('ss-price-emp');
+  if(cEl&&document.activeElement!==cEl)cEl.value=ss.priceInputs.companies||5;
+  if(eEl&&document.activeElement!==eEl)eEl.value=ss.priceInputs.employees||150;
+  ssCalcPrice();
+}
+function ssCalcPrice(){
+  var cEl=document.getElementById('ss-price-cos');if(!cEl)return;
+  var c=parseFloat(cEl.value)||5,e=parseFloat(document.getElementById('ss-price-emp').value)||150;
+  if(state.smartspend)state.smartspend.priceInputs={companies:c,employees:e};
+  var mrr=c*e*5,arr=mrr*12;
+  function fmt(n){return n>=1000000?(n/1000000).toFixed(1)+'M€':n>=1000?Math.round(n/1000)+'k€':n+'€';}
+  document.getElementById('ss-price-mrr').textContent=fmt(mrr)+'/Monat';
+  document.getElementById('ss-price-arr').textContent=fmt(arr)+' ARR';
+  document.getElementById('ss-scen-c').textContent=fmt(3*100*5)+'/Mo';
+  document.getElementById('ss-scen-r').textContent=fmt(10*200*5)+'/Mo';
+  document.getElementById('ss-scen-o').textContent=fmt(30*300*5)+'/Mo';
+  clearTimeout(window._ssPriceT);window._ssPriceT=setTimeout(()=>saveState(),1200);
+}
+
+/* ── KUNDEN-PIPELINE ─────────────────────────────────────── */
+function renderSsPipeline(){
+  var ss=ssGetState();
+  var pipeline=ss.pipeline||[];
+  var sOrder=['Identifiziert','Kontaktiert','Meeting','Pilot','Kunde'];
+  var sCls={'Identifiziert':'tag-gray','Kontaktiert':'tag-amber','Meeting':'tag-blue','Pilot':'tag-green','Kunde':'tag-green'};
+  var metrics='';
+  sOrder.forEach(function(s){
+    var cnt=pipeline.filter(function(p){return p.status===s;}).length;
+    if(cnt>0)metrics+='<div class="metric"><div class="metric-label">'+s+'</div><div class="metric-value">'+cnt+'</div></div>';
+  });
+  document.getElementById('ss-pipeline-metrics').innerHTML=metrics;
+  var html=pipeline.length?pipeline.map(function(p,i){
+    return'<div class="ss-pipeline-row">'+
+      '<div style="flex:1">'+
+        '<div class="ss-pipeline-name">'+escHtml(p.name)+'</div>'+
+        '<div class="ss-pipeline-notes">'+escHtml(p.notes||'')+'</div>'+
+      '</div>'+
+      '<div style="display:flex;align-items:center;gap:8px;flex-shrink:0">'+
+        '<select style="width:auto;margin:0;font-size:11px;padding:4px 6px" onchange="ssPipeStatus('+i+',this.value)">'+
+          sOrder.map(function(s){return'<option'+(p.status===s?' selected':'')+'>'+s+'</option>';}).join('')+
+        '</select>'+
+        '<button class="act-btn" onclick="ssDelPipe('+i+')" title="Löschen">🗑</button>'+
+      '</div>'+
+    '</div>';
+  }).join(''):'<div class="empty-state">Noch keine Unternehmen in der Pipeline</div>';
+  document.getElementById('ss-pipeline-list').innerHTML=html;
+}
+function ssPipeStatus(i,s){ssGetState().pipeline[i].status=s;saveState();renderSsPipeline();}
+function ssDelPipe(i){ssGetState().pipeline.splice(i,1);saveState();renderSsPipeline();}
+function ssAddPipeline(){
+  var n=document.getElementById('ss-pipe-name').value.trim();
+  if(!n)return;
+  ssGetState().pipeline.push({id:Date.now(),name:n,status:document.getElementById('ss-pipe-status').value,notes:document.getElementById('ss-pipe-notes').value.trim()});
+  saveState();document.getElementById('ss-pipe-name').value='';document.getElementById('ss-pipe-notes').value='';
+  closeModal('modal-ss-pipeline');renderSsPipeline();
+}
+
+/* ── VERKAUFSARGUMENTE ───────────────────────────────────── */
+function renderSsSales(){
+  var listEl=document.getElementById('ss-sales-list');if(!listEl)return;
+  if(listEl.contains&&listEl.contains(document.activeElement))return;
+  var ss=ssGetState();
+  var html=ss.salesArgs.map(function(a,i){
+    return'<div class="ss-arg-row">'+
+      '<div class="ss-arg-num">'+(i+1)+'</div>'+
+      '<textarea style="flex:1;background:transparent;border:none;resize:vertical;min-height:52px;padding:0;outline:none;font-family:inherit;font-size:13px;color:var(--text);line-height:1.65" '+
+        'oninput="ssSaveArg('+i+',this.value)">'+escHtml(a)+'</textarea>'+
+      '<button class="act-btn" onclick="ssDelArg('+i+')" title="Löschen" style="flex-shrink:0;margin-top:2px">🗑</button>'+
+    '</div>';
+  }).join('');
+  html+='<div style="margin-top:8px"><button class="btn" onclick="ssAddArg()">+ Argument hinzufügen</button></div>';
+  listEl.innerHTML=html;
+}
+function ssSaveArg(i,v){var ss=ssGetState();ss.salesArgs[i]=v;clearTimeout(window._ssSalesT);window._ssSalesT=setTimeout(()=>saveState(),1200);}
+function ssDelArg(i){ssGetState().salesArgs.splice(i,1);saveState();renderSsSales();}
+function ssAddArg(){ssGetState().salesArgs.push('Neues Argument…');saveState();renderSsSales();}
+
+/* ── MARKTGRÖSSE ─────────────────────────────────────────── */
+function renderSsMarket(){
+  var ss=ssGetState();
+  var m=ss.market||{};
+  var lEl=document.getElementById('ss-mkt-land'),minEl=document.getElementById('ss-mkt-min'),maxEl=document.getElementById('ss-mkt-max'),sEl=document.getElementById('ss-mkt-sector');
+  if(lEl&&document.activeElement!==lEl)lEl.value=m.land||'';
+  if(minEl&&document.activeElement!==minEl)minEl.value=m.minSize||50;
+  if(maxEl&&document.activeElement!==maxEl)maxEl.value=m.maxSize||5000;
+  if(sEl&&document.activeElement!==sEl)sEl.value=m.sector||'';
+}
+function ssSaveMkt(){
+  var ss=ssGetState();
+  ss.market={land:document.getElementById('ss-mkt-land').value,minSize:parseFloat(document.getElementById('ss-mkt-min').value)||50,maxSize:parseFloat(document.getElementById('ss-mkt-max').value)||5000,sector:document.getElementById('ss-mkt-sector').value};
+  clearTimeout(window._ssMktT);window._ssMktT=setTimeout(()=>saveState(),1200);
+}
+
+/* ── SEGMENTIERUNG ───────────────────────────────────────── */
+function renderSsSeg(){
+  var ss=ssGetState();
+  var seg=ss.seg||ssDefaultState().seg;
+  var icpEl=document.getElementById('ss-seg-icp-text');
+  if(icpEl)icpEl.textContent=seg.icp||'';
+  var segs=[
+    {d:seg.primary,label:'Primär',bg:'rgba(47,129,247,0.1)',color:'var(--accent-h)',border:'rgba(47,129,247,0.3)'},
+    {d:seg.secondary,label:'Sekundär',bg:'rgba(63,185,80,0.1)',color:'var(--green)',border:'rgba(63,185,80,0.3)'},
+    {d:seg.tertiary,label:'Tertiär',bg:'rgba(210,153,34,0.1)',color:'var(--amber)',border:'rgba(210,153,34,0.3)'}
+  ];
+  var html=segs.map(function(seg){
+    var d=seg.d||{};
+    return'<div class="ss-seg-card" style="border-color:'+seg.border+'">'+
+      '<span class="ss-seg-badge" style="background:'+seg.bg+';color:'+seg.color+'">'+seg.label+'</span>'+
+      '<div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:12px">'+escHtml(d.label||'')+'</div>'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px">'+
+        '<div><div class="ss-seg-field-lbl">Größe</div><div class="ss-seg-field-val">'+escHtml(d.size||'')+'</div></div>'+
+        '<div><div class="ss-seg-field-lbl">Sektor</div><div class="ss-seg-field-val">'+escHtml(d.sector||'')+'</div></div>'+
+      '</div>'+
+      '<div class="ss-seg-field-lbl">Warum dieses Segment?</div>'+
+      '<div class="ss-seg-field-val">'+escHtml(d.why||'')+'</div>'+
+    '</div>';
+  }).join('');
+  document.getElementById('ss-seg-segments').innerHTML=html;
+}
+
+/* ── HÄUFIGE EINWÄNDE ────────────────────────────────────── */
+function renderSsObj(){
+  var ss=ssGetState();
+  var html=ss.objections.length?ss.objections.map(function(o,i){
+    return'<div class="ss-obj-item">'+
+      '<div class="ss-obj-q">💬 '+escHtml(o.q)+'</div>'+
+      '<div class="ss-obj-a">'+escHtml(o.a)+'</div>'+
+      '<div style="margin-top:10px;display:flex;gap:6px">'+
+        '<button class="btn" onclick="ssEditObj('+i+')" style="font-size:11px">✏️ Bearbeiten</button>'+
+        '<button class="act-btn" onclick="ssDelObj('+i+')" title="Löschen">🗑</button>'+
+      '</div>'+
+    '</div>';
+  }).join(''):'<div class="empty-state">Noch keine Einwände erfasst</div>';
+  document.getElementById('ss-obj-list').innerHTML=html;
+}
+function ssAddObj(){
+  var q=document.getElementById('ss-obj-q-input').value.trim();
+  var a=document.getElementById('ss-obj-a-input').value.trim();
+  if(!q||!a)return;
+  var ss=ssGetState();
+  if(editIdx>=0&&editIdx<ss.objections.length){ss.objections[editIdx]={q:q,a:a};editIdx=-1;}
+  else ss.objections.push({q:q,a:a});
+  saveState();document.getElementById('ss-obj-q-input').value='';document.getElementById('ss-obj-a-input').value='';
+  closeModal('modal-ss-obj');renderSsObj();
+}
+function ssEditObj(i){
+  var o=ssGetState().objections[i];
+  document.getElementById('ss-obj-q-input').value=o.q;
+  document.getElementById('ss-obj-a-input').value=o.a;
+  editIdx=i;openModal('modal-ss-obj');
+}
+function ssDelObj(i){ssGetState().objections.splice(i,1);saveState();renderSsObj();}
+
+/* ── ERFOLGSGESCHICHTEN ──────────────────────────────────── */
+function renderSsSuccess(){
+  var ss=ssGetState();
+  var html=ss.success.map(function(s,i){
+    return'<div class="ss-success-card">'+
+      '<div class="ss-success-icon">'+escHtml(s.icon)+'</div>'+
+      '<div class="ss-success-title">'+escHtml(s.title)+'</div>'+
+      '<div class="ss-success-stat">'+escHtml(s.stat)+'</div>'+
+      '<div class="ss-success-desc">'+escHtml(s.desc)+'</div>'+
+      '<div style="margin-top:10px"><button class="act-btn" onclick="ssDelSuccess('+i+')" title="Löschen">🗑</button></div>'+
+    '</div>';
+  }).join('');
+  document.getElementById('ss-success-list').innerHTML=html;
+}
+function ssAddSuccess(){
+  var icon=document.getElementById('ss-succ-icon').value.trim()||'⭐';
+  var title=document.getElementById('ss-succ-title').value.trim();
+  if(!title)return;
+  ssGetState().success.push({icon:icon,title:title,stat:document.getElementById('ss-succ-stat').value.trim(),desc:document.getElementById('ss-succ-desc').value.trim()});
+  saveState();closeModal('modal-ss-success');renderSsSuccess();
+}
+function ssDelSuccess(i){ssGetState().success.splice(i,1);saveState();renderSsSuccess();}
 
 render('ideas');
 </script>
